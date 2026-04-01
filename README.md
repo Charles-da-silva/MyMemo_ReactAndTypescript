@@ -2,8 +2,6 @@
 
 Este é um projeto para o desenvolvimento de um web-app responsivo de repetição espaçada para microaprendizagem baseado em flashcards, desenvolvido com **React** e **TypeScript**, inicialmente utilizando o `localStorage` do navegador para persistência de dados.
 
-O objetivo principal foi criar uma ferramenta personalizada para me auxiliar nos estudos das provas da faculdade, utilizando a técnica de repetição espaçada.
-
 ## 🚀 Funcionalidades
 
 - **Gerenciamento de Decks:** Criação, edição e exclusão de baralhos (decks);
