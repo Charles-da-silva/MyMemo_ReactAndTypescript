@@ -24,11 +24,15 @@ Este é um projeto para o desenvolvimento de um web-app responsivo de repetiçã
 
 ## Fase atual
 
-- Prototipação via Figma.
+- Prototipação via Figma concluída, contendo principais telas e fluxos do app.
+- Agora é mão na massa! Quer dizer, no código, para transformar essas telinhas lindas em um monte de arquivos e várias linhas de código.
+
+
+## Algumas Telas e link do protótipo
+
 - Link do protópico: https://www.figma.com/proto/eSC789nZxWp6VgVkOT4fQt/MyMemo-Flashcards?node-id=6-7&p=f&t=kP0AhmtPOHjQJxZB-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=4%3A81
 
-## Algumas Telas do App
 <div align="center">
   <br>
-  <img src="./src/assets/FigmaPrint.png" alt="Telas da prototipagem no Figma" width="600">
+  <img src="./src/assets/FigmaPrint_final.png" alt="Telas da prototipagem no Figma" width="600">
 </div>
