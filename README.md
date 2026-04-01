@@ -30,5 +30,5 @@ Este é um projeto para o desenvolvimento de um web-app responsivo de repetiçã
 ## Algumas Telas do App
 <div align="center">
   <br>
-  <img src="./src/assets/Figma_Print.png" alt="Telas da prototipagem no Figma" width="600">
+  <img src="./src/assets/FigmaPrint.png" alt="Telas da prototipagem no Figma" width="600">
 </div>
