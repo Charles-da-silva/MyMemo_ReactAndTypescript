@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import AppLoader from './shared/components/AppLoader';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './router';
 
 function App() {
   const [loading, setIsLoading] = useState(true);
@@ -22,9 +24,7 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <h1>Conteúdo da Página Carregado!</h1>
-    </div>
+    <RouterProvider router={router} />
   );
 }
 
