@@ -14,7 +14,7 @@ function App() {
     const timer = setTimeout(() => {
       console.log("Timer finalizado, mudando loading para false");
       setIsLoading(false);
-    }, 10000); // 3 segundos
+    }, 100); // 3 segundos
 
     return () => clearTimeout(timer);
   }, []);
