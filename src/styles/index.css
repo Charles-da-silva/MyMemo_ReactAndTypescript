@@ -4,19 +4,8 @@
   --text: #6b6375;
   --text-h: #08060d;
   --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
   --sans: 'ADLaM Display', system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
+  
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
   color-scheme: light dark;
@@ -30,6 +19,71 @@
   @media (max-width: 1024px) {
     font-size: 16px;
   }
+
+  @media screen and (max-width: 360px) {
+
+    .conteudo-da-pagina {
+      padding-top: 60px;
+      margin-top: 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      align-content: center;
+    }
+
+    .howCreateCard {
+      width: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      align-content: center;
+      align-self: center;
+      text-align: center;
+      padding-top: 70px;
+    }
+
+
+    #select-deck {
+      display: inline-block; /* Garante que o box model funcione corretamente */
+      margin: 0 auto; /* Para centralizar o select, já que tiramos o text-align */
+      box-sizing: border-box;
+      height: 40px; /* Aumentei um pouco para mobile, 30px é muito pequeno para o toque */
+      width: 80vw;
+      max-width: 90%;
+      
+      /* Essencial para o "..." aparecer no select fechado */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      
+      padding: 5px 30px 5px 10px; /* Padding extra na direita para o ícone da setinha */
+      color: rgb(245, 245, 248);
+      background-color: var(--bg); 
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      
+      /* Reset nativo */
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      
+      /* Dica: Adicione uma imagem de fundo para a setinha, 
+        já que o 'appearance: none' remove a seta original */
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 20px;
+    }
+
+    #select-deck :nth-child(1) {
+      color: var(--text);
+      width: 80px;
+      max-width: 80px;
+      background-color: red;
+    }
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -38,18 +92,11 @@
     --text-h: #f3f4f6;
     --bg: #16171d;
     --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+   }
 
   #social .button-icon {
     filter: invert(1) brightness(2);
-  }
+  } 
 }
 
 #root {
@@ -68,68 +115,25 @@ body {
   margin: 0;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
 p {
   margin: 0;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
-}
-
-.btn {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center; /* Substitui text-align em layouts flex */
+/* Configs de botão */
+/* ============================== */
+.btn  { 
   font-family: var(--sans);
-  font-weight: 400;
-  letter-spacing: 0.15px;
-  word-wrap: break-word;
-  text-size-adjust: 100%;
+  letter-spacing: 0.15px;  
   cursor: pointer;
-  border: 1px solid;
-  padding: 6px 12px; 
-  border-radius: 6px; 
-  position: relative;
+  border: 1px solid;   
+  border-radius: 6px;   
+  background-color: #1E1E1E;
+  width: 126px;
+  height: 41px;
+  font-size: 15px;
+  letter-spacing: 0.54px;
 }
 
-/* Modificadores: Apenas o que muda */
 .btn-blue {
   background-color: #3B82F6;
   color: white;
@@ -137,35 +141,125 @@ code {
 }
 
 .btn-red {
-  background-color: #1E1E1E;
-  color: #FF0202;
-  border-color: #FF0202;
+  color : #FF0202;
+  border-color: currentColor;
 }
 
 .btn-green {
-  background-color: #1E1E1E;
   color: #13C391;
-  border-color: #13C391;
+  border-color: currentColor;
 }
 
 .btn-gray {
-  background-color: #1E1E1E;
   color: #91959b ;
-  border-color: #91959b ;
+  border-color: currentColor ;
 }
 
 .btn-yellow {
-  background-color: #1E1E1E;
   color: #D49D07;
-  border-color: #D49D07;
+  border-color: currentColor;
+}
+/* ============================== */
+
+#select-deck {
+  display: block; /* Garante que o box model funcione corretamente */
+  margin: 0 auto; /* Para centralizar o select, já que tiramos o text-align */
+  box-sizing: border-box;
+  height: 40px; /* Aumentei um pouco para mobile, 30px é muito pequeno para o toque */
+  width: 80vw;
+  max-width: 90%;
+  
+  /* Essencial para o "..." aparecer no select fechado */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  padding: 5px 30px 5px 10px; /* Padding extra na direita para o ícone da setinha */
+  color: rgb(245, 245, 248);
+  background-color: var(--bg); /* Adicione o fundo, senão ele fica transparente */
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  
+  /* Reset nativo */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  
+  /* Dica: Adicione uma imagem de fundo para a setinha, 
+     já que o 'appearance: none' remove a seta original */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px;
+  }
+
+  /* Configs de texto */
+  /* ============================== */
+.personText{
+    text-align: center;   
+    color: white;
+    font-family : var(--sans);  
+    letter-spacing: 0.54px;
+    line-height: normal;
+  }
+
+.largeText {
+  font-size: 24px;
+  }
+
+.mediumText {
+  font-size: 15px;
+  }
+
+
+/* Configs página MainPage */
+/* ============================== */
+.container-logo {
+  position: fixed;   /* Fixa na tela, independente do scroll */
+  top: 0;            
+  left: 0;           
+  width: 100%;        
+  z-index: 100;      /* Garante que a logo fique sobreposta a tudo */
+  display: flex;
+  justify-content: center; /* Centraliza a logo horizontalmente */
 }
 
-.select-deck {
-  flex: 1;
-  padding: "5px";
-  maxHeight: "40px";
-  background: "red";
-  color: "blue";
-  border: "1px solid var(--border)";
-  borderRadius: "6px"
-}   
+.conteudo-da-pagina {
+  padding-top: 80px;
+  margin-top: 100px;
+  width: 100%; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;  
+}
+/* ============================== */
+
+.mainPage {
+  display: flex; 
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute; 
+  background: #16171D; 
+  overflow: hidden;
+  border-radius: 20px;
+  border: 3px solid var(--border);
+  width: 95%;
+  height: 95%;
+}
+
+.howCreateCard {
+  width: 90%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  align-self: center;
+  text-align: center;
+  
+}
+ 
