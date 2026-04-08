@@ -1,6 +1,7 @@
-import { loadDecks } from "../storage/storage";
-import type { Deck } from "../types/types";
+import { loadCards, loadDecks } from "../storage/storage";
+import type { Card, Deck } from "../types/types";
 import { useState } from "react";
+import { useDeckImportExport } from "../hooks/useDeckImportExport";
 
 interface HomeCardProps {
   setMode: (mode: "select" | "review" | "createDeck") => void;
@@ -11,6 +12,13 @@ export default function HomeCard({ setMode }: HomeCardProps) {
 const [selectedDeckId, setSelectedDeckId] = useState("");
 const [selectedDecksToExport, setSelectedDecksToExport] = useState<string[]>([]);
 const [decks, setDecks] = useState<Deck[]>(loadDecks());
+const [cards, setCards] = useState<Card[]>(loadCards());
+const { exportDecks, importDecks } = useDeckImportExport({
+    decks,
+    cards,
+    setDecks,
+    setCards
+  });
 
   return (
     <>
@@ -38,8 +46,30 @@ const [decks, setDecks] = useState<Deck[]>(loadDecks());
       <div style={{ display: "flex", alignItems: "center", gap: "10px", alignContent: "center", justifyContent: "center" }}>
         <button className="btn btn-blue" 
           onClick={() => setMode("createDeck")}>Criar</button>
-        <button className="btn btn-gray" 
-          onClick={() => setMode("createDeck")}>Importar</button>
+
+        {/* "Botão" para Importar Deck */} 
+        <div>
+          <label 
+            htmlFor="file-upload" // Associa o label ao input abaixo
+            className="btn btn-gray" 
+            style={{ 
+            display: "block",            
+            alignContent: "center",            
+            cursor: "pointer",
+            width: "124px", 
+            height: "39px",       
+            }}>Importar
+          </label>
+          
+          <input
+            id="file-upload"
+            type="file"
+            accept="application/json"
+            onChange={importDecks}
+            style={{ display: 'none' }} // Esconde o input feio
+          />
+        </div>
+
       </div>
     </>
   );
