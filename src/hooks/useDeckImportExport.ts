@@ -57,7 +57,7 @@ export function useDeckImportExport({
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = "anki-decks-export.json";
+    a.download = `${decksToExport[0]?.name ?? "deck"}.json`;
     a.click();
 
     URL.revokeObjectURL(url);

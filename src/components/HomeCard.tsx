@@ -2,18 +2,20 @@ import { loadCards, loadDecks } from "../storage/storage";
 import type { Card, Deck } from "../types/types";
 import { useState } from "react";
 import { useDeckImportExport } from "../hooks/useDeckImportExport";
+import DeckOptionsCard from "./DeckOptionsCard";
 
 interface HomeCardProps {
-  setMode: (mode: "select" | "review" | "createDeck") => void;
+  setMode: (mode: "home" | "deckOptions" | "createDeck") => void;
+  setSelectedDecksToExport: (ids: string[]) => void; // prop nova
 }
 
-export default function HomeCard({ setMode }: HomeCardProps) {
+export default function HomeCard({ setMode, setSelectedDecksToExport }: HomeCardProps) {
 
 const [selectedDeckId, setSelectedDeckId] = useState("");
-const [selectedDecksToExport, setSelectedDecksToExport] = useState<string[]>([]);
+
 const [decks, setDecks] = useState<Deck[]>(loadDecks());
 const [cards, setCards] = useState<Card[]>(loadCards());
-const { exportDecks, importDecks } = useDeckImportExport({
+const { importDecks } = useDeckImportExport({
     decks,
     cards,
     setDecks,
@@ -26,9 +28,14 @@ const { exportDecks, importDecks } = useDeckImportExport({
       <br />
       
       <select id="select-deck" value={selectedDeckId} onChange={(e) => {
-          const id = e.target.value;
+          const id = e.target.value;          
+          setMode("deckOptions"); // MainPage renderizará o DeckOptionsCard com a prop setSelectedDeckId, 
+          // que atualiza o estado selectedDeckId aqui. Assim, quando o usuário seleciona um deck, 
+          // o modo é alterado para "deckOptions" e o DeckOptionsCard é renderizado, recebendo o ID do 
+          // deck selecionado para que possa exibir as opções corretas.
           setSelectedDeckId(id);
           setSelectedDecksToExport([id]);
+          console.log("Enviando para DeckOptionsCard:", [id]); // confira aqui
         }}>
         <option value="">Lista de Decks disponíveis</option>
         <option value="" style={{width: "10px"}}>Lista de Decks disponíveisLista de Decks disponíveis</option>
@@ -43,7 +50,9 @@ const { exportDecks, importDecks } = useDeckImportExport({
       <p className="personText largeText">Crie ou importe um Deck</p>
       <br /> 
       
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", alignContent: "center", justifyContent: "center" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "10px", 
+        alignContent: "center", justifyContent: "center" }}>
+
         <button className="btn btn-blue" 
           onClick={() => setMode("createDeck")}>Criar</button>
 

@@ -1,6 +1,6 @@
 
 interface HomeCardProps {
-  setMode: (mode: "select" | "review" | "createDeck") => void;
+  setMode: (mode: "home" | "deckOptions" | "createDeck") => void;
 }
 
 export default function HowCreateCard({ setMode }: HomeCardProps) {
@@ -26,7 +26,7 @@ return (
     <br />
       
     <img src="src\assets\home2.png" 
-        alt="Voltar a home" height={30} onClick={() => setMode("select")} 
+        alt="Voltar a home" height={30} onClick={() => setMode("home")} 
         style={{cursor: 'pointer', paddingTop: 15}}/>
 </div>
 </>
