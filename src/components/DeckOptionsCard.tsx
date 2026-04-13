@@ -14,7 +14,7 @@ const [selectedDeckId, setSelectedDeckId] = useState(initialSelected[0] || ""); 
 const [selectedDecksToExport, setSelectedDecksToExport] = useState<string[]>(initialSelected);
 const [decks, setDecks] = useState<Deck[]>(loadDecks());
 const [cards, setCards] = useState<Card[]>(loadCards());
-const { exportDecks, importDecks } = useDeckImportExport({
+const { exportDecks } = useDeckImportExport({
     decks,
     cards,
     setDecks,
@@ -43,22 +43,42 @@ const { exportDecks, importDecks } = useDeckImportExport({
           </option>
         ))}
       </select>
-
-      <p className="personText largeText">O que deseja fazer?</p>
       <br />
+      <p className="personText largeText">O que deseja fazer?</p>
+      <br /><br />
       
      
       {console.log("Decks selecionados para exportação:", selectedDecksToExport)}
 
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", alignContent: "center", justifyContent: "center" }}>
+      <div style={{ 
+        display: "grid", 
+        gridTemplateColumns: "repeat(2, 1fr)",  
+        alignItems: "center", 
+        gap: "10px", 
+        alignContent: "center", 
+        justifyContent: "center" 
+        }}>
         
-         {/* "Botão" para Exportar Deck */} 
         <button 
             onClick={() => exportDecks(selectedDecksToExport)} 
-            className="btn btn-blue" >Exportar
-        </button>         
+            className="btn btn-blue" >Estudar
+        </button> 
+        <button 
+            onClick={() => exportDecks(selectedDecksToExport)} 
+            className="btn btn-green" >Editar
+        </button>
+        <button 
+            onClick={() => exportDecks(selectedDecksToExport)} 
+            className="btn btn-gray" >Exportar
+        </button> 
+        <button 
+            onClick={() => exportDecks(selectedDecksToExport)} 
+            className="btn btn-red" >Excluir
+        </button> 
+      </div>  
+      <br /><br />       
 
-      </div>
+      
 
       <img src="src\assets\home2.png" 
         alt="Voltar a home" height={30} onClick={() => setMode("home")} 

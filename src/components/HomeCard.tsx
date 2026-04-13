@@ -2,7 +2,6 @@ import { loadCards, loadDecks } from "../storage/storage";
 import type { Card, Deck } from "../types/types";
 import { useState } from "react";
 import { useDeckImportExport } from "../hooks/useDeckImportExport";
-import DeckOptionsCard from "./DeckOptionsCard";
 
 interface HomeCardProps {
   setMode: (mode: "home" | "deckOptions" | "createDeck") => void;
@@ -38,7 +37,6 @@ const { importDecks } = useDeckImportExport({
           console.log("Enviando para DeckOptionsCard:", [id]); // confira aqui
         }}>
         <option value="">Lista de Decks disponíveis</option>
-        <option value="" style={{width: "10px"}}>Lista de Decks disponíveisLista de Decks disponíveis</option>
         {decks.map(d => (
           <option key={d.id} value={d.id}>
             {d.name}
