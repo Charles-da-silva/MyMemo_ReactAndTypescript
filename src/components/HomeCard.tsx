@@ -5,10 +5,10 @@ import { useDeckImportExport } from "../hooks/useDeckImportExport";
 
 interface HomeCardProps {
   setMode: (mode: "home" | "deckOptions" | "createDeck") => void;
-  setSelectedDecksToExport: (ids: string[]) => void; // prop nova
+  setSelectedDeck: (ids: string[]) => void; // prop nova
 }
 
-export default function HomeCard({ setMode, setSelectedDecksToExport }: HomeCardProps) {
+export default function HomeCard({ setMode, setSelectedDeck }: HomeCardProps) {
 
 const [selectedDeckId, setSelectedDeckId] = useState("");
 
@@ -33,8 +33,7 @@ const { importDecks } = useDeckImportExport({
           // o modo é alterado para "deckOptions" e o DeckOptionsCard é renderizado, recebendo o ID do 
           // deck selecionado para que possa exibir as opções corretas.
           setSelectedDeckId(id);
-          setSelectedDecksToExport([id]);
-          console.log("Enviando para DeckOptionsCard:", [id]); // confira aqui
+          setSelectedDeck([id]);          
         }}>
         <option value="">Lista de Decks disponíveis</option>
         {decks.map(d => (

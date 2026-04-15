@@ -7,7 +7,7 @@ const AppLoader = () => {
     <div className="loader-container">
       <video autoPlay loop muted playsInline className="loader-video">
         <source src={loaderVideo} type="video/mp4" />
-        Seu navegador não suporta vídeos.
+        Seu navegador não suporta vídeos. Aguarde ...
       </video>
     </div>
   );

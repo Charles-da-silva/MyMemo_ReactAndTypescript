@@ -5,8 +5,8 @@ interface HomeCardProps {
 
 export default function HowCreateCard({ setMode }: HomeCardProps) {
 return (    
-<>          
-<div className="howCreateCard">
+  <>          
+  <div className="howCreateCard">
 
     <p className="personText largeText" style={{width: '80vw'}}>De que forma deseja criar o Deck?</p>
     <br /><br />
@@ -15,6 +15,7 @@ return (
     deixe a IA criar todas as perguntas e respostas para você!
     </p>
     <br />
+    
     
     <button className="btn btn-blue">Criar com IA</button>
     <br /><br />
@@ -25,10 +26,10 @@ return (
     <button className="btn btn-gray">Manualmente</button>
     <br />
       
-    <img src="src\assets\home2.png" 
+    <img src="src\assets\home.png" 
         alt="Voltar a home" height={30} onClick={() => setMode("home")} 
         style={{cursor: 'pointer', paddingTop: 15}}/>
-</div>
-</>
+  </div>
+  </>
 );
 }   
