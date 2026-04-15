@@ -16,12 +16,9 @@ const [selectedDeck, setSelectedDeck] = useState<string[]>([]);
 return (
   <>
   <div className="mainPage" style={{
-    border: mode === "review" ? "0px" : "",    
-    paddingTop: mode === "review" ? "110px" : "0px", // Remove a margem superior no modo de revisão
-    overflowY: mode === "review" ? "auto" : "hidden", // Scroll aparece quando o texto exceder a tela
-    maxHeight: "100vh", // Limita a altura à tela para a barra aparecer
-    
-    
+    border: mode === "review" ? "0px" : "",       
+    overflowY: mode === "review" ? "auto" : "hidden", // Scroll aparece quando o texto exceder a tela    
+    justifyContent: mode === "review" ? "flex-start" : "center",    
   }}>
       
     <main className="conteudo-da-pagina"
@@ -66,8 +63,7 @@ return (
         <>
           <StudyCard 
             mode={mode}
-            setMode={setMode}
-            selectedDeck={selectedDeck}
+            setMode={setMode}            
             selectedDeckId={selectedDeck[0]} // passa o ID do deck selecionado 
           />
         </>

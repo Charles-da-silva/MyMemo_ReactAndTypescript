@@ -72,7 +72,7 @@ const { exportDecks } = useDeckImportExport({
 
   return (
     <>
-           
+      <br /><br /><br />     
       <select id="select-deck" value={selectedDeckId} onChange={(e) => {
           const id = e.target.value;
           setSelectedDeckId(id);
@@ -89,16 +89,9 @@ const { exportDecks } = useDeckImportExport({
       <br /><br />
             
 
-      <div style={{ 
-        display: "grid", 
-        gridTemplateColumns: "repeat(2, 1fr)",  
-        alignItems: "center", 
-        gap: "10px", 
-        alignContent: "center", 
-        justifyContent: "center" 
-        }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "20px", alignItems: "center" }}>        
         
-        <button 
+        <div style={{ display: "flex", gap: "10px" }}><button 
             onClick={() => {
                     setIsReviewReady(false);
                     setMode("review");
@@ -109,6 +102,9 @@ const { exportDecks } = useDeckImportExport({
             onClick={() => exportDecks(selectedDeck)} 
             className="btn btn-green" >Editar
         </button>
+        </div>
+
+        <div style={{ display: "flex", gap: "10px" }}>
         <button 
             onClick={() => exportDecks(selectedDeck)} 
             className="btn btn-gray" >Exportar
@@ -117,13 +113,14 @@ const { exportDecks } = useDeckImportExport({
             onClick={() => deleteDeck(selectedDeckId)} 
             className="btn btn-red" >Excluir
         </button> 
+        </div>
       </div>  
       <br /><br />       
 
       
 
       <img src="src\assets\home.png" 
-        alt="Voltar a home" height={30} onClick={() => setMode("home")} 
+        alt="Voltar a home" height={40} onClick={() => setMode("home")} 
         style={{cursor: 'pointer', paddingTop: 15}}/>
     </>
   );

@@ -1,23 +1,23 @@
 
 import { useState, useEffect } from "react";
-import type { Card, Deck } from "../types/types";
-import { loadCards, loadDecks, saveCards } from "../storage/storage";
+import type { Card } from "../types/types";
+import { loadCards, saveCards } from "../storage/storage";
+import Logo from "./Logo";
+import "../styles/index.css";
 
 interface StudyCardProps {
     mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck";
   setMode: (mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck") => void;
-  selectedDeck: string[]; // nova prop para receber o deck selecionado
   selectedDeckId: string; // nova prop para receber o ID do deck selecionado
 }
 
 
 
-export default function StudyCard({ setMode, selectedDeck, selectedDeckId, mode }: StudyCardProps) {
+export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardProps) {
     
     const [reviewCards, setReviewCards] = useState<Card[]>([]); // estado para as cartas em revisão
     const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null); // resposta selecionada pelo usuário
 
-    const [decks, setDecks] = useState<Deck[]>(loadDecks());
     const [cards, setCards] = useState<Card[]>(loadCards());
     const [currentQuestion, setcurrentQuestion] = useState(0);
     const [isReviewReady, setIsReviewReady] = useState(false);
@@ -78,37 +78,49 @@ export default function StudyCard({ setMode, selectedDeck, selectedDeckId, mode 
   const currentCard = reviewCards[currentQuestion] as any;
 
     return (
-        <div className="studyCard" style={{ display: 'flex', flexDirection: 'column', margin: '0'}}>
-        <div >
+        <div className="studyCard">
+        <div>
           {isReviewReady && reviewCards.length > 0 && currentQuestion >= reviewCards.length && (
             <div style={{ textAlign: "center" }}>
-              <h2>🎉 Deck revisado com sucesso!</h2>
+                <Logo />
+                <br /><br />                       
+                <h2>Deck revisado com sucesso!</h2>
             </div>
           )}
 
           {isReviewReady && reviewCards.length === 0 && (
-            <p>☕ Nada para revisar agora.</p>
+            <div style={{ textAlign: "center" }}>
+                <Logo />
+                <br /><br />                       
+                <h2>Nada para revisar agora.</h2>
+            </div>
           )}
 
           {currentCard && currentQuestion < reviewCards.length && (
-            <div style={{ position: "relative", padding: "10px", border: "1px solid #eee", borderRadius: "12px" }}>
+            <div style={{ position: "relative", padding: "10px", border: "1px solid #eee", borderRadius: "12px"}}>
               
                 {/* Botão de Excluir Pergunta na Revisão */}
+                <div>
                 <img 
                     src="src\assets\Edit2.png" 
-                    alt="Editar deck" 
-                    height={25} onClick={() => setMode("editDeck")} 
-                    style={{cursor: 'pointer', paddingRight: 10, position: "absolute", top: 11, right: 30}}/>
+                    alt="Editar card" 
+                    onClick={() => setMode("editDeck")}
+                    className="iconCard" 
+                    style={{top: 11, right: 30}}/>
                 <img 
                     src="src\assets\Trash.png" 
-                    alt="Excluir deck" 
-                    height={25} onClick={() => deleteCard(currentCard.id)} 
-                    style={{cursor: 'pointer', paddingRight: 10, position: "absolute", top: 10, right: 3}}/>
+                    alt="Excluir card" 
+                    onClick={() => deleteCard(currentCard.id)} 
+                    className="iconCard" 
+                    style={{top: 10, right: 3}}/>
                 <br />
-                <p style={{ fontSize: "10px", whiteSpace: "pre-wrap", // 👈 ISSO AQUI mantém as quebras de linha e espaços
+                </div>
+                <p style={{ whiteSpace: "pre-wrap", // 👈 ISSO AQUI mantém as quebras de linha e espaços
                 wordWrap: "break-word", // Garante que textos longos não quebrem o layout              
-                padding: "5px",
+                padding: "5px", paddingTop: "15px",
                 textAlign: "left" }}>{currentCard.question}</p>
+
+                <br />
                 
                 {currentCard.image && (
                     <img src={currentCard.image} alt="Pergunta" style={{ maxWidth: "100%", borderRadius: "8px", marginBottom: "15px" }} />
@@ -125,45 +137,47 @@ export default function StudyCard({ setMode, selectedDeck, selectedDeckId, mode 
                 </div>
 
                 {selectedAnswer !== null && (
-                    <div style={{ marginTop: 20, padding: "15px", backgroundColor: "#f0fdf4", borderRadius: "8px" }}>
-                    {selectedAnswer === currentCard.correctAnswer ? (
-                        <p style={{ color: "#0cbe51", fontWeight: "bold" }}>✅ Correto!</p>
-                    ) : (
-                        <p style={{ color: "#991b1b" }}>❌ Resposta certa: {currentCard.alternatives[currentCard.correctAnswer]}</p>
+                    <div style={{ marginTop: 20, padding: "15px",  borderRadius: "8px" }}>
+                    {selectedAnswer === currentCard.correctAnswer ? (<>
+                        <img 
+                        src="src\assets\Correct.png" 
+                        alt="resposta correta" 
+                        height={35}/>
+                        <p>Correto!</p></>
+                    ) : (<>
+                        <img 
+                        src="src\assets\Wrong.jpg" 
+                        alt="resposta errada" 
+                        height={35}/>
+                        <p>A resposta certa é: {currentCard.alternatives[currentCard.correctAnswer]}</p></>
                     )}
-                    
-                    <div style={{ marginTop: 10 }}>
+                    <br />
+                    <div className="btn-card">
                         <button onClick={() => { scheduleCard(currentCard, "hard"); 
                         setcurrentQuestion(i => i + 1); setSelectedAnswer(null); }}
-                        style={{ background: "orangered" }}>Difícil (10 min)</button>
+                        className="btn btn-red" style={{letterSpacing: "", marginRight: "5px"}}>Difícil (10 min)</button>
 
                         <button onClick={() => { scheduleCard(currentCard, "medium"); 
                         setcurrentQuestion(i => i + 1); setSelectedAnswer(null); }} 
-                        style={{ marginLeft: 10, background: "orange"}}>Médio (4 hs)</button>
+                        className="btn btn-yellow" style={{letterSpacing: "", marginRight: "5px"}}>Médio (4 hs)</button>
 
                         <button onClick={() => { scheduleCard(currentCard, "easy"); 
                         setcurrentQuestion(i => i + 1); setSelectedAnswer(null); }} 
-                        style={{ marginLeft: 10, background: "green" }}>Fácil (3 dias)</button>
+                        className="btn btn-green" style={{letterSpacing: ""}}>Fácil (3 dias)</button>
                     </div>
                     </div>
                 )}
             </div>
-          )}
-
-          
+          )}          
         </div>
+        <br />
 
         <div style={{ display: 'block', alignItems: 'center', width: '100%' }}> 
-        <img 
-            src="src\assets\home.png" 
-            alt="Voltar a home" 
-            height={25} onClick={() => setMode("home")} 
-            style={{cursor: 'pointer', paddingRight: 10}}/>
+            <img 
+                src="src\assets\home.png" 
+                alt="Voltar a home" 
+                height={35} onClick={() => setMode("home")} 
+                style={{cursor: 'pointer', paddingRight: 10}}/>
         </div>
-
-
-
-
-        </div>
-        
+        </div>        
     );}
