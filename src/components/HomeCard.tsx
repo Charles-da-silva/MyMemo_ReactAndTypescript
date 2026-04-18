@@ -23,6 +23,7 @@ const { importDecks } = useDeckImportExport({
 
   return (
     <>
+      <div padding-top="10px" justify-content="center" align-items="center" className="homeCard">
       <p className="personText largeText">Selecione um Deck para estudar ou gerenciar</p>
       <br />
       
@@ -74,6 +75,7 @@ const { importDecks } = useDeckImportExport({
             onChange={importDecks}
             style={{ display: 'none' }} // Esconde o input feio
           />
+        </div>
         </div>
 
       </div>

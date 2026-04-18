@@ -6,12 +6,10 @@ import HowCreateCard from "../components/HowCreateCard";
 import DeckOptionsCard from "../components/DeckOptionsCard";
 import StudyCard from "../components/StudyCard";
 
-
 export default function MainPage() {
 
 const [mode, setMode] = useState<"home" | "deckOptions" | "createDeck" | "review" | "editDeck">("home");
 const [selectedDeck, setSelectedDeck] = useState<string[]>([]);
-
 
 return (
   <>
@@ -27,7 +25,7 @@ return (
 
       {mode === "home" && (
         <>
-          <div className="container-logo">
+          <div style={{marginBottom: 80}}>
             <Logo />
           </div>
           <HomeCard 
@@ -39,16 +37,13 @@ return (
 
       {mode === "createDeck" && (
         <>
-          <div className="container-logo">
-            <Logo />
-          </div>
           <HowCreateCard setMode={setMode} />
         </>        
       )}
 
       {mode === "deckOptions" && (
         <>
-          <div className="container-logo">
+          <div style={{marginBottom: 80}}>
             <Logo />
           </div>
           <DeckOptionsCard 

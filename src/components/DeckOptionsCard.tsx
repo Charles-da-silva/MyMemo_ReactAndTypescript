@@ -71,8 +71,7 @@ const { exportDecks } = useDeckImportExport({
   }, [mode, selectedDeckId, isReviewReady, cards]);
 
   return (
-    <>
-      <br /><br /><br />     
+    <>          
       <select id="select-deck" value={selectedDeckId} onChange={(e) => {
           const id = e.target.value;
           setSelectedDeckId(id);
@@ -86,8 +85,7 @@ const { exportDecks } = useDeckImportExport({
       </select>
       <br />
       <p className="personText largeText">O que deseja fazer?</p>
-      <br /><br />
-            
+      <br />            
 
       <div style={{ display: "flex", flexDirection: "column", gap: "20px", alignItems: "center" }}>        
         
@@ -115,13 +113,12 @@ const { exportDecks } = useDeckImportExport({
         </button> 
         </div>
       </div>  
-      <br /><br />       
-
-      
+      <br /><br />   
 
       <img src="src\assets\home.png" 
         alt="Voltar a home" height={40} onClick={() => setMode("home")} 
         style={{cursor: 'pointer', paddingTop: 15}}/>
+      <br /><br />
     </>
   );
 }

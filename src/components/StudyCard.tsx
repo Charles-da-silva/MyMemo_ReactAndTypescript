@@ -78,7 +78,7 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
   const currentCard = reviewCards[currentQuestion] as any;
 
     return (
-        <div className="studyCard">
+        <div className="studyCard" style={{height:"inherit"}}>
         <div>
           {isReviewReady && reviewCards.length > 0 && currentQuestion >= reviewCards.length && (
             <div style={{ textAlign: "center" }}>

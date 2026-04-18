@@ -1,3 +1,4 @@
+import Logo from "./Logo";
 
 interface HomeCardProps {
   setMode: (mode: "home" | "deckOptions" | "createDeck") => void;
@@ -6,10 +7,13 @@ interface HomeCardProps {
 export default function HowCreateCard({ setMode }: HomeCardProps) {
 return (    
   <>          
-  <div className="howCreateCard">
+  <div className="howCreateCard" >
+
+    <Logo />
+    <br /><br />
 
     <p className="personText largeText" style={{width: '80vw'}}>De que forma deseja criar o Deck?</p>
-    <br /><br />
+    <br />
     
     <p className="personText mediumText">Importe arquivos de texto em PDF ou Word e 
     deixe a IA criar todas as perguntas e respostas para você!
@@ -30,6 +34,7 @@ return (
         alt="Voltar a home" height={30} onClick={() => setMode("home")} 
         style={{cursor: 'pointer', paddingTop: 15}}/>
   </div>
+  <br />
   </>
 );
 }   
