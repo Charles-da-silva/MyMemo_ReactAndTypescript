@@ -1,8 +1,11 @@
+
+import imgLogo from "../assets/img_logo_black.png";
+
 export default function Logo() {
   return (
     <div className="logo">
       <img 
-      src="src\assets\img_logo_black.png" 
+      src={imgLogo} 
       alt="MyMemo Logo" 
       style={{ 
         width: '300px', 

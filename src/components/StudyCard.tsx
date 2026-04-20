@@ -3,6 +3,9 @@ import type { Card } from "../types/types";
 import { loadCards, saveCards } from "../storage/storage";
 import Logo from "./Logo";
 import "../styles/index.css";
+import editIcon from "../assets/Edit.png";
+import trashIcon from "../assets/Trash.png";  
+import homeIcon from "../assets/home.png"; 
 
 interface StudyCardProps {
   mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck";
@@ -100,13 +103,13 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
                 {/* Botão de Excluir Pergunta na Revisão */}
                 <div>
                 <img 
-                    src="src\assets\Edit2.png" 
+                    src={editIcon}
                     alt="Editar card" 
                     onClick={() => setMode("editDeck")}
                     className="iconCard" 
                     style={{top: 11, right: 30}}/>
                 <img 
-                    src="src\assets\Trash.png" 
+                    src={trashIcon} 
                     alt="Excluir card" 
                     onClick={() => deleteCard(currentCard.id)} 
                     className="iconCard" 
@@ -138,13 +141,13 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
                     <div style={{ marginTop: 20, padding: "15px",  borderRadius: "8px" }}>
                     {selectedAnswer === currentCard.correctAnswer ? (<>
                         <img 
-                        src="src\assets\Correct.png" 
+                        src="./Correct.png" 
                         alt="resposta correta" 
                         height={35}/>
                         <p>Correto!</p></>
                     ) : (<>
                         <img 
-                        src="src\assets\Wrong.jpg" 
+                        src="./Wrong.jpg" 
                         alt="resposta errada" 
                         height={35}/>
                         <p>A resposta certa é: {currentCard.alternatives[currentCard.correctAnswer]}</p></>
@@ -172,7 +175,7 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
 
         <div style={{ display: 'block', alignItems: 'center', width: '100%' }}> 
             <img 
-                src="src\assets\home.png" 
+                src={homeIcon} 
                 alt="Voltar a home" 
                 height={35} onClick={() => setMode("home")} 
                 style={{cursor: 'pointer', paddingRight: 10}}/>

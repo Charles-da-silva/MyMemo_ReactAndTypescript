@@ -15,9 +15,9 @@ const [selectedDeckId, setSelectedDeckId] = useState(initialSelected[0] || ""); 
 const [selectedDeck, setSelectedDeck] = useState<string[]>(initialSelected);
 
 const [isReviewReady, setIsReviewReady] = useState(false);
-const [currentQuestion, setcurrentQuestion] = useState(0);
-const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-const [reviewCards, setReviewCards] = useState<Card[]>([]);
+const [_currentQuestion, setcurrentQuestion] = useState(0);
+const [_selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+const [_reviewCards, setReviewCards] = useState<Card[]>([]);
 
 const [decks, setDecks] = useState<Deck[]>(() => loadDecks());
 const [cards, setCards] = useState<Card[]>(() => loadCards());

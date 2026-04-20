@@ -3,6 +3,9 @@ import { loadCards, loadDecks, saveCards, saveDecks } from "../storage/storage";
 import type { Card, Deck } from "../types/types";
 import { useState, useRef } from "react";
 import "../styles/index.css";
+import editIcon from "../assets/Edit.png";
+import trashIcon from "../assets/Trash.png";  
+import homeIcon from "../assets/home.png";  
 
 interface EditCardProps {
   setMode: (mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck") => void;
@@ -11,31 +14,18 @@ interface EditCardProps {
 
 export default function EditDeckCard({ setMode, selectedDeck: initialSelected }: EditCardProps) { 
 
-    const [selectedDeckId, setSelectedDeckId] = useState(initialSelected[0] || ""); 
-    const [selectedDeck, setSelectedDeck] = useState<string[]>(initialSelected);
+    const [selectedDeckId] = useState(initialSelected[0] || ""); 
 
     const [decks, setDecks] = useState<Deck[]>(() => loadDecks());
     const [cards, setCards] = useState<Card[]>(() => loadCards());
-    const { exportDecks } = useDeckImportExport({
+    const { } = useDeckImportExport({
         decks,
         cards,
         setDecks,
         setCards
       });
 
-    function deleteDeck(id: string) {
-        if (window.confirm("Tem certeza que deseja excluir este deck e todos os seus cards?")) {
-        const updatedDecks = decks.filter(d => d.id !== id);
-        const updatedCards = cards.filter(c => c.deckId !== id);
-        
-        setDecks(updatedDecks);
-        setCards(updatedCards);
-        saveDecks(updatedDecks);
-        saveCards(updatedCards);
-        
-        if (selectedDeckId === id) setSelectedDeckId("");
-        }
-    }
+    
 
     const currentCards = cards.filter(c => c.deckId === selectedDeckId);
 
@@ -129,14 +119,14 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
 
                                         <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 10, marginRight:5}}>
                                             <img 
-                                                src="src\assets\Edit2.png" 
+                                                src={editIcon}
                                                 alt="Editar card" 
                                                 onClick={() => setMode("editDeck")}
                                                  
                                                 style={{height: 20, cursor:"pointer"}}/>
                                             <img 
                                                 
-                                                src="src\assets\Trash.png" 
+                                                src={trashIcon} 
                                                 alt="Excluir card" 
                                                 onClick={() => deleteCard(card.id)} 
                                                 
@@ -155,7 +145,7 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
             )}
              
         
-            <img src="src\assets\home.png" 
+            <img src={homeIcon}
             alt="Voltar a home" height={40} onClick={() => setMode("home")} 
             style={{cursor: 'pointer', paddingTop: 15}}/>
             <br /><br />

@@ -1,4 +1,5 @@
-import Logo from "./Logo";
+import Logo from "./Logo"; 
+import homeIcon from "../assets/home.png"; 
 
 interface HomeCardProps {
   setMode: (mode: "home" | "deckOptions" | "createDeck") => void;
@@ -30,7 +31,7 @@ return (
     <button className="btn btn-gray">Manualmente</button>
     <br />
       
-    <img src="src\assets\home.png" 
+    <img src={homeIcon} 
         alt="Voltar a home" height={30} onClick={() => setMode("home")} 
         style={{cursor: 'pointer', paddingTop: 15}}/>
   </div>
