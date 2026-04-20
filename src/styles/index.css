@@ -55,6 +55,25 @@
       margin: 0 auto;
     }
 
+    .input-deck-name {
+      display: block; /* Garante que o box model funcione corretamente */
+      margin: 0 auto; /* Para centralizar o select */
+      box-sizing: border-box;
+      height: 30px; 
+      width: 80vw;
+      max-width: 90%;
+      margin-bottom: 20px; /* Espaçamento vertical e centralização */
+      border-radius: 6px;
+      
+      /* Essencial para o "..." aparecer no select fechado */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: large;
+      background-color: #f3f4f6;
+      color: var(--text);
+    }
+
 
     #select-deck {
       display: inline-block; /* Garante que o box model funcione corretamente */
@@ -181,9 +200,9 @@ p {
 
 #select-deck {
   display: block; /* Garante que o box model funcione corretamente */
-  margin: 0 auto; /* Para centralizar o select, já que tiramos o text-align */
+  margin: 0 auto; /* Para centralizar o select */
   box-sizing: border-box;
-  height: 40px; /* Aumentei um pouco para mobile, 30px é muito pequeno para o toque */
+  height: 40px; 
   width: 80vw;
   max-width: 90%;
   
@@ -288,5 +307,33 @@ p {
   position: absolute 
 }
 
+.line-clamp-3 { /* classe para quebra de linhas na listagem de cards no EditCard */
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Número de linhas que você deseja mostrar */
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+}
+
+.input-deck-name {
+  display: block; /* Garante que o box model funcione corretamente */
+  margin: 0 auto; /* Para centralizar o select */
+  box-sizing: border-box;
+  height: 30px; 
+  width: 100%;
+  
+  margin-bottom: 20px; /* Espaçamento vertical e centralização */
+  border-radius: 6px;
+  padding-left: 10px; 
+  
+  /* Essencial para o "..." aparecer no select fechado */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: large;
+  background-color: #f3f4f6;
+  color: #4d4e52;
+}
 
  

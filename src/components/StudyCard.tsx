@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import type { Card } from "../types/types";
 import { loadCards, saveCards } from "../storage/storage";
@@ -6,11 +5,10 @@ import Logo from "./Logo";
 import "../styles/index.css";
 
 interface StudyCardProps {
-    mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck";
+  mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck";
   setMode: (mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck") => void;
-  selectedDeckId: string; // nova prop para receber o ID do deck selecionado
+  selectedDeckId: string; // prop para receber o ID do deck selecionado
 }
-
 
 
 export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardProps) {
@@ -23,24 +21,24 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
     const [isReviewReady, setIsReviewReady] = useState(false);
 
     function deleteCard(id: string) {
-    if (window.confirm("Deseja excluir esta pergunta permanentemente?")) {
-      // Remove do estado principal de todos os cards
-      const updatedAllCards = cards.filter(c => c.id !== id);
-      setCards(updatedAllCards);
-      saveCards(updatedAllCards);
+      if (window.confirm("Deseja excluir esta pergunta permanentemente?")) {
+        // Remove do estado principal de todos os cards
+        const updatedAllCards = cards.filter(c => c.id !== id);
+        setCards(updatedAllCards);
+        saveCards(updatedAllCards);
 
-      // Remove da fila de revisão atual para não travar a tela
-      const updatedReviewCards = reviewCards.filter(c => c.id !== id);
-      setReviewCards(updatedReviewCards);
+        // Remove da fila de revisão atual para não travar a tela
+        const updatedReviewCards = reviewCards.filter(c => c.id !== id);
+        setReviewCards(updatedReviewCards);
+        
+        // Reseta a resposta selecionada para a próxima carta
+        setSelectedAnswer(null);
       
-      // Reseta a resposta selecionada para a próxima carta
-      setSelectedAnswer(null);
-    
-      
-      // Se era a última carta, o sistema de "Sucesso" vai detectar automaticamente
-      // se o currentQuestion agora for >= que o novo length
+        
+        // Se era a última carta, o sistema de "Sucesso" vai detectar automaticamente
+        // se o currentQuestion agora for >= que o novo length
+      }
     }
-  }
 
   function shuffleArray<T>(array: T[]): T[] {
     const shuffled = [...array];

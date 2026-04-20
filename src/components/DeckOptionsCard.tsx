@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { useDeckImportExport } from "../hooks/useDeckImportExport";
 
 interface DeckOptionsCardProps {
-  mode: "home" | "deckOptions" | "createDeck" | "review";
-  setMode: (mode: "home" | "deckOptions" | "createDeck" | "review") => void;
+  mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck";
+  setMode: (mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck") => void;
   selectedDeck: string[]; // recebe o array pronto vindo do HomeCard
 }
 
@@ -97,7 +97,9 @@ const { exportDecks } = useDeckImportExport({
             className="btn btn-blue" >Estudar
         </button> 
         <button 
-            onClick={() => exportDecks(selectedDeck)} 
+            onClick={() => {
+              setMode("editDeck");
+            }} 
             className="btn btn-green" >Editar
         </button>
         </div>
