@@ -1,7 +1,7 @@
 @import "@fontsource/adlam-display/400.css";
 
 :root {
-  --text: #6b6375;
+  --text: #928c9b;
   --text-h: #08060d;
   --bg: #fff;
   --sans: 'ADLaM Display', system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -70,7 +70,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       font-size: large;
-      background-color: #f3f4f6;
+      background-color: #1E1E1E;
       color: var(--text);
     }
 
@@ -90,7 +90,7 @@
       
       padding: 5px 30px 5px 10px; /* Padding extra na direita para o ícone da setinha */
       color: rgb(245, 245, 248);
-      background-color: var(--bg); 
+      background-color: #1E1E1E; 
       border: 1px solid var(--border);
       border-radius: 6px;
       
@@ -111,14 +111,13 @@
       color: var(--text);
       width: 80px;
       max-width: 80px;
-      background-color: red;
     }
   }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
+    --text: #c1c7d1;
     --text-h: #f3f4f6;
     --bg: #16171d;
     --border: #2e303a;
@@ -213,7 +212,7 @@ p {
   
   padding: 5px 30px 5px 10px; /* Padding extra na direita para o ícone da setinha */
   color: rgb(245, 245, 248);
-  background-color: var(--bg); /* Adicione o fundo, senão ele fica transparente */
+  background-color: #1E1E1E; /* Adicione o fundo, senão ele fica transparente */
   border: 1px solid var(--border);
   border-radius: 6px;
   

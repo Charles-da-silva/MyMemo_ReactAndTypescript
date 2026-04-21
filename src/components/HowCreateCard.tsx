@@ -32,7 +32,7 @@ return (
     <br />
       
     <img src={homeIcon} 
-        alt="Voltar a home" height={30} onClick={() => setMode("home")} 
+        alt="Voltar a home" height={40} onClick={() => setMode("home")} 
         style={{cursor: 'pointer', paddingTop: 15}}/>
   </div>
   <br />

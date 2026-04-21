@@ -6,6 +6,8 @@ import "../styles/index.css";
 import editIcon from "../assets/Edit.png";
 import trashIcon from "../assets/Trash.png";  
 import homeIcon from "../assets/home.png"; 
+import correctIcon from "../assets/Correct.png";
+import wrongIcon from "../assets/Wrong.jpg";
 
 interface StudyCardProps {
   mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck";
@@ -141,13 +143,13 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
                     <div style={{ marginTop: 20, padding: "15px",  borderRadius: "8px" }}>
                     {selectedAnswer === currentCard.correctAnswer ? (<>
                         <img 
-                        src="./Correct.png" 
+                        src={correctIcon}
                         alt="resposta correta" 
                         height={35}/>
                         <p>Correto!</p></>
                     ) : (<>
                         <img 
-                        src="./Wrong.jpg" 
+                        src={wrongIcon} 
                         alt="resposta errada" 
                         height={35}/>
                         <p>A resposta certa é: {currentCard.alternatives[currentCard.correctAnswer]}</p></>
