@@ -24,13 +24,19 @@ Este é um projeto para o desenvolvimento de um web-app responsivo de repetiçã
 
 ## Fase atual
 
-- Prototipação via Figma concluída, contendo principais telas e fluxos do app.
-- Agora é mão na massa! Quer dizer, no código, para transformar essas telinhas lindas em um monte de arquivos e várias linhas de código.
+- Desenvolvendo módulo de criação de Decks, manual e automaticamente com IA.
 
+## Quer testar os módulos disponíveis em produção?
 
-## Algumas Telas e link do protótipo
+Primeiro baixe o deck (JSON) de exemplo no segundo link: 
+https://mymemoflashcards.short.gy/Deck_exemplo
 
-- Link do protópico: https://www.figma.com/proto/eSC789nZxWp6VgVkOT4fQt/MyMemo-Flashcards?node-id=6-7&p=f&t=kP0AhmtPOHjQJxZB-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=4%3A81
+Depois entre acesse o App e importe o Deck na primeira página:
+[](https://mymemoflashcards.short.gy/)
+
+## Link e telas do protótipo no Figma
+
+  - https://mymemoflashcards.short.gy/Figma
 
 <div align="center">
   <br>
