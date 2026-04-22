@@ -1,6 +1,6 @@
 
-import '../../styles/AppLoader.css'; // Importe os estilos aqui
-import loaderVideo from '../../assets/intro.mp4'; // Importe do vídeo do loader
+import '../styles/AppLoader.css'; // Importe os estilos aqui
+import loaderVideo from '../assets/intro.mp4'; // Importe do vídeo do loader
 
 const AppLoader = () => {
   return (

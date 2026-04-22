@@ -33,6 +33,9 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
 
   const showPopUp = ({ title, text, icon, action, confirmButtonText }: any) => {
     Swal.fire({
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      stopKeydownPropagation: true,
       title,
       text,
       icon,
@@ -136,10 +139,9 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
           <>
             <div style={{ marginTop: 30 }}>
               <p style={{ fontSize: "16px", marginBottom: 10, textAlign: "left" }}>Este Deck possui {currentCards.length} cards</p>
-
-
+              
               {currentCards.map((card: any) => (
-                <li key={card.id}>
+                <div key={card.id}>
                   <div style={{ display: "flex", justifyContent: "left", alignItems: "center", gap: 10, marginBottom: 10 }}>
                     <div style={{ width: "98%", border: "1px solid #eee", borderRadius: "12px", textAlign: "left", padding: "10px" }}>
                       <span className="line-clamp-3 text-sm text-gray-700">
@@ -169,10 +171,9 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
                         style={{ height: 20, cursor: "pointer" }} />
                     </div>
                   </div>
-                </li>
+                </div>
               ))}
-
-
+             
             </div>
           </>
 

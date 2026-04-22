@@ -32,6 +32,9 @@ export default function DeckOptionsCard({ mode, setMode, selectedDeck: initialSe
 
   const showPopUp = ({ title, text, icon, action, confirmButtonText }: any) => {
     Swal.fire({
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      stopKeydownPropagation: true,
       title,
       text,
       icon,

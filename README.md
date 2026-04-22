@@ -30,15 +30,6 @@ Este é um projeto para o desenvolvimento de um web-app responsivo de repetiçã
 - Desenvolvendo módulo de criação de Decks, manual e automaticamente com IA.
 <br>
 
-## Quer testar os módulos disponíveis em produção?
-
-  - Primeiro baixe o deck (JSON) de exemplo no segundo link: 
-    https://mymemoflashcards.short.gy/Deck_exemplo
-
-  - Depois entre acesse o App e importe o Deck na primeira página:
-    https://mymemoflashcards.short.gy/
-<br>
-
 ## Link e telas do protótipo no Figma
 
   - https://mymemoflashcards.short.gy/Figma

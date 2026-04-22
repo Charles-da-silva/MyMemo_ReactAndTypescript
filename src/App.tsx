@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import AppLoader from './shared/components/AppLoader';
+import AppLoader from './components/AppLoader';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './router';
 
