@@ -79,7 +79,7 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
   }, [mode, selectedDeckId, isReviewReady, cards]);
 
   const currentCard = reviewCards[currentQuestion] as any;
-
+  
     return (
         <div className="studyCard" style={{height:"inherit"}}>
         <div>
@@ -131,9 +131,10 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                     {currentCard.alternatives.map((alt: string, index: number) => (
-                    <button key={index} onClick={() => setSelectedAnswer(index)} 
-                    style={{ textAlign: "left", padding: "12px", borderRadius: "8px", 
-                    cursor: "pointer" }}>
+                    <button 
+                      key={`${currentCard.id}-${index}`}
+                      onClick={() => setSelectedAnswer(index)} 
+                      style={{ textAlign: "left", padding: "12px", borderRadius: "8px", cursor: "pointer" }}>
                         {alt}
                     </button>
                     ))}
