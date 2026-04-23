@@ -30,6 +30,13 @@ Este é um projeto para o desenvolvimento de um web-app responsivo de repetiçã
 - Desenvolvendo módulo de criação de Decks, manual e automaticamente com IA.
 <br>
 
+## Quer testar o app?
+
+Seguindo a cultura de desenvolvimento ágil como SCRUM, uma versão (release) do app já foi lançada e implemetada via GitHub Actions, contendo os principais módulos da aplicação. Curte lá!
+
+https://github.com/Charles-da-silva/MyMemo_ReactAndTypescript/releases/tag/v0.1.0
+<br>
+
 ## Link e telas do protótipo no Figma
 
   - https://mymemoflashcards.short.gy/Figma
@@ -38,10 +45,3 @@ Este é um projeto para o desenvolvimento de um web-app responsivo de repetiçã
   <br>
   <img src="./src/assets/FigmaPrint_final.png" alt="Telas da prototipagem no Figma" width="600">
 </div>
-<br>
-
-## Quer testar o app?
-
-Uma versão (release) do app já foi lançada e implemetada via GitHub Actions. Curte lá!
-
-https://github.com/Charles-da-silva/MyMemo_ReactAndTypescript/releases/tag/v0.1.0
