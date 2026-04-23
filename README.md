@@ -38,3 +38,10 @@ Este é um projeto para o desenvolvimento de um web-app responsivo de repetiçã
   <br>
   <img src="./src/assets/FigmaPrint_final.png" alt="Telas da prototipagem no Figma" width="600">
 </div>
+<br>
+
+## Quer testar o app?
+
+Uma versão (release) do app já foi lançada e implemetada via GitHub Actions. Curte lá!
+
+https://github.com/Charles-da-silva/MyMemo_ReactAndTypescript/releases/tag/v0.1.0
