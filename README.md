@@ -35,7 +35,7 @@ Este é um projeto para o desenvolvimento de um web-app responsivo de repetiçã
 Seguindo a cultura de desenvolvimento ágil como SCRUM, uma versão (release) do app já foi lançada e implemetada via GitHub Actions, contendo os principais módulos da aplicação. Curte lá!
 
 https://github.com/Charles-da-silva/MyMemo_ReactAndTypescript/releases/tag/v0.1.0
-<br>
+<br><br>
 
 ## Link e telas do protótipo no Figma
 
