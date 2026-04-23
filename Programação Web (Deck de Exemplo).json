@@ -1,0 +1,162 @@
+{
+  "version": 1,
+  "exportedAt": 1776788719675,
+  "decks": [
+    {
+      "id": "16dae553-6852-456a-8b39-048632b4135d",
+      "name": "Programação Web"
+    }
+  ],
+  "cards": [
+    {
+      "id": "001e4866-edc8-4e23-8e0a-17a05c57e2a4",
+      "deckId": "16dae553-6852-456a-8b39-048632b4135d",
+      "question": "Observe o trecho da página exibido na web:\n \nListas não ordenadas\n\t• HTML\n\t• CSS\n\t• JavaScript\nListas Ordenadas\n\t1. HTML\n\t2. CSS\n\t3. JavaScript\n\nA respeito do código para criar as listas acima, analise as assertivas que seguem e marque V para as asserções verdadeiras, e F para as asserções falsas.\n\nI.  Para criar uma lista não ordenada utiliza-se a tag <ul>.\n\nII.  Para criar uma lista ordenada utiliza-se a tag <ol>. \n\nIII. Para colocar um item abaixo do outros nas listas acima, utiliza-se a tag <br>.\n\nIV.  Para colocar um item abaixo do outros nas listas acima, utiliza-se a tag <p>.\n\nAgora, selecione a alternativa que apresenta a sequência correta:",
+      "image": null,
+      "alternatives": [
+        "F – V – V -F",
+        "V – V – F -V",
+        "V – V – V -V",
+        "F – F – F - F",
+        "V – V – F - F"
+      ],
+      "correctAnswer": 4,
+      "nextReview": 1774536824315
+    },
+    {
+      "id": "ffad4184-7256-4b46-8dcf-e8a9da40b6a6",
+      "deckId": "16dae553-6852-456a-8b39-048632b4135d",
+      "question": "Observe o código abaixo:\na:link {\n           color: red;\n          }\nAgora você pode escolher a alternativa que corresponde ao conceito apresentado na declaração acima.",
+      "image": null,
+      "alternatives": [
+        "Herança de propriedades em CSS.",
+        "Seletores de classe em CSS.",
+        "Seletores de pseudoclasse em CSS.",
+        "Seletores de atributo em CSS.",
+        "Seletores de pseudoelemento em CSS."
+      ],
+      "correctAnswer": 2,
+      "nextReview": 1774375620459
+    },
+    {
+      "id": "e67857d6-ca49-475c-8a97-8890ddec22a9",
+      "deckId": "16dae553-6852-456a-8b39-048632b4135d",
+      "question": "O HTML é responsável pela estruturação dos conteúdos a serem exibidos nas páginas. O CSS possui uma finalidade específica na diagramação de páginas. \nA respeito do CSS, qual é a finalidade do CSS em relação ao HTML e o que é um bloco de declaração em CSS?",
+      "image": null,
+      "alternatives": [
+        "O CSS tem como finalidade especificar a apresentação da página HTML, enquanto o bloco de declaração em CSS contém uma ou mais declarações que definem a estilização de um elemento HTML.",
+        "O CSS tem como finalidade estruturar o conteúdo das páginas HTML, enquanto o bloco de declaração em CSS contém uma ou mais declarações que definem o comportamento de um elemento HTML.",
+        "O CSS tem como finalidade controlar as interações do usuário com a página HTML, enquanto o bloco de declaração em CSS contém uma ou mais declarações que definem as propriedades de um elemento HTML.",
+        "O CSS tem como finalidade substituir o HTML na construção de páginas web, enquanto o bloco de declaração em CSS contém uma ou mais declarações que definem a função de um elemento HTML.",
+        "O CSS tem como finalidade substituir completamente o HTML na construção de páginas web, enquanto o bloco de declaração em CSS contém uma ou mais declarações que definem as funções de um elemento HTML."
+      ],
+      "correctAnswer": 0,
+      "nextReview": 1776786525275
+    },
+    {
+      "id": "3d3cb7a7-d301-4daf-8d2f-7ee394c2085c",
+      "deckId": "16dae553-6852-456a-8b39-048632b4135d",
+      "question": "Variáveis são espaços de memória que são alocados para armazenar informações, um valor ou expressão.\nA respeito das variáveis, analise as afirmações a seguir e marque V para as asserções verdadeiras e F para as asserções falsas:\n \nI)  O interpretador JavaScript diferencia maiúsculas de minúsculas em nomes de variáveis.\n\nII)  Nomes como teste, Teste ou TESTE serão tratados como variáveis distintas em JavaScript.\n\nIII) Para declarar variáveis em JavaScript, podemos utilizar as palavras-chave var, let e const.\n\nV)   A palavra-chave var permite redeclarar variáveis em JavaScript.\n \nAgora, selecione a alternativa que apresenta a sequência correta de respostas:",
+      "image": null,
+      "alternatives": [
+        "F  – V – V – F",
+        "F – F – F – V",
+        "V –  V –  V – F",
+        "V – V – V – V",
+        "F – F – V – V"
+      ],
+      "correctAnswer": 3,
+      "nextReview": 1776786519611
+    },
+    {
+      "id": "29f222ee-3c15-432d-bf76-e76bc42a949e",
+      "deckId": "16dae553-6852-456a-8b39-048632b4135d",
+      "question": "A utilização adequada de variáveis é importante para o bom funcionamento de um programa. Elas permitem que os dados sejam armazenados e manipulados de forma dinâmica, facilitando a implementação de lógicas complexas. Além disso, o uso de variáveis torna o código mais legível e modular, facilitando a compreensão e manutenção do software. \nA respeito de variáveis, analise as afirmações a seguir e marque V para as asserções verdadeiras e F para as asserções falsas:\n \nI) Uma variável é um dado que pode ter seu valor alterado durante a execução de um algoritmo.\n\nII) Uma constante é um dado que não deve sofrer alteração durante a execução de um algoritmo.\n\nIII) Em JavaScript, é necessário declarar uma variável antes de utilizá-la.\n\nIV) Os nomes das variáveis em JavaScript podem conter letras (maiúsculas e minúsculas), números, sublinhados e cifrões.\n\nV) É permitido utilizar palavras reservadas da linguagem JavaScript como nomes de variáveis.\n \nAgora, selecione a alternativa que apresenta a sequência correta de respostas:",
+      "image": null,
+      "alternatives": [
+        "F – V – V – F – F",
+        "V – V – F – V – F",
+        "F – F – F – V – F",
+        "V – V – V – F – V",
+        "F – F – V – V – V"
+      ],
+      "correctAnswer": 1,
+      "nextReview": 1776786533019
+    },
+    {
+      "id": "bb794053-d2c5-43ba-99d8-3022a089778c",
+      "deckId": "16dae553-6852-456a-8b39-048632b4135d",
+      "question": "Dentre os diversos elementos semânticos do HTML, qual é a função principal do elemento <article> em HTML?",
+      "image": null,
+      "alternatives": [
+        "Proporcionar um estilo visual específico para o conteúdo dentro do elemento.",
+        "Representar um contêiner genérico para agrupar elementos de um documento ou aplicativo.",
+        "Servir como um substituto adequado para o elemento <div> em qualquer contexto.",
+        "Indicar que o conteúdo dentro do elemento segue uma estrutura de tópicos explícita no documento",
+        "Representar uma composição independente e distribuível em um documento, página, aplicativo ou site."
+      ],
+      "correctAnswer": 4,
+      "nextReview": 1774388559306
+    },
+    {
+      "id": "39c2f71c-315e-4d52-a993-4171f161376b",
+      "deckId": "16dae553-6852-456a-8b39-048632b4135d",
+      "question": "Observe o código:\n \nlet nome1= 'Anna';\n{\n    let idade1=25;\n    console.log(nome1);\n    console.log(idade1);\n}\nconsole.log(nome1);\nconsole.log(idade1);\n\nO que será exibido no console:",
+      "image": null,
+      "alternatives": [
+        "Anna, 25, Anna, Erro (Uncaught ReferenceError)",
+        "Anna, 25, Anna, 25",
+        "Anna, 25, undefined, undefined",
+        "Anna, 25, Anna, undefined",
+        "SyntaxError"
+      ],
+      "correctAnswer": 0,
+      "nextReview": 1776786534939
+    },
+    {
+      "id": "8d1c86cc-ed96-4f0f-a7b5-4895a7a57c27",
+      "deckId": "16dae553-6852-456a-8b39-048632b4135d",
+      "question": "A respeito de Grid, analise as afirmações a seguir e marque V para as asserções verdadeiras e F para as asserções falsas:\n\nI.  O CSS Grid permite a criação de layouts bidimensionais, controlando tanto as linhas quanto as colunas.\n\nII.  É possível definir a ordem em que os elementos são dispostos no layout utilizando o CSS Grid.\n\nIII. Um elemento se torna um contêiner grid se sua propriedade display é definida como grid ou inline-grid.\n\nIV. O layout baseado em grid não tem a necessidade de utilizar floats e posicionamento.\n\nV. Ao utilizar o CSS Grid, não é possível posicionar um elemento em uma célula específica da grade.\n \nSelecione a alternativa que apresenta a sequência correta de respostas:\n",
+      "image": null,
+      "alternatives": [
+        "F - V – V – F - F",
+        "V - F - F – V - F",
+        "V - V - V – F - V",
+        "F - F - V – V - V",
+        "V - V - V – V - F"
+      ],
+      "correctAnswer": 4,
+      "nextReview": 1774375079320
+    },
+    {
+      "id": "d6f6f642-b9e1-4d36-b815-6e5b1f8aab69",
+      "deckId": "16dae553-6852-456a-8b39-048632b4135d",
+      "question": "Em JavaScript, existem métodos nativos, como os métodos de manipulação de strings e arrays, e é possível criar métodos personalizados para estender a funcionalidade padrão da linguagem. A utilização de métodos é uma prática fundamental para construir aplicativos robustos e modularizados em JavaScript. Considerando o que você estudou sobre métodos, observe o código:\n \nlet nomes = [\"Patricia\", \"Camila\", \"Mateus\", \"Samuel\"];\nAssinale a alternativa que contém o método para adicionar um nome na posição final do array:\n",
+      "image": null,
+      "alternatives": [
+        "unshift(“Pedro”)",
+        "push(“Pedro”)",
+        "pop(“Pedro”)",
+        "lenght(“Pedro”)",
+        "indexOff(“Pedro”)"
+      ],
+      "correctAnswer": 1,
+      "nextReview": 1776786548930
+    },
+    {
+      "id": "cf860edf-8d79-471a-b42f-de3b86617067",
+      "deckId": "16dae553-6852-456a-8b39-048632b4135d",
+      "question": "Observe o código abaixo:\n \n.container {\n             display: grid; \n             grid-template-columns: 100px 50px 80px 200px;\n             grid-template-rows:80px 100px 100px;\n                }\n\nCom base no código acima, analise as afirmações a seguir e marque V para as asserções verdadeiras e F para as asserções falsas:\n\nI) O grid possui 3 colunas de larguras fixas: 100px, 50px e 80px, respectivamente.\n\nII) O grid possui 4 colunas de larguras fixas: 100px, 50px, 80px e 200px, respectivamente.\n\nIII) O grid possui 3 linhas de alturas fixas: 80px, 100px e 100px, respectivamente.\n\nIV) O grid possui 4 linhas de alturas fixas: 80px, 100px, 100px e 200px, respectivamente.\n\nV) O grid possui 2 colunas de larguras fixas: 80px e 100px, e 3 linhas de alturas fixas: 100px,\n \nAgora, selecione a alternativa que apresenta a sequência correta de respostas:",
+      "image": null,
+      "alternatives": [
+        "F - V - V - F - F",
+        "F - F - F - V - F",
+        "V - V - V - F - V",
+        "F - F - V - V - V",
+        "V - V - V - V - F"
+      ],
+      "correctAnswer": 0,
+      "nextReview": 1774534617018
+    }
+  ]
+}
