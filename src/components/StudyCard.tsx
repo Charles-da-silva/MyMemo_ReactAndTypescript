@@ -4,10 +4,11 @@ import { loadCards, saveCards } from "../storage/storage";
 import Logo from "./Logo";
 import "../styles/index.css";
 import editIcon from "../assets/Edit.png";
-import trashIcon from "../assets/Trash.png";  
-import homeIcon from "../assets/home.png"; 
+import trashIcon from "../assets/Trash.png";
+import homeIcon from "../assets/home.png";
 import correctIcon from "../assets/Correct.png";
 import wrongIcon from "../assets/Wrong.jpg";
+import Swal from 'sweetalert2';
 
 interface StudyCardProps {
   mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck";
@@ -17,35 +18,53 @@ interface StudyCardProps {
 
 
 export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardProps) {
-    
+
   const [reviewCards, setReviewCards] = useState<Card[]>([]); // estado para as cartas em revisão
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null); // resposta selecionada pelo usuário
 
   const [cards, setCards] = useState<Card[]>(loadCards());
   const [currentQuestion, setcurrentQuestion] = useState(0);
 
-  function deleteCard(id: string) {
-    if (!window.confirm("Deseja excluir esta pergunta permanentemente?")) return;
+  const showPopUp = ({ title, text, icon, action, confirmButtonText }: any) => {
+    Swal.fire({
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      stopKeydownPropagation: true,
+      title,
+      text,
+      icon,
+      background: '#1E1E1E',
+      color: '#fff',
+      backdrop: 'rgba(0,0,0,0.8)',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: confirmButtonText || 'OK',
+      cancelButtonText: 'Cancelar',
+      showCancelButton: !!action, // Só mostra cancelar se houver uma ação
+    }).then((result) => {
+      if (result.isConfirmed && action) action();
+    });
+  };
 
-      const updatedAllCards = cards.filter(c => c.id !== id);
-      setCards(updatedAllCards);
-      saveCards(updatedAllCards);
+  function deleteCard(id: string) {    
+    const updatedAllCards = cards.filter(c => c.id !== id);
+    setCards(updatedAllCards);
+    saveCards(updatedAllCards);
 
-      setReviewCards(prev => {
-        const newArr = prev.filter(c => c.id !== id);
+    setReviewCards(prev => {
+      const newArr = prev.filter(c => c.id !== id);
 
-        // 🔥 AJUSTE CRÍTICO
-        setcurrentQuestion(prevIndex => {
-          if (prevIndex >= newArr.length) {
-            return Math.max(0, newArr.length - 1);
-          }
-          return prevIndex;
-        });
-
-        return newArr;
+      setcurrentQuestion(prevIndex => {
+        if (prevIndex >= newArr.length) {
+          return Math.max(0, newArr.length - 1);
+        }
+        return prevIndex;
       });
 
-      setSelectedAnswer(null);
+      return newArr;
+    });
+
+    setSelectedAnswer(null);
   }
 
   function shuffleArray<T>(array: T[]): T[] {
@@ -88,12 +107,12 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
         <Logo />
         <br /><br />
         <h2>Nada para revisar agora.</h2>
-        <div style={{ display: 'block', alignItems: 'center', width: '100%' }}> 
-            <img 
-                src={homeIcon} 
-                alt="Voltar a home" 
-                height={35} onClick={() => setMode("home")} 
-                style={{cursor: 'pointer', paddingRight: 10}}/>
+        <div style={{ display: 'block', alignItems: 'center', width: '100%' }}>
+          <img
+            src={homeIcon}
+            alt="Voltar a home"
+            height={35} onClick={() => setMode("home")}
+            style={{ cursor: 'pointer', paddingRight: 10 }} />
         </div>
       </div>
     );
@@ -105,114 +124,131 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
         <Logo />
         <br /><br />
         <h2>Deck revisado com sucesso!</h2>
-        <div style={{ display: 'block', alignItems: 'center', width: '100%' }}> 
-            <img 
-                src={homeIcon} 
-                alt="Voltar a home" 
-                height={35} onClick={() => setMode("home")} 
-                style={{cursor: 'pointer', paddingRight: 10}}/>
+        <div style={{ display: 'block', alignItems: 'center', width: '100%' }}>
+          <img
+            src={homeIcon}
+            alt="Voltar a home"
+            height={35} onClick={() => setMode("home")}
+            style={{ cursor: 'pointer', paddingRight: 10 }} />
         </div>
       </div>
     );
   }
 
   const currentCard = reviewCards[currentQuestion];
-  
-  // 🔒 proteção final (só por segurança)
+
+  // proteção final (só por segurança)
   if (!currentCard) return null;
 
   return (
-    <div className="studyCard" style={{height:"inherit"}}>
-    <div>
-            
-
-      {currentCard && currentQuestion < reviewCards.length && (
-        <div style={{ position: "relative", padding: "10px", border: "1px solid #eee", borderRadius: "12px"}}>
-          
-          {/* Botão de Excluir Pergunta na Revisão */}
-          <div>
-          <img 
-              src={editIcon}
-              alt="Editar card" 
-              onClick={() => setMode("editDeck")}
-              className="iconCard" 
-              style={{top: 11, right: 30}}/>
-          <img 
-              src={trashIcon} 
-              alt="Excluir card" 
-              onClick={() => deleteCard(currentCard.id)} 
-              className="iconCard" 
-              style={{top: 10, right: 3}}/>
-          <br />
-          </div>
-          <p style={{ whiteSpace: "pre-wrap", // 👈 ISSO AQUI mantém as quebras de linha e espaços
-          wordWrap: "break-word", // Garante que textos longos não quebrem o layout              
-          padding: "5px", paddingTop: "15px",
-          textAlign: "left" }}>{currentCard.question}</p>
-
-          <br />
-          
-          {currentCard.image && (
-              <img src={currentCard.image} alt="Pergunta" style={{ maxWidth: "100%", borderRadius: "8px", marginBottom: "15px" }} />
-          )}
-
-          
+    <div className="studyCard" style={{ height: "inherit" }}>
+      <div>
 
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            
-              {currentCard.alternatives.map((alt: string, index: number) => (
-              <button 
-                key={`${currentCard.id}-${alt}`}
-                onClick={() => setSelectedAnswer(index)} 
-                style={{ textAlign: "left", padding: "12px", borderRadius: "8px", cursor: "pointer" }}>
-                  {alt}
-              </button>
-              ))}
-          </div>
+        {currentCard && currentQuestion < reviewCards.length && (
+          <div style={{ position: "relative", padding: "10px", border: "1px solid #eee", borderRadius: "12px" }}>
 
-          {selectedAnswer !== null && (
-            <div style={{ marginTop: 20, padding: "15px",  borderRadius: "8px" }}>
-            {selectedAnswer === currentCard.correctAnswer ? (<>
-                <img 
-                src={correctIcon}
-                alt="resposta correta" 
-                height={35}/>
-                <p>Correto!</p></>
-            ) : (<>
-                <img 
-                src={wrongIcon} 
-                alt="resposta errada" 
-                height={35}/>
-                <p>A resposta certa é: {currentCard.alternatives[currentCard.correctAnswer]}</p></>
-            )}
+            {/* Botão de Excluir Pergunta na Revisão */}
+            <div>
+              <img
+                src={editIcon}
+                alt="Editar card"
+                onClick={() => setMode("editDeck")}
+                className="iconCard"
+                style={{ top: 11, right: 30 }} />
+              <img
+                src={trashIcon}
+                alt="Excluir card"
+                onClick={() => 
+                  showPopUp({
+                  title: 'Atenção',
+                  text: 'Deseja realmente excluir esta pergunta permanentemente?',
+                  icon: 'warning',
+                  action: () => deleteCard(currentCard.id),
+                  confirmButtonText: 'Sim, excluir!'
+                })}
+                className="iconCard"
+                style={{ top: 10, right: 3 }} />
+              <br />
+            </div>
+            <p style={{
+              whiteSpace: "pre-wrap", // mantém as quebras de linha e espaços
+              wordWrap: "break-word", // Garante que textos longos não quebrem o layout              
+              padding: "5px", paddingTop: "15px",
+              textAlign: "left"
+            }}>{currentCard.question}</p>
+
             <br />
-            <div className="btn-card">
-                <button onClick={() => { scheduleCard(currentCard, "hard"); 
-                setSelectedAnswer(null); setTimeout(() => {setcurrentQuestion(i => i + 1);}, 0);  }}
-                className="btn btn-red" style={{letterSpacing: "", marginRight: "5px"}}>Difícil (10 min)</button>
 
-                <button onClick={() => { scheduleCard(currentCard, "medium"); 
-                setSelectedAnswer(null); setTimeout(() => {setcurrentQuestion(i => i + 1);}, 0);  }}
-                className="btn btn-yellow" style={{letterSpacing: "", marginRight: "5px"}}>Médio (4 hs)</button>
+            {currentCard.image && (
+              <img src={currentCard.image} alt="Pergunta" style={{ maxWidth: "100%", borderRadius: "8px", marginBottom: "15px" }} />
+            )}
 
-                <button onClick={() => { scheduleCard(currentCard, "easy"); 
-                setSelectedAnswer(null); setTimeout(() => {setcurrentQuestion(i => i + 1);}, 0);  }} 
-                className="btn btn-green" style={{letterSpacing: ""}}>Fácil (3 dias)</button>
+
+
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+
+              {currentCard.alternatives.map((alt: string, index: number) => (
+                <button
+                  className="options"
+                  key={`${currentCard.id}-${alt}`}
+                  onClick={() => setSelectedAnswer(index)}
+                  style={{ fontWeight: "bold", textAlign: "left", padding: "12px", borderRadius: "8px", cursor: "pointer" }}>
+                  {alt}
+                </button>
+              ))}
             </div>
-            </div>
-          )}
-        </div>
-      )}          
-    </div>
-    <br />
 
-    <div style={{ display: 'block', alignItems: 'center', width: '100%' }}> 
-        <img 
-            src={homeIcon} 
-            alt="Voltar a home" 
-            height={35} onClick={() => setMode("home")} 
-            style={{cursor: 'pointer', paddingRight: 10}}/>
+            {selectedAnswer !== null && (
+              <div style={{ marginTop: 20, padding: "15px", borderRadius: "8px" }}>
+                {selectedAnswer === currentCard.correctAnswer ? (<>
+                  <img
+                    src={correctIcon}
+                    alt="resposta correta"
+                    height={35} />
+                  <p>Correto!</p></>
+                ) : (<>
+                  <img
+                    src={wrongIcon}
+                    alt="resposta errada"
+                    height={35} />
+                  <p>A resposta certa é: {currentCard.alternatives[currentCard.correctAnswer]}</p></>
+                )}
+                <br />
+                <div className="btn-card">
+                  <button onClick={() => {
+                    scheduleCard(currentCard, "hard");
+                    setSelectedAnswer(null); setTimeout(() => { setcurrentQuestion(i => i + 1); }, 0);
+                  }}
+                    className="btn btn-red" style={{ letterSpacing: "", marginRight: "5px" }}>Difícil (10 min)</button>
+
+                  <button onClick={() => {
+                    scheduleCard(currentCard, "medium");
+                    setSelectedAnswer(null); setTimeout(() => { setcurrentQuestion(i => i + 1); }, 0);
+                  }}
+                    className="btn btn-yellow" style={{ letterSpacing: "", marginRight: "5px" }}>Médio (4 hs)</button>
+
+                  <button onClick={() => {
+                    scheduleCard(currentCard, "easy");
+                    setSelectedAnswer(null); setTimeout(() => { setcurrentQuestion(i => i + 1); }, 0);
+                  }}
+                    className="btn btn-green" style={{ letterSpacing: "" }}>Fácil (3 dias)</button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+      <br />
+
+      <div style={{ display: 'block', alignItems: 'center', width: '100%' }}>
+        <img
+          src={homeIcon}
+          alt="Voltar a home"
+          height={35} onClick={() => setMode("home")}
+          style={{ cursor: 'pointer', paddingRight: 10 }} />
+      </div>
     </div>
-    </div>        
-);}
+  );
+}

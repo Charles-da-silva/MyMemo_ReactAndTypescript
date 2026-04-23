@@ -68,7 +68,7 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
       showPopUp({
         title: 'Nome igual',
         text: 'Primeiro altere o nome do Deck no campo acima do botão Renomear.',
-        icon: 'warning',
+        icon: 'error',
       });
       return;
     }
@@ -92,7 +92,11 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
     const updatedAllCards = cards.filter(c => c.id !== id);
     setCards(updatedAllCards);
     saveCards(updatedAllCards);
-
+    showPopUp({
+      title: 'Pronto!',
+      text: 'O card foi excluído com sucesso!',
+      icon: 'success'
+    });
   }
 
   return (
@@ -142,9 +146,9 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
               
               {currentCards.map((card: any) => (
                 <div key={card.id}>
-                  <div style={{ display: "flex", justifyContent: "left", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                    <div style={{ width: "98%", border: "1px solid #eee", borderRadius: "12px", textAlign: "left", padding: "10px" }}>
-                      <span className="line-clamp-3 text-sm text-gray-700">
+                  <div  style={{ display: "flex", justifyContent: "left", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                    <div className="options" style={{ width: "98%", border: "1px solid #eee", borderRadius: "12px", textAlign: "left", padding: "10px" }}>
+                      <span className="line-clamp-3 text-sm text-gray-700" >
                         {card.question}
                       </span>
                     </div>
@@ -153,7 +157,13 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
                       <img
                         src={editIcon}
                         alt="Editar card"
-                        onClick={() => setMode("editDeck")}
+                        onClick={() => 
+                          showPopUp({
+                            title: 'Quase pronto...',
+                            text: 'Esta funcionalidade ainda está em desenvolvimento, mas em breve você poderá editar suas perguntas e respostas por aqui!',
+                            icon: 'info',
+                            confirmButtonText: 'OK'
+                          })}
 
                         style={{ height: 20, cursor: "pointer" }} />
                       <img

@@ -1,15 +1,19 @@
-
+import imgLogo from '../assets/img_logo_black.png';
 import '../styles/AppLoader.css'; // Importe os estilos aqui
-import loaderVideo from '../assets/intro.mp4'; // Importe do vídeo do loader
 
 const AppLoader = () => {
   return (
-    <div className="loader-container">
-      <video autoPlay loop muted playsInline className="loader-video">
-        <source src={loaderVideo} type="video/mp4" />
-        Seu navegador não suporta vídeos. Aguarde ...
-      </video>
-    </div>
+    <>
+      <div className='mainPage'>
+        <div className="splash-container">
+          <div className="card-rotation">
+            <div><img className="logo" src={imgLogo} alt="Logo" /></div>
+          </div>
+        </div>
+        <br /><br />
+        <div className="text">Carregando...</div>
+      </div>
+    </>
   );
 };
 

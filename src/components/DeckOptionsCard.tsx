@@ -70,6 +70,12 @@ export default function DeckOptionsCard({ mode, setMode, selectedDeck: initialSe
     saveCards(updatedCards);
 
     if (selectedDeckId === id) setSelectedDeckId("");
+
+    showPopUp({
+      title: 'Pronto!',
+      text: 'O Deck foi excluído com sucesso!',
+      icon: 'success'
+    });
   }
 
   function shuffleArray<T>(array: T[]): T[] {
