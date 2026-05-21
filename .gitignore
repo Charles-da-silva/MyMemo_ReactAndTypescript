@@ -4,6 +4,7 @@
 node_modules/
 /node_modules
 **/node_modules/
+Backend/node_modules/
 
 # ==========================================
 # Segredos e Variáveis de Ambiente (CRÍTICO!)
