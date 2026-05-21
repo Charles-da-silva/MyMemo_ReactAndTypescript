@@ -1,6 +1,7 @@
 # 🗂️ MyMemo Flashcards - Projeto sendo desenvolvido em React com Typescript
 
-Este é um projeto para o desenvolvimento de um web-app responsivo de repetição espaçada para microaprendizagem baseado em flashcards, desenvolvido com **React** e **TypeScript**, inicialmente utilizando o `localStorage` do navegador para persistência de dados.
+Este é um projeto para o desenvolvimento de um web-app responsivo de repetição espaçada para aprendizagem baseado em flashcards, desenvolvido com `**React** e **TypeScript**`, inicialmente utilizando o `localStorage` do navegador para persistência de dados (projeto na branch main).
+Após a parte de persistência e administração de dados em `localStorage`, uma alternativa mais robusta seria adicionar um backend usando `JSON file storage` mas decidi partir para algo mais profissional, então estou inserindo o `NodeJs` como backend e vou usar `SQL puro`, ou seja, sem ORM (projeto na branch feature-backend-node).
 <br>
 
 ## 🚀 Funcionalidades
@@ -14,25 +15,21 @@ Este é um projeto para o desenvolvimento de um web-app responsivo de repetiçã
   - **Médio:** Revisa em 1 dia.
   - **Fácil:** Revisa em 3 dias.
 - **Exclusão em Tempo Real:** Opção de excluir uma pergunta diretamente durante a sessão de estudos.
-- **Persistência de Dados:** Dados salvos no `localStorage` do navegador, permitindo que o progresso não seja perdido ao fechar a aba ou reiniciar o dispositivo.
+- **Persistência de Dados:** A parte de persistência de dados será realizada pelo NodeJs usando SQL puro em Postgres.
 - **Exportação e Importação de Decks:** A ferramenta possibilita exportar e importar decks em formato JSON
 <br>
 
 ## 🛠️ Tecnologias Utilizadas
 
-- [React](https://reactjs.org/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [LocalStorage API](https://developer.mozilla.org/pt-BR/docs/Web/API/Window/localStorage)
-<br>
-
-## Fase atual
-
-- Desenvolvendo módulo de criação de Decks, manual e automaticamente com IA.
+- React
+- TypeScript
+- NodeJs
+- Postgres
 <br>
 
 ## Quer testar o app?
 
-Seguindo a cultura de desenvolvimento ágil como SCRUM, uma versão (release) do app já foi lançada e implemetada via GitHub Actions, contendo os principais módulos da aplicação. Curte lá!
+Seguindo a cultura de desenvolvimento ágil como SCRUM, uma versão (release) do app já foi lançada e implemetada via GitHub Actions, contendo os principais módulos da aplicação (ainda usando localStorage). Curte lá!
 
 https://github.com/Charles-da-silva/MyMemo_ReactAndTypescript/releases/tag/v0.1.0
 <br><br>
