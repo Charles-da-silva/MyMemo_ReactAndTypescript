@@ -1,6 +1,6 @@
 # 🗂️ MyMemo Flashcards - Projeto sendo desenvolvido em React com Typescript
 
-Este é um projeto para o desenvolvimento de um web-app responsivo de repetição espaçada para aprendizagem baseado em flashcards, desenvolvido com `**React** e **TypeScript**`, inicialmente utilizando o `localStorage` do navegador para persistência de dados (projeto na branch main).
+Este é um projeto para o desenvolvimento de um web-app responsivo de repetição espaçada para aprendizagem baseado em flashcards, desenvolvido com `React e TypeScript`, inicialmente utilizando o `localStorage` do navegador para persistência de dados (projeto na branch main).
 Após a parte de persistência e administração de dados em `localStorage`, uma alternativa mais robusta seria adicionar um backend usando `JSON file storage` mas decidi partir para algo mais profissional, então estou inserindo o `NodeJs` como backend e vou usar `SQL puro`, ou seja, sem ORM (projeto na branch feature-backend-node).
 <br>
 
