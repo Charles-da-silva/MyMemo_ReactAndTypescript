@@ -41,8 +41,4 @@ https://github.com/Charles-da-silva/MyMemo_ReactAndTypescript/releases/tag/v0.1.
 <div align="center">
   <br>
   <img src="./Frontend/src/assets/FigmaPrint_final.png" alt="Telas da prototipagem no Figma" width="600">
-<<<<<<< HEAD
 </div>
-=======
-</div>
->>>>>>> 60d633c0a6ac32a6bf52e4293e39d40b46b25b31
