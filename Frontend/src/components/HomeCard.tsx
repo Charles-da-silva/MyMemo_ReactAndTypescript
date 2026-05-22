@@ -1,25 +1,67 @@
-import { loadCards, loadDecks } from "../storage/storage";
 import type { Card, Deck } from "../types/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import { useDeckImportExport } from "../hooks/useDeckImportExport";
 
+import { getDecks } from "../services/decksService";
+
 interface HomeCardProps {
-  setMode: (mode: "home" | "deckOptions" | "createDeck") => void;
-  setSelectedDeck: (ids: string[]) => void; // prop nova
+  setMode: (
+    mode:
+      | "home"
+      | "deckOptions"
+      | "createDeck"
+  ) => void;
+
+  setSelectedDeck: (
+    ids: string[]
+  ) => void;
 }
 
-export default function HomeCard({ setMode, setSelectedDeck }: HomeCardProps) {
+export default function HomeCard({
+  setMode,
+  setSelectedDeck
+}: HomeCardProps) {
 
-const [selectedDeckId, setSelectedDeckId] = useState("");
+  const [
+    selectedDeckId,
+    setSelectedDeckId
+  ] = useState("");
 
-const [decks, setDecks] = useState<Deck[]>(loadDecks());
-const [cards, setCards] = useState<Card[]>(loadCards());
-const { importDecks } = useDeckImportExport({
-    decks,
-    cards,
-    setDecks,
-    setCards
-  });
+  const [decks, setDecks] =
+    useState<Deck[]>([]);
+
+  const [cards, setCards] =
+    useState<Card[]>([]);
+
+  async function loadDecks() {
+
+    try {
+
+      const apiDecks =
+        await getDecks();
+
+      setDecks(apiDecks);
+
+    } catch (error) {
+
+      console.error(error);
+    }
+  }
+
+  const { importDecks } =
+    useDeckImportExport({
+      decks,
+      cards,
+      setDecks,
+      setCards,
+      loadDecks
+    });
+
+  useEffect(() => {
+    loadDecks();
+  }, []);
+
 
   return (
     <>
@@ -28,13 +70,14 @@ const { importDecks } = useDeckImportExport({
       <br />
       
       <select id="select-deck" value={selectedDeckId} onChange={(e) => {
-          const id = e.target.value;          
+          const id = e.target.value;
+          setSelectedDeckId(id);
+          setSelectedDeck([id]);           
           setMode("deckOptions"); // MainPage renderizará o DeckOptionsCard com a prop setSelectedDeckId, 
           // que atualiza o estado selectedDeckId aqui. Assim, quando o usuário seleciona um deck, 
           // o modo é alterado para "deckOptions" e o DeckOptionsCard é renderizado, recebendo o ID do 
           // deck selecionado para que possa exibir as opções corretas.
-          setSelectedDeckId(id);
-          setSelectedDeck([id]);          
+                   
         }}>
         <option value="">Lista de Decks disponíveis</option>
         {decks.map(d => (

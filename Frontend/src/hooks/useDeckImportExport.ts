@@ -1,12 +1,19 @@
-import type { ChangeEvent } from "react";
+import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 import type { Deck, Card } from "../types/types";
-import { saveDecks, saveCards } from "../storage/storage";
+import { createCard } from "../services/cardsService";
 
 type UseDeckImportExportProps = {
   decks: Deck[];
   cards: Card[];
-  setDecks: (decks: Deck[]) => void;
-  setCards: (cards: Card[]) => void;
+  setDecks: Dispatch<
+    SetStateAction<Deck[]>
+  >;
+
+  setCards: Dispatch<
+    SetStateAction<Card[]>
+  >;
+
+  loadDecks?: () => Promise<void>;
 };
 
 type ExportData = {
@@ -20,26 +27,32 @@ export function useDeckImportExport({
   decks,
   cards,
   setDecks,
-  setCards
+  setCards,
+  loadDecks
+
 }: UseDeckImportExportProps) {
 
-  // =========================
-  // EXPORT
-  // =========================
-  function exportDecks(deckIds: string[]) {
+  function exportDecks(
+    deckIds: string[]
+  ) {
 
     if (deckIds.length === 0) {
-      alert("Selecione ao menos um deck.");
+      alert(
+        "Selecione ao menos um deck."
+      );
+
       return;
     }
 
-    const decksToExport = decks.filter(d =>
-      deckIds.includes(d.id)
-    );
+    const decksToExport =
+      decks.filter(d =>
+        deckIds.includes(d.id)
+      );
 
-    const cardsToExport = cards.filter(c =>
-      deckIds.includes(c.deckId)
-    );
+    const cardsToExport =
+      cards.filter(c =>
+        deckIds.includes(c.deck_id)
+      );
 
     const exportData: ExportData = {
       version: 1,
@@ -49,15 +62,26 @@ export function useDeckImportExport({
     };
 
     const blob = new Blob(
-      [JSON.stringify(exportData, null, 2)],
-      { type: "application/json" }
+      [
+        JSON.stringify(exportData, null, 2)
+      ],
+      {
+        type:
+          "application/json"
+      }
     );
 
-    const url = URL.createObjectURL(blob);
+    const url =
+      URL.createObjectURL(blob);
 
-    const a = document.createElement("a");
+    const a =
+      document.createElement("a");
+
     a.href = url;
-    a.download = `${decksToExport[0]?.name ?? "deck"}.json`;
+
+    a.download =
+      `${decksToExport[0]?.name ?? "deck"}.json`;
+
     a.click();
 
     URL.revokeObjectURL(url);
@@ -66,15 +90,21 @@ export function useDeckImportExport({
   // =========================
   // IMPORT
   // =========================
-  function importDecks(e: ChangeEvent<HTMLInputElement>) {
+
+  function importDecks(
+    e: ChangeEvent<HTMLInputElement>
+  ) {
 
     const file = e.target.files?.[0];
+
     if (!file) return;
 
     const reader = new FileReader();
 
-    reader.onload = () => {
+    reader.onload = async () => {
+
       try {
+
         const data: ExportData = JSON.parse(reader.result as string);
 
         if (!data.decks || !data.cards) {
@@ -82,36 +112,43 @@ export function useDeckImportExport({
           return;
         }
 
-        // ----- recria IDs -----
-        const newDecks = data.decks.map(deck => ({
-          ...deck,
-          id: crypto.randomUUID()
-        }));
+        // =========================
+        // IMPORTA DECKS
+        // =========================
 
-        const deckIdMap = new Map(
-          data.decks.map((oldDeck, index) => [
-            oldDeck.id,
-            newDecks[index].id
-          ])
-        );
+        for (const deck of data.decks) {
 
-        const newCards = data.cards.map(card => ({
-          ...card,
-          id: crypto.randomUUID(),
-          deckId: deckIdMap.get(card.deckId)!
-        }));
+          await fetch(
+            "http://localhost:3001/decks",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+              body: JSON.stringify(deck)
+            }
+          );
+        }
 
-        const updatedDecks = [...decks, ...newDecks];
-        const updatedCards = [...cards, ...newCards];
+        // =========================
+        // IMPORTA CARDS
+        // =========================
 
-        setDecks(updatedDecks);
-        setCards(updatedCards);
+        for (const card of data.cards) {
+          await createCard(card);
+        }
 
-        saveDecks(updatedDecks);
-        saveCards(updatedCards);
+        if (loadDecks) {
+          await loadDecks();
+        }
 
         alert("Importação concluída!");
-      } catch {
+
+      } catch (error) {
+
+        console.error(error);
+
         alert("Erro ao importar arquivo.");
       }
     };
@@ -120,7 +157,7 @@ export function useDeckImportExport({
   }
 
   return {
-    exportDecks,
-    importDecks
+    importDecks,
+    exportDecks
   };
 }

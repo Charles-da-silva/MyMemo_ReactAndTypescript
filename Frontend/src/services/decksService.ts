@@ -13,6 +13,7 @@ export async function getDecks() {
     const data = await response.json();
 
     return data;
+    
   } catch (error) {
     console.error("Erro ao buscar decks:", error);
 

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import type { Card } from "../types/types";
-import { loadCards, saveCards } from "../storage/storage";
 import Logo from "./Logo";
 import "../styles/index.css";
 import editIcon from "../assets/Edit.png";
@@ -9,7 +8,7 @@ import homeIcon from "../assets/home.png";
 import correctIcon from "../assets/Correct.png";
 import wrongIcon from "../assets/Wrong.jpg";
 import Swal from 'sweetalert2';
-import { getCards } from "../services/cardsService";
+import { getCardsByDeckId, updateCardReview, deleteCard as deleteCardService } from "../services/cardsService";
 
 interface StudyCardProps {
   mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck";
@@ -47,26 +46,57 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
     });
   };
 
-  function deleteCard(id: string) {    
-    const updatedAllCards = cards.filter(c => c.id !== id);
-    setCards(updatedAllCards);
-    saveCards(updatedAllCards);
+  async function deleteCard(id: string) {    
 
-    setReviewCards(prev => {
-      const newArr = prev.filter(c => c.id !== id);
-
-      setcurrentQuestion(prevIndex => {
-        if (prevIndex >= newArr.length) {
-          return Math.max(0, newArr.length - 1);
-        }
-        return prevIndex;
+    try {
+      // remove no backend
+      await deleteCardService(id);
+   
+      const updatedAllCards = cards.filter(c => c.id !== id);
+      setCards(updatedAllCards);
+      showPopUp({
+        title: 'Pronto!',
+        text: 'O card foi excluído com sucesso!',
+        icon: 'success'
       });
 
-      return newArr;
-    });
+      setCards(updatedAllCards);
+    
+      showPopUp({
+        title: 'Pronto!',
+        text: 'O card foi excluído com sucesso!',
+        icon: 'success'
+      });
 
-    setSelectedAnswer(null);
+      setReviewCards(prev => {
+        const newArr = prev.filter(c => c.id !== id);
+
+        setcurrentQuestion(prevIndex => {
+          if (prevIndex >= newArr.length) {
+            return Math.max(0, newArr.length - 1);
+          }
+          return prevIndex;
+        });
+
+        return newArr;
+      });
+
+      setSelectedAnswer(null);
+    
+      } catch (error) {
+  
+        console.error(error);
+  
+        showPopUp({
+          title: 'Erro',
+          text: 'Erro ao excluir card.',
+          icon: 'error'
+        });     
+     }
+
   }
+
+
 
   function shuffleArray<T>(array: T[]): T[] {
     const shuffled = [...array];
@@ -77,17 +107,32 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
     return shuffled;
   }
 
-  function scheduleCard(card: any, difficulty: "easy" | "medium" | "hard") {
+  async function scheduleCard(card: Card, difficulty: "easy" | "medium" | "hard") {
     let delay = 0;
     if (difficulty === "easy") delay = 3 * 24 * 60 * 60 * 1000; // 3 dias 
     if (difficulty === "medium") delay = 4 * 60 * 60 * 1000; // 4 horas
     if (difficulty === "hard") delay = 10 * 60 * 1000; // 10 minutos
 
-    const updatedCards = cards.map((c) =>
-      c.id === card.id ? { ...c, nextReview: Date.now() + delay } : c
+    const nextReview =
+    new Date(Date.now() + delay).toISOString();
+    
+    // salva no banco
+    await updateCardReview(
+      card.id,
+      nextReview
     );
+
+    // atualiza frontend
+    const updatedCards = cards.map(c =>
+      c.id === card.id
+        ? {
+            ...c,
+            next_review: nextReview
+          }
+        : c
+    );
+
     setCards(updatedCards);
-    saveCards(updatedCards);
   }
 
   const isFinished = currentQuestion >= reviewCards.length;
@@ -99,24 +144,25 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
 
     try {
 
+      console.log('selectedDeckId', selectedDeckId);
+
       // Busca os cards da API
-      const apiCards = await getCards();
+      const apiCards = await getCardsByDeckId(selectedDeckId);
       console.log("CARDS DA API:", apiCards);
 
       // Atualiza o state principal
       setCards(apiCards);
-
-      // Data atual
-      const now = Date.now();
 
       console.log("selectedDeckId:", selectedDeckId);
       console.log("apiCards:", apiCards);
 
       // Filtra cards do deck e prontos para revisão
       const dueCards = apiCards.filter(
-        (c: Card) =>
-          c.deckId === selectedDeckId &&
-          c.nextReview <= now
+        (c: Card) => {
+          c.deck_id === selectedDeckId;
+          const nextReview = new Date(c.next_review).getTime();
+          return nextReview <= Date.now();
+        }
       );
 
       // Embaralha os cards
@@ -242,7 +288,7 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
 
             {selectedAnswer !== null && (
               <div style={{ marginTop: 20, padding: "15px", borderRadius: "8px" }}>
-                {selectedAnswer === currentCard.correctAnswer ? (<>
+                {selectedAnswer === currentCard.correct_answer ? (<>
                   <img
                     src={correctIcon}
                     alt="resposta correta"
@@ -253,7 +299,7 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
                     src={wrongIcon}
                     alt="resposta errada"
                     height={35} />
-                  <p>A resposta certa é: {currentCard.alternatives[currentCard.correctAnswer]}</p></>
+                  <p>A resposta certa é: {currentCard.alternatives[currentCard.correct_answer]}</p></>
                 )}
                 <br />
                 <div className="btn-card">

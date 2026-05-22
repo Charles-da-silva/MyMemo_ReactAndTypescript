@@ -6,10 +6,6 @@ export const router = createBrowserRouter([
     path: "/",
     element: <MainPage />,
   },
-  { 
-    path: "/about", 
-    element: <div>About</div> 
-  },
 ],
   {
     basename: "/MyMemo_ReactAndTypescript"

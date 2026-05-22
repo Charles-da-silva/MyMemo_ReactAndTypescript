@@ -1,12 +1,13 @@
 import { useDeckImportExport } from "../hooks/useDeckImportExport";
-import { loadCards, loadDecks, saveCards, saveDecks } from "../storage/storage";
 import type { Card, Deck } from "../types/types";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "../styles/index.css";
 import editIcon from "../assets/Edit.png";
 import trashIcon from "../assets/Trash.png";
 import homeIcon from "../assets/home.png";
 import Swal from 'sweetalert2';
+import { getCardsByDeckId, deleteCard as deleteCardService } from "../services/cardsService";
+import { getDecks, updateDeck } from "../services/decksService";
 
 interface EditCardProps {
   setMode: (mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck") => void;
@@ -15,10 +16,10 @@ interface EditCardProps {
 
 export default function EditDeckCard({ setMode, selectedDeck: initialSelected }: EditCardProps) {
 
-  const [selectedDeckId] = useState(initialSelected[0] || "");
+  const selectedDeckId = initialSelected[0];
 
-  const [decks, setDecks] = useState<Deck[]>(() => loadDecks());
-  const [cards, setCards] = useState<Card[]>(() => loadCards());
+  const [decks, setDecks] = useState<Deck[]>([]);
+  const [cards, setCards] = useState<Card[]>([]);
   const { } = useDeckImportExport({
     decks,
     cards,
@@ -26,7 +27,8 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
     setCards
   });
 
-  const currentCards = cards.filter(c => c.deckId === selectedDeckId);
+  const currentCards = cards.filter(c => c.deck_id === selectedDeckId);
+  const currentDeck =  decks.find(d => d.id === selectedDeckId);
 
   // reference para o input de nome do deck, para facilitar a edição:
   const deckNameRef = useRef<HTMLInputElement>(null);
@@ -52,7 +54,7 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
     });
   };
 
-  function renameDeck() {
+  async function renameDeck() {
     const novoNome = deckNameRef.current?.value;
 
     if (!novoNome || !novoNome.trim()) {
@@ -77,8 +79,19 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
       d.id === selectedDeckId ? { ...d, name: novoNome } : d
     );
 
-    setDecks(updatedDecks);
-    saveDecks(updatedDecks);
+    await setDecks(updatedDecks);
+    
+    const currentDeck =
+      decks.find(
+        d => d.id === selectedDeckId
+      );
+
+    await updateDeck(selectedDeckId, {
+      name: novoNome,
+      description:
+        currentDeck?.description || ""
+    });
+
     showPopUp({
       title: 'Sucesso',
       text: 'O deck foi renomeado com sucesso!',
@@ -86,18 +99,69 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
     });
   }
 
-  function deleteCard(id: string) {
+  async function deleteCard(id: string) {
 
-    // Remove do estado principal de todos os cards
-    const updatedAllCards = cards.filter(c => c.id !== id);
-    setCards(updatedAllCards);
-    saveCards(updatedAllCards);
-    showPopUp({
-      title: 'Pronto!',
-      text: 'O card foi excluído com sucesso!',
-      icon: 'success'
-    });
+    try {
+
+      // remove no backend
+      await deleteCardService(id);
+
+      // remove no React
+      const updatedAllCards =
+        cards.filter(c => c.id !== id);
+
+      setCards(updatedAllCards);
+
+      showPopUp({
+        title: 'Pronto!',
+        text: 'O card foi excluído com sucesso!',
+        icon: 'success'
+      });
+
+    } catch (error) {
+
+      console.error(error);
+
+      showPopUp({
+        title: 'Erro',
+        text: 'Erro ao excluir card.',
+        icon: 'error'
+      });
+    }
   }
+
+
+  useEffect(() => {
+    async function loadCards() {
+      try {
+        const apiCards =
+          await getCardsByDeckId(
+            selectedDeckId
+          );
+        setCards(apiCards);
+      } catch (error) {
+      console.error(error);
+      }
+    }
+
+    if (selectedDeckId) {
+      loadCards();
+    }
+  }, [selectedDeckId]);
+
+
+  useEffect(() => {
+    async function loadDecks() {
+      try {
+        const apiDecks =
+          await getDecks();
+        setDecks(apiDecks);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    loadDecks();
+  }, []);
 
   return (
     <>
@@ -115,7 +179,7 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
         <input
           key={selectedDeckId} // O 'key' força o input a resetar o valor quando mudar o deck no select
           ref={deckNameRef}
-          defaultValue={decks.find(d => d.id === selectedDeckId)?.name}
+          defaultValue={currentDeck?.name || ""} // Exibe o nome do deck selecionado
           placeholder="Novo nome do deck"
           className="input-deck-name"
         />

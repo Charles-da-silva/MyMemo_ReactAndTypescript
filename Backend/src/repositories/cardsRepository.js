@@ -25,6 +25,8 @@ async function getAllCards() {
 
 async function getCardsByDeckId(deckId) {
 
+  console.log('Buscando cards do deck:', deckId);
+
   const result = await pool.query(
     `
       SELECT *
@@ -57,6 +59,7 @@ async function createCard(card) {
       image
     )
     VALUES ($1, $2, $3, $4, $5, $6, $7)
+    RETURNING *
   `;
 
   const values = [
@@ -127,16 +130,19 @@ async function deleteCard(id) {
 |--------------------------------------------------------------------------
 */
 
-async function updateReview(id, nextReview) {
+async function updateNextReview(id, nextReview) {
 
-  await pool.query(
+  const result = await pool.query(
     `
-      UPDATE cards
-      SET next_review = $1
-      WHERE id = $2
+    UPDATE cards
+    SET next_review = $1
+    WHERE id = $2
+    RETURNING *
     `,
     [nextReview, id]
   );
+
+  return result.rows[0];
 }
 
 module.exports = {
@@ -145,5 +151,5 @@ module.exports = {
   createCard,
   updateCard,
   deleteCard,
-  updateReview
+  updateNextReview,
 };

@@ -1,28 +1,30 @@
-import { loadCards, loadDecks, saveCards, saveDecks } from "../storage/storage";
+
 import type { Card, Deck } from "../types/types";
 import { useState, useEffect } from "react";
 import { useDeckImportExport } from "../hooks/useDeckImportExport";
 import iconHome from "../assets/home.png";
 import Swal from 'sweetalert2';
+import { getDecks } from "../services/decksService";
+
 
 interface DeckOptionsCardProps {
   mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck";
   setMode: (mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck") => void;
-  selectedDeck: string[]; // recebe o array pronto vindo do HomeCard
+  selectedDeckId: string; // recebe o ID do deck selecionado
 }
 
-export default function DeckOptionsCard({ mode, setMode, selectedDeck: initialSelected }: DeckOptionsCardProps) {
+export default function DeckOptionsCard({ mode, setMode, selectedDeckId: initialSelected }: DeckOptionsCardProps) {
 
-  const [selectedDeckId, setSelectedDeckId] = useState(initialSelected[0] || ""); // Inicializa com o primeiro ID do array ou string vazia
-  const [selectedDeck, setSelectedDeck] = useState<string[]>(initialSelected);
+  const [selectedDeckId, setSelectedDeckId] = useState(initialSelected || ""); // Inicializa com o ID ou string vazia
+  const [selectedDeck, setSelectedDeck] = useState<string[]>([initialSelected]);
 
   const [isReviewReady, setIsReviewReady] = useState(false);
   const [_currentQuestion, setcurrentQuestion] = useState(0);
   const [_selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [_reviewCards, setReviewCards] = useState<Card[]>([]);
 
-  const [decks, setDecks] = useState<Deck[]>(() => loadDecks());
-  const [cards, setCards] = useState<Card[]>(() => loadCards());
+  const [decks, setDecks] = useState<Deck[]>([]);
+  const [cards, setCards] = useState<Card[]>([]);
   const { exportDecks } = useDeckImportExport({
     decks,
     cards,
@@ -54,20 +56,29 @@ export default function DeckOptionsCard({ mode, setMode, selectedDeck: initialSe
 
   // Sincroniza quando a prop initialSelected chegar/mudar
   useEffect(() => {
-    if (initialSelected.length > 0) {
-      setSelectedDeckId(initialSelected[0]);
-      setSelectedDeck(initialSelected);
-    }
+    setSelectedDeckId(initialSelected || "");
+    setSelectedDeck([initialSelected]);
   }, [initialSelected]);
+
+  useEffect(() => {
+    async function fetchDecks() {
+      try {
+        const apiDecks =
+          await getDecks();
+        setDecks(apiDecks);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchDecks();
+  }, []);
 
   function deleteDeck(id: string) {
     const updatedDecks = decks.filter(d => d.id !== id);
-    const updatedCards = cards.filter(c => c.deckId !== id);
+    const updatedCards = cards.filter(c => c.deck_id !== id);
 
     setDecks(updatedDecks);
     setCards(updatedCards);
-    saveDecks(updatedDecks);
-    saveCards(updatedCards);
 
     if (selectedDeckId === id) setSelectedDeckId("");
 
@@ -90,7 +101,7 @@ export default function DeckOptionsCard({ mode, setMode, selectedDeck: initialSe
   useEffect(() => {
     if (mode === "review" && !isReviewReady) {
       const now = Date.now();
-      const dueCards = cards.filter(c => c.deckId === selectedDeckId && c.nextReview <= now);
+      const dueCards = cards.filter(c => c.deck_id === selectedDeckId && new Date(c.next_review).getTime() <= now);
       setReviewCards(shuffleArray(dueCards));
       setcurrentQuestion(0);
       setSelectedAnswer(null);

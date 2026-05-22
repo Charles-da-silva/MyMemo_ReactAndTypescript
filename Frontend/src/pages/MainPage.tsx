@@ -5,7 +5,7 @@ import HomeCard from "../components/HomeCard";
 import HowCreateCard from "../components/HowCreateCard";
 import DeckOptionsCard from "../components/DeckOptionsCard";
 import StudyCard from "../components/StudyCard";
-import EditDeck from "../components/EditDeckCard";
+import EditDeckCard from "../components/EditDeckCard";
 
 export default function MainPage() {
 
@@ -50,7 +50,7 @@ return (
           <DeckOptionsCard 
             mode={mode}
             setMode={setMode} 
-            selectedDeck={selectedDeck} // passa o valor
+            selectedDeckId={selectedDeck[0]} // passa o ID do deck selecionado
           />
         </>
       )}
@@ -67,9 +67,9 @@ return (
 
       {mode === "editDeck" && (
         <>
-          <EditDeck
+          <EditDeckCard
             setMode={setMode} 
-            selectedDeck={selectedDeck} // passa o valor
+            selectedDeck={selectedDeck} // passa o ID do deck selecionado
           />
         </>
       )}

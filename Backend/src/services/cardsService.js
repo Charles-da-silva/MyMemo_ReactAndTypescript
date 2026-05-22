@@ -39,10 +39,18 @@ async function deleteCard(id) {
   return await cardsRepository.deleteCard(id);
 }
 
+async function updateNextReview(id, nextReview) {
+  return cardsRepository.updateNextReview(
+    id,
+    nextReview
+  );
+}
+
 module.exports = {
   getAllCards,
   getCardsByDeckId,
   createCard,
   updateCard,
   deleteCard,
+  updateNextReview,
 };

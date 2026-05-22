@@ -18,6 +18,8 @@ async function getCardsByDeckId(req, res) {
 
     const cards = await cardsService.getCardsByDeckId(deckId);
 
+    console.log('deckId recebido:', deckId);
+
     res.json(cards);
   } catch (error) {
     console.log(error);
@@ -55,10 +57,36 @@ async function deleteCard(req, res) {
 
     await cardsService.deleteCard(id);
 
-    res.json({ message: 'Card removido com sucesso' });
+    res.status(204).send();
+
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Erro ao remover card' });
+  }
+}
+
+async function updateNextReview(req, res) {
+
+  try {
+
+    const { id } = req.params;
+    const { next_review } = req.body;
+
+    const updatedCard =
+      await cardsService.updateNextReview(
+        id,
+        next_review
+      );
+
+    res.json(updatedCard);
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      error: 'Erro ao atualizar revisão'
+    });
   }
 }
 
@@ -68,4 +96,5 @@ module.exports = {
   createCard,
   updateCard,
   deleteCard,
+  updateNextReview,
 };
