@@ -6,6 +6,7 @@ const cors = require("cors");
 
 const cardsRoutes = require("./routes/cardsRoutes");
 const decksRoutes = require("./routes/decksRoutes");
+const aiRoutes = require("./routes/aiRoutes");
 
 const app = express();
 
@@ -22,6 +23,8 @@ app.get("/", (req, res) => {
 app.use("/decks", decksRoutes);
 
 app.use("/cards", cardsRoutes);
+
+app.use("/ai", aiRoutes);
 
 const PORT = 3001;
 
