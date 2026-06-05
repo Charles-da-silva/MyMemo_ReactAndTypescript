@@ -1,13 +1,12 @@
 export type Card = {
   id: string;
   deck_id: string;
-  title: string;      // ex: Questão 1
-  context: string;    // texto grande
+  question: string;
   alternatives: string[];
-  correct_answer: number;
-  next_review: string; // ISO date string
-  image?: string;
-  question?: string; 
+  correct_answer: string;
+  next_review: string;
+  created_at: string;
+  image: null | string;
 };
 
 export type Deck = {

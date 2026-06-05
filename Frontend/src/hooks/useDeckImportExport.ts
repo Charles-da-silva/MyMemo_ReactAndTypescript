@@ -26,8 +26,8 @@ type ExportData = {
 export function useDeckImportExport({
   decks,
   cards,
-  setDecks,
-  setCards,
+  _setDecks,
+  _setCards,
   loadDecks
 
 }: UseDeckImportExportProps) {
