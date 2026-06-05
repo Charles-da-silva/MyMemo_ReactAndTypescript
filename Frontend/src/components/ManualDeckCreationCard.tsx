@@ -70,11 +70,11 @@ export default function ManualDeckCreationCard({ setMode }: ManualDeckCreationCa
   const handleAddCard = (cardData: CardForm) => {
     if (editingCardIndex !== null) {
       const updatedCards = [...cards];
-      updatedCards[editingCardIndex] = cardData;
+      updatedCards[editingCardIndex] = { ...cardData, deck_id: deckId };
       setCards(updatedCards);
       setEditingCardIndex(null);
     } else {
-      setCards([...cards, { ...cardData, id: uuidv4() }]);
+      setCards([...cards, { ...cardData, id: uuidv4(), deck_id: deckId }]);
     }
     setIsModalOpen(false);
   };

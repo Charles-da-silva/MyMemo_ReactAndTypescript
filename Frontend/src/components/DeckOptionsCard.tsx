@@ -2,9 +2,10 @@
 import type { Card, Deck } from "../types/types";
 import { useState, useEffect } from "react";
 import { useDeckImportExport } from "../hooks/useDeckImportExport";
+import { getCardsByDeckId } from "../services/cardsService";
 import iconHome from "../assets/home.png";
 import Swal from 'sweetalert2';
-import { getDecks } from "../services/decksService";
+import { getDecks, deleteDeck as deleteDeckAPI } from "../services/decksService";
 
 
 interface DeckOptionsCardProps {
@@ -25,6 +26,8 @@ export default function DeckOptionsCard({ mode, setMode, selectedDeckId: initial
 
   const [decks, setDecks] = useState<Deck[]>([]);
   const [cards, setCards] = useState<Card[]>([]);
+
+  console.log('DeckOptionsCard renderizado. Mode:', mode, 'isReviewReady:', isReviewReady, 'cards:', cards.length, 'selectedDeckId:', selectedDeckId);
   const { exportDecks } = useDeckImportExport({
     decks,
     cards,
@@ -73,20 +76,46 @@ export default function DeckOptionsCard({ mode, setMode, selectedDeckId: initial
     fetchDecks();
   }, []);
 
-  function deleteDeck(id: string) {
-    const updatedDecks = decks.filter(d => d.id !== id);
-    const updatedCards = cards.filter(c => c.deck_id !== id);
+  useEffect(() => {
+    async function fetchCards() {
+      if (!selectedDeckId) return;
+      try {
+        console.log('Carregando cards para deck:', selectedDeckId);
+        const apiCards = await getCardsByDeckId(selectedDeckId);
+        console.log('Cards carregados:', apiCards.length);
+        setCards(apiCards);
+      } catch (error) {
+        console.error('Erro ao carregar cards:', error);
+      }
+    }
+    fetchCards();
+  }, [selectedDeckId]);
 
-    setDecks(updatedDecks);
-    setCards(updatedCards);
+  async function deleteDeck(id: string) {
+    try {
+      await deleteDeckAPI(id);
 
-    if (selectedDeckId === id) setSelectedDeckId("");
+      const updatedDecks = decks.filter(d => d.id !== id);
+      const updatedCards = cards.filter(c => c.deck_id !== id);
 
-    showPopUp({
-      title: 'Pronto!',
-      text: 'O Deck foi excluído com sucesso!',
-      icon: 'success'
-    });
+      setDecks(updatedDecks);
+      setCards(updatedCards);
+
+      if (selectedDeckId === id) setSelectedDeckId("");
+
+      showPopUp({
+        title: 'Pronto!',
+        text: 'O Deck foi excluído com sucesso!',
+        icon: 'success'
+      });
+    } catch (error) {
+      console.error('Erro ao deletar deck:', error);
+      showPopUp({
+        title: 'Erro',
+        text: 'Erro ao deletar o deck',
+        icon: 'error'
+      });
+    }
   }
 
   function shuffleArray<T>(array: T[]): T[] {
@@ -99,9 +128,25 @@ export default function DeckOptionsCard({ mode, setMode, selectedDeckId: initial
   }
 
   useEffect(() => {
+    console.log('useEffect review acionado. mode:', mode, 'isReviewReady:', isReviewReady);
+
     if (mode === "review" && !isReviewReady) {
+      console.log('Entrando no filtro de cards...');
       const now = Date.now();
-      const dueCards = cards.filter(c => c.deck_id === selectedDeckId && new Date(c.next_review).getTime() <= now);
+      console.log('Filtrando cards para estudo. Total de cards:', cards.length);
+      console.log('Deck selecionado:', selectedDeckId);
+
+      const cardsFromDeck = cards.filter(c => c.deck_id === selectedDeckId);
+      console.log('Cards do deck:', cardsFromDeck.length);
+
+      const dueCards = cardsFromDeck.filter(c => {
+        const reviewTime = new Date(c.next_review).getTime();
+        console.log(`Card: "${c.question?.substring(0, 30)}" - next_review: ${c.next_review} - reviewTime: ${reviewTime} - now: ${now} - isDue: ${reviewTime <= now}`);
+        return reviewTime <= now;
+      });
+
+      console.log('Cards prontos para estudo:', dueCards.length);
+
       setReviewCards(shuffleArray(dueCards));
       setcurrentQuestion(0);
       setSelectedAnswer(null);

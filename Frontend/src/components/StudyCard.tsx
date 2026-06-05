@@ -141,49 +141,49 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
 
   useEffect(() => {
     async function loadReviewCards() {
+      try {
+        console.log('selectedDeckId', selectedDeckId);
 
-    try {
+        // Busca os cards da API
+        const apiCards = await getCardsByDeckId(selectedDeckId);
+        console.log("CARDS DA API:", apiCards);
 
-      console.log('selectedDeckId', selectedDeckId);
+        // Atualiza o state principal
+        setCards(apiCards);
 
-      // Busca os cards da API
-      const apiCards = await getCardsByDeckId(selectedDeckId);
-      console.log("CARDS DA API:", apiCards);
+        console.log("selectedDeckId:", selectedDeckId);
+        console.log("apiCards:", apiCards);
+        console.log("Date.now():", Date.now());
 
-      // Atualiza o state principal
-      setCards(apiCards);
+        // Filtra cards do deck e prontos para revisão
+        const dueCards = apiCards.filter(
+          (c: Card) => {
+            const nextReview = new Date(c.next_review).getTime();
+            const isDue = nextReview <= Date.now();
+            console.log(`Card "${c.question?.substring(0, 30)}": next_review=${c.next_review}, reviewTime=${nextReview}, now=${Date.now()}, isDue=${isDue}`);
+            return c.deck_id === selectedDeckId && isDue;
+          }
+        );
 
-      console.log("selectedDeckId:", selectedDeckId);
-      console.log("apiCards:", apiCards);
+        console.log("Cards prontos para revisão:", dueCards.length);
 
-      // Filtra cards do deck e prontos para revisão
-      const dueCards = apiCards.filter(
-        (c: Card) => {
-          c.deck_id === selectedDeckId;
-          const nextReview = new Date(c.next_review).getTime();
-          return nextReview <= Date.now();
-        }
-      );
+        // Embaralha os cards
+        setReviewCards(shuffleArray(dueCards));
 
-      // Embaralha os cards
-      setReviewCards(shuffleArray(dueCards));
+        // Reinicia estado da revisão
+        setcurrentQuestion(0);
+        setSelectedAnswer(null);
 
-      // Reinicia estado da revisão
-      setcurrentQuestion(0);
-      setSelectedAnswer(null);
-
-    } catch (err) {
-
-      console.error("Erro ao carregar cards:", err);
-
+      } catch (err) {
+        console.error("Erro ao carregar cards:", err);
+      }
     }
-  }
 
-  if (mode === "review") {
-    loadReviewCards();
-  }
+    if (mode === "review") {
+      loadReviewCards();
+    }
 
-}, [mode, selectedDeckId]);
+  }, [mode, selectedDeckId]);
 
 
 
@@ -288,7 +288,7 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
 
             {selectedAnswer !== null && (
               <div style={{ marginTop: 20, padding: "15px", borderRadius: "8px" }}>
-                {selectedAnswer === currentCard.correct_answer ? (<>
+                {currentCard.alternatives[selectedAnswer] === currentCard.correct_answer ? (<>
                   <img
                     src={correctIcon}
                     alt="resposta correta"
@@ -299,7 +299,7 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
                     src={wrongIcon}
                     alt="resposta errada"
                     height={35} />
-                  <p>A resposta certa é: {currentCard.alternatives[currentCard.correct_answer]}</p></>
+                  <p>A resposta certa é: {currentCard.correct_answer}</p></>
                 )}
                 <br />
                 <div className="btn-card">

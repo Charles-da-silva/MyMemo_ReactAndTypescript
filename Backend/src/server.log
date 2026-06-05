@@ -1,0 +1,4 @@
+◇ injected env (9) from ..\.env // tip: ⌘ override existing { override: true }
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+✅ Servidor rodando na porta 3001
+Banco conectado!

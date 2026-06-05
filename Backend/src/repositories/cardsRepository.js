@@ -48,6 +48,10 @@ async function getCardsByDeckId(deckId) {
 
 async function createCard(card) {
 
+  const crypto = require('crypto');
+
+  console.log('createCard chamado. next_review recebido:', card.next_review);
+
   const query = `
     INSERT INTO cards (
       id,
@@ -56,25 +60,32 @@ async function createCard(card) {
       correct_answer,
       next_review,
       alternatives,
-      image
+      image,
+      created_at
     )
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     RETURNING *
   `;
 
+  // Generate ID if empty or missing
+  const cardId = !card.id || card.id.trim() === '' ? crypto.randomUUID() : card.id;
+
+  const finalNextReview = card.next_review || new Date().toISOString();
+  console.log('next_review final:', finalNextReview);
+
   const values = [
-    card.id,
+    cardId,
     card.deck_id,
     card.question,
     card.correct_answer,
-    card.next_review,
-    JSON.stringify(card.alternatives),
-    card.image
+    finalNextReview,
+    card.alternatives ? JSON.stringify(card.alternatives) : null,
+    card.image || null,
+    card.created_at || new Date().toISOString()
   ];
 
-  await pool.query(query, values);
-
-  return card;
+  const result = await pool.query(query, values);
+  return result.rows[0];
 }
 
 /*

@@ -6,20 +6,22 @@ import HowCreateCard from "../components/HowCreateCard";
 import DeckOptionsCard from "../components/DeckOptionsCard";
 import StudyCard from "../components/StudyCard";
 import EditDeckCard from "../components/EditDeckCard";
+import AIDeckCreationCard from "../components/AIDeckCreationCard";
+import ManualDeckCreationCard from "../components/ManualDeckCreationCard";
 
 export default function MainPage() {
 
-const [mode, setMode] = useState<"home" | "deckOptions" | "createDeck" | "review" | "editDeck">("home");
+const [mode, setMode] = useState<"home" | "deckOptions" | "createDeck" | "review" | "editDeck" | "aiDeckCreation" | "manualDeckCreation">("home");
 const [selectedDeck, setSelectedDeck] = useState<string[]>([]);
 
 return (
   <>
   <div className="mainPage" style={{
-    border: mode === "review" ? "0px" : "",       
-    overflowY: mode === "review" ? "auto" : "hidden", // Scroll aparece quando o texto exceder a tela    
-    justifyContent: mode === "review" ? "flex-start" : "center",    
+    border: mode === "review" ? "0px" : "",
+    overflowY: mode === "review" ? "auto" : "hidden", // Scroll aparece quando o texto exceder a tela
+    justifyContent: mode === "review" ? "flex-start" : "center",
   }}>
-      
+
     <main className="conteudo-da-pagina"
       style={{
         border: mode === "review" ? "5px" : "",}}>
@@ -29,17 +31,29 @@ return (
           <div style={{marginBottom: 80}}>
             <Logo />
           </div>
-          <HomeCard 
-            setMode={setMode} 
+          <HomeCard
+            setMode={setMode}
             setSelectedDeck={setSelectedDeck} // passa o setter
-          /> 
-        </>       
+          />
+        </>
       )}
 
       {mode === "createDeck" && (
         <>
           <HowCreateCard setMode={setMode} />
-        </>        
+        </>
+      )}
+
+      {mode === "aiDeckCreation" && (
+        <>
+          <AIDeckCreationCard setMode={setMode} />
+        </>
+      )}
+
+      {mode === "manualDeckCreation" && (
+        <>
+          <ManualDeckCreationCard setMode={setMode} />
+        </>
       )}
 
       {mode === "deckOptions" && (
@@ -47,9 +61,9 @@ return (
           <div style={{marginBottom: 80}}>
             <Logo />
           </div>
-          <DeckOptionsCard 
+          <DeckOptionsCard
             mode={mode}
-            setMode={setMode} 
+            setMode={setMode}
             selectedDeckId={selectedDeck[0]} // passa o ID do deck selecionado
           />
         </>
@@ -57,10 +71,10 @@ return (
 
       {mode === "review" && (
         <>
-          <StudyCard 
+          <StudyCard
             mode={mode}
-            setMode={setMode}            
-            selectedDeckId={selectedDeck[0]} // passa o ID do deck selecionado 
+            setMode={setMode}
+            selectedDeckId={selectedDeck[0]} // passa o ID do deck selecionado
           />
         </>
       )}
@@ -68,7 +82,7 @@ return (
       {mode === "editDeck" && (
         <>
           <EditDeckCard
-            setMode={setMode} 
+            setMode={setMode}
             selectedDeck={selectedDeck} // passa o ID do deck selecionado
           />
         </>

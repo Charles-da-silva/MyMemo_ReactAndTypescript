@@ -6,8 +6,10 @@ import editIcon from "../assets/Edit.png";
 import trashIcon from "../assets/Trash.png";
 import homeIcon from "../assets/home.png";
 import Swal from 'sweetalert2';
-import { getCardsByDeckId, deleteCard as deleteCardService } from "../services/cardsService";
+import { getCardsByDeckId, deleteCard as deleteCardService, createCard, updateCard } from "../services/cardsService";
 import { getDecks, updateDeck } from "../services/decksService";
+import CardEditorModal from "./CardEditorModal";
+import { v4 as uuidv4 } from 'uuid';
 
 interface EditCardProps {
   setMode: (mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck") => void;
@@ -27,8 +29,11 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
     setCards
   });
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingCardIndex, setEditingCardIndex] = useState<number | null>(null);
+
   const currentCards = cards.filter(c => c.deck_id === selectedDeckId);
-  const currentDeck =  decks.find(d => d.id === selectedDeckId);
+  const currentDeck = decks.find(d => d.id === selectedDeckId);
 
   // reference para o input de nome do deck, para facilitar a edição:
   const deckNameRef = useRef<HTMLInputElement>(null);
@@ -80,7 +85,7 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
     );
 
     await setDecks(updatedDecks);
-    
+
     const currentDeck =
       decks.find(
         d => d.id === selectedDeckId
@@ -130,6 +135,37 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
     }
   }
 
+  async function handleSaveCard(cardData: any) {
+    try {
+      if (editingCardIndex !== null) {
+        // Editar card existente
+        await updateCard(cardData.id, cardData);
+        const updatedCards = [...cards];
+        updatedCards[editingCardIndex] = cardData;
+        setCards(updatedCards);
+      } else {
+        // Criar novo card
+        await createCard({
+          ...cardData,
+          id: uuidv4(),
+        });
+        setCards([...cards, cardData]);
+      }
+
+      showPopUp({
+        title: 'Sucesso!',
+        text: editingCardIndex !== null ? 'Card atualizado!' : 'Card criado!',
+        icon: 'success',
+      });
+    } catch (error) {
+      console.error(error);
+      showPopUp({
+        title: 'Erro',
+        text: 'Erro ao salvar card',
+        icon: 'error',
+      });
+    }
+  }
 
   useEffect(() => {
     async function loadCards() {
@@ -206,11 +242,23 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
         {currentCards.length > 0 ? (
           <>
             <div style={{ marginTop: 30 }}>
-              <p style={{ fontSize: "16px", marginBottom: 10, textAlign: "left" }}>Este Deck possui {currentCards.length} cards</p>
-              
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                <p style={{ fontSize: "16px", margin: 0, textAlign: "left" }}>Este Deck possui {currentCards.length} cards</p>
+                <button
+                  onClick={() => {
+                    setEditingCardIndex(null);
+                    setIsModalOpen(true);
+                  }}
+                  className="btn btn-green"
+                  style={{ padding: '5px 10px', fontSize: '12px' }}
+                >
+                  + Adicionar Card
+                </button>
+              </div>
+
               {currentCards.map((card: any) => (
                 <div key={card.id}>
-                  <div  style={{ display: "flex", justifyContent: "left", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                  <div style={{ display: "flex", justifyContent: "left", alignItems: "center", gap: 10, marginBottom: 10 }}>
                     <div className="options" style={{ width: "98%", border: "1px solid #eee", borderRadius: "12px", textAlign: "left", padding: "10px" }}>
                       <span className="line-clamp-3 text-sm text-gray-700" >
                         {card.question}
@@ -221,17 +269,12 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
                       <img
                         src={editIcon}
                         alt="Editar card"
-                        onClick={() => 
-                          showPopUp({
-                            title: 'Quase pronto...',
-                            text: 'Esta funcionalidade ainda está em desenvolvimento, mas em breve você poderá editar suas perguntas e respostas por aqui!',
-                            icon: 'info',
-                            confirmButtonText: 'OK'
-                          })}
-
+                        onClick={() => {
+                          setEditingCardIndex(currentCards.indexOf(card));
+                          setIsModalOpen(true);
+                        }}
                         style={{ height: 20, cursor: "pointer" }} />
                       <img
-
                         src={trashIcon}
                         alt="Excluir card"
                         onClick={() =>
@@ -247,12 +290,24 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
                   </div>
                 </div>
               ))}
-             
+
             </div>
           </>
 
         ) : (
-          <p className="text-gray-500 italic">Nenhum card neste deck.</p>
+          <>
+            <p className="text-gray-500 italic" style={{ marginTop: 20, marginBottom: 10 }}>Nenhum card neste deck.</p>
+            <button
+              onClick={() => {
+                setEditingCardIndex(null);
+                setIsModalOpen(true);
+              }}
+              className="btn btn-green"
+              style={{ marginBottom: 20 }}
+            >
+              + Adicionar Primeiro Card
+            </button>
+          </>
         )}
 
 
@@ -261,6 +316,17 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
           style={{ cursor: 'pointer', paddingTop: 15 }} />
         <br /><br />
       </div>
+
+      <CardEditorModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingCardIndex(null);
+        }}
+        onSave={handleSaveCard}
+        initialCard={editingCardIndex !== null ? currentCards[editingCardIndex] : undefined}
+        deckId={selectedDeckId}
+      />
     </>
   );
 }

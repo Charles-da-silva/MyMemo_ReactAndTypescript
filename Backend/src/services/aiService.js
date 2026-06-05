@@ -1,23 +1,20 @@
-const pdfParse = require('pdf-parse');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-const { v4: uuidv4 } = require('crypto');
+const { PDFParse } = require('pdf-parse');
+const { randomUUID } = require('crypto');
 require('dotenv').config();
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function extractPdfText(fileBuffer) {
   try {
-    const pdfData = await pdfParse(fileBuffer);
-    return pdfData.text;
+    const parser = new PDFParse({ data: fileBuffer });
+    const result = await parser.getText();
+    return result.text;
   } catch (error) {
     throw new Error(`Erro ao extrair texto do PDF: ${error.message}`);
   }
 }
 
-async function generateCardsWithGemini(text, questionCount) {
+async function generateCardsWithGemini(text, questionCount, fileName = 'Deck Importado') {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-
+    const apiKey = process.env.GROQ_API_KEY;
     const prompt = `Analise o texto abaixo e gere exatamente ${questionCount} perguntas de múltipla escolha com 5 alternativas cada.
 Para cada pergunta, a resposta correta deve estar em posição aleatória entre as 5 alternativas.
 A resposta correta DEVE estar exatamente igual em uma das alternativas.
@@ -33,8 +30,8 @@ Retorne APENAS um JSON válido (sem markdown, sem código, sem explicação extr
   "exportedAt": ${Date.now()},
   "decks": [
     {
-      "id": "${uuidv4()}",
-      "name": "Deck Importado",
+      "id": "${randomUUID()}",
+      "name": "${fileName}",
       "description": "Deck importado via PDF",
       "created_at": "${new Date().toISOString()}"
     }
@@ -54,23 +51,62 @@ Cada card deve ter esta estrutura exatamente:
   "image": null
 }`;
 
-    const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.5,
+        max_tokens: 4000
+      })
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`API Error: ${error.error?.message || response.statusText}`);
+    }
+
+    const data = await response.json();
+    const responseText = data.choices?.[0]?.message?.content;
+
+    if (!responseText) {
+      throw new Error('Resposta vazia do Groq');
+    }
 
     let jsonData;
     try {
       jsonData = JSON.parse(responseText);
     } catch (parseError) {
-      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      // Try to extract JSON from markdown code blocks
+      let jsonMatch = responseText.match(/```(?:json)?\s*([\s\S]*?)```/);
+      let jsonStr = jsonMatch ? jsonMatch[1] : responseText;
+
+      // Try to find JSON object if not in markdown
       if (!jsonMatch) {
-        throw new Error('Resposta do Gemini não contém JSON válido');
+        const objMatch = responseText.match(/\{[\s\S]*\}/);
+        jsonStr = objMatch ? objMatch[0] : jsonStr;
       }
-      jsonData = JSON.parse(jsonMatch[0]);
+
+      // Clean up common JSON issues
+      jsonStr = jsonStr
+        .replace(/,\s*([\]}])/g, '$1') // Remove trailing commas
+        .trim();
+
+      try {
+        jsonData = JSON.parse(jsonStr);
+      } catch (e) {
+        console.error('JSON parsing failed. Response preview:', responseText.substring(0, 500));
+        throw new Error(`Resposta do Groq não contém JSON válido: ${e.message}`);
+      }
     }
 
     return jsonData;
   } catch (error) {
-    throw new Error(`Erro ao gerar cards com Gemini: ${error.message}`);
+    throw new Error(`Erro ao gerar cards com Groq: ${error.message}`);
   }
 }
 
@@ -83,6 +119,16 @@ function validateGeminiResponse(jsonData) {
     throw new Error('Campo "cards" deve ser um array');
   }
 
+  // Garantir que deck tem ID válido
+  jsonData.decks.forEach((deck, index) => {
+    if (!deck.id || typeof deck.id !== 'string' || deck.id.trim() === '') {
+      deck.id = randomUUID();
+    }
+  });
+
+  const deckId = jsonData.decks[0]?.id;
+  const now = new Date().toISOString();
+
   jsonData.cards.forEach((card, index) => {
     if (!card.question) throw new Error(`Card ${index}: campo "question" ausente`);
     if (!card.correct_answer) throw new Error(`Card ${index}: campo "correct_answer" ausente`);
@@ -92,9 +138,28 @@ function validateGeminiResponse(jsonData) {
     if (!card.alternatives.includes(card.correct_answer)) {
       throw new Error(`Card ${index}: "correct_answer" não está em "alternatives"`);
     }
+
+    // Garantir que card tem IDs válidos
+    if (!card.id || typeof card.id !== 'string' || card.id.trim() === '' || !isValidUUID(card.id)) {
+      card.id = randomUUID();
+    }
+    if (!card.deck_id || typeof card.deck_id !== 'string' || card.deck_id.trim() === '' || !isValidUUID(card.deck_id)) {
+      card.deck_id = deckId;
+    }
+
+    // Sempre usar a data atual para next_review (para que cards apareçam imediatamente para estudo)
+    card.next_review = now;
+    if (!card.created_at) {
+      card.created_at = now;
+    }
   });
 
   return true;
+}
+
+function isValidUUID(uuid) {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(uuid);
 }
 
 module.exports = {

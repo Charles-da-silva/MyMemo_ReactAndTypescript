@@ -43,6 +43,30 @@ export async function createCard(card: Card) {
 }
 
 
+export async function updateCard(
+  id: string,
+  card: Card
+) {
+
+  const response = await fetch(
+    `http://localhost:3001/cards/${id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(card)
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Erro ao atualizar card");
+  }
+
+  return response.json();
+}
+
+
 export async function updateCardReview(
   id: string,
   next_review: string
@@ -62,7 +86,7 @@ export async function updateCardReview(
   );
 
   return response.json();
-  
+
 }
 
 
