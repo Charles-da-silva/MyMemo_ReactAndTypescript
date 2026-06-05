@@ -3,7 +3,7 @@
 ## ✅ Pré-requisitos
 
 1. **PostgreSQL rodando** na porta 5432
-2. **Variável de ambiente** `GEMINI_API_KEY` preenchida em `.env`
+2. **Variável de ambiente** `GROQ_API_KEY` preenchida em `.env`
 3. **Node.js** v18+
 
 ## 🚀 Iniciar a Aplicação
@@ -132,10 +132,10 @@ APIs conectam sistemas.
 2. Tente fazer upload
 3. **Esperado:** Erro "PDF não contém texto extraível"
 
-**Teste 3 - Sem GEMINI_API_KEY:**
-1. Remova/deixe vazio GEMINI_API_KEY em .env
+**Teste 3 - Sem GROQ_API_KEY:**
+1. Remova/deixe vazio GROQ_API_KEY em .env
 2. Tente gerar deck com IA
-3. **Esperado:** Erro de autenticação do Gemini
+3. **Esperado:** Erro de autenticação do GROQ
 
 ---
 
@@ -164,7 +164,7 @@ curl -X POST http://localhost:3001/ai/generate-from-pdf \
 **Validações:**
 - [ ] Status 201 em sucesso
 - [ ] Status 400 para arquivo inválido
-- [ ] Status 500 para erro do Gemini
+- [ ] Status 500 para erro do GROQ
 - [ ] Resposta contém deckId e cardCount
 
 ---
@@ -189,10 +189,10 @@ curl -X POST http://localhost:3001/ai/generate-from-pdf \
 ### "PostgreSQL Connection Refused"
 - Inicie PostgreSQL: `brew services start postgresql` (Mac) ou Windows Service
 
-### "GEMINI_API_KEY not set"
+### "GROQ_API_KEY not set"
 - Configure em `Backend/.env`:
 ```
-GEMINI_API_KEY=sua_chave_aqui
+GROQ_API_KEY=sua_chave_aqui
 ```
 
 ### "Module not found"
@@ -207,6 +207,6 @@ GEMINI_API_KEY=sua_chave_aqui
 
 - UUID é gerado no backend
 - Datas em formato ISO 8601
-- Gemini usa modelo `gemini-1.5-flash`
+- GROQ usa modelo `GROQ-1.5-flash`
 - Máximo 10MB por PDF
 - Máximo 100 questões por PDF

@@ -12,7 +12,7 @@ async function extractPdfText(fileBuffer) {
   }
 }
 
-async function generateCardsWithGemini(text, questionCount, fileName = 'Deck Importado') {
+async function generateCardsWithGroq(text, questionCount, fileName = 'Deck Importado') {
   try {
     const apiKey = process.env.GROQ_API_KEY;
     const prompt = `Analise o texto abaixo e gere exatamente ${questionCount} perguntas de múltipla escolha com 5 alternativas cada.
@@ -110,7 +110,7 @@ Cada card deve ter esta estrutura exatamente:
   }
 }
 
-function validateGeminiResponse(jsonData) {
+function validateGroqResponse(jsonData) {
   if (!jsonData.version) throw new Error('Campo "version" ausente');
   if (!jsonData.decks || !Array.isArray(jsonData.decks)) {
     throw new Error('Campo "decks" deve ser um array');
@@ -164,6 +164,6 @@ function isValidUUID(uuid) {
 
 module.exports = {
   extractPdfText,
-  generateCardsWithGemini,
-  validateGeminiResponse,
+  generateCardsWithGroq,
+  validateGroqResponse,
 };

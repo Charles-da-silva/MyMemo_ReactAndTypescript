@@ -53,7 +53,7 @@ async function generateFromPdf(req, res) {
     console.log('Iniciando geração de cards com Groq...');
 
     // Etapa 2: Gerar cards com Groq
-    const geminiResponse = await aiService.generateCardsWithGemini(
+    const groqResponse = await aiService.generateCardsWithGroq(
       pdfText,
       parseInt(questionCount),
       fileName
@@ -61,20 +61,20 @@ async function generateFromPdf(req, res) {
 
     console.log('Resposta do Groq recebida. Validando...');
     console.log('Primeiro card antes da validação:', {
-      next_review: geminiResponse.cards[0]?.next_review,
-      created_at: geminiResponse.cards[0]?.created_at
+      next_review: groqResponse.cards[0]?.next_review,
+      created_at: groqResponse.cards[0]?.created_at
     });
 
     // Etapa 3: Validar resposta
-    aiService.validateGeminiResponse(geminiResponse);
+    aiService.validateGroqResponse(groqResponse);
 
     console.log('Validação completa. Primeiro card depois da validação:', {
-      next_review: geminiResponse.cards[0]?.next_review,
-      created_at: geminiResponse.cards[0]?.created_at
+      next_review: groqResponse.cards[0]?.next_review,
+      created_at: groqResponse.cards[0]?.created_at
     });
 
     // Etapa 4: Importar decks e cards
-    const importResult = await importService.validateAndImportDecksCards(geminiResponse);
+    const importResult = await importService.validateAndImportDecksCards(groqResponse);
 
     if (!importResult.success) {
       console.error('Erro ao importar:', importResult.errors);
@@ -84,8 +84,8 @@ async function generateFromPdf(req, res) {
       });
     }
 
-    const deckName = geminiResponse.decks[0]?.name || 'Deck Importado';
-    const deckId = geminiResponse.decks[0]?.id;
+    const deckName = groqResponse.decks[0]?.name || 'Deck Importado';
+    const deckId = groqResponse.decks[0]?.id;
 
     console.log('Sucesso! Deck importado:', deckId);
 

@@ -1,15 +1,15 @@
 # 🎓 MyMemo - Projeto Extensionista com IA
 
-Sistema completo de flashcards com repetição espaçada, agora com **criação automática de decks usando Gemini AI**, **criação manual** e **edição completa de cards**.
+Sistema completo de flashcards com repetição espaçada, agora com **criação automática de decks usando GROQ AI**, **criação manual** e **edição completa de cards**.
 
 ---
 
 ## 📦 O que foi Implementado
 
-### ✨ Novo: Criação Automática com IA (PDF → Gemini)
+### ✨ Novo: Criação Automática com IA (PDF → GROQ)
 - Upload de PDF
 - Extração automática de texto
-- Geração inteligente de questões via Gemini 1.5 Flash
+- Geração inteligente de questões via GROQ AI
 - Validação robusta de dados
 - Importação automática para o banco
 - **Controle da quantidade de questões** (1-100)
@@ -41,7 +41,7 @@ Sistema completo de flashcards com repetição espaçada, agora com **criação 
 # Backend
 cd Backend
 npm install
-# Configure GEMINI_API_KEY em .env
+# Configure GROQ_API_KEY em .env
 npm start
 
 # Frontend (outro terminal)
@@ -99,7 +99,7 @@ Acesse: http://localhost:5173
 ### Backend
 - **Express.js** - Framework web
 - **PostgreSQL** - Banco de dados
-- **Gemini 1.5 Flash** - IA para gerar questões
+- **GROQ AI** - IA para gerar questões
 - **pdf-parse** - Extração de texto
 - **Multer** - Upload de arquivos
 - **Node.js** - Runtime
@@ -116,13 +116,13 @@ Acesse: http://localhost:5173
 
 ```
 Backend/
-├── .env                    # Configurações (GEMINI_API_KEY)
+├── .env                    # Configurações (GROQ_API_KEY)
 ├── src/
 │   ├── server.js
 │   ├── controllers/
 │   │   └── aiController.js        # Novo: Endpoint IA
 │   ├── services/
-│   │   ├── aiService.js           # Novo: PDF + Gemini
+│   │   ├── aiService.js           # Novo: PDF + GROQ
 │   │   └── importService.js       # Novo: Validação
 │   ├── routes/
 │   │   └── aiRoutes.js            # Novo: Rotas IA
@@ -150,13 +150,13 @@ TESTING.md                 # Guia completo de testes
 
 ## 🔑 Configuração Necessária
 
-### 1. GEMINI_API_KEY
+### 1. GROQ_API_KEY
 
 Obtenha em: https://aistudio.google.com/app/apikeys
 
 ```bash
 # Backend/.env
-GEMINI_API_KEY=sua_chave_aqui
+GROQ_API_KEY=sua_chave_aqui
 ```
 
 ### 2. PostgreSQL
@@ -217,7 +217,7 @@ Response:
 - ✓ Tipo de arquivo (PDF apenas)
 - ✓ Tamanho máximo (10MB)
 - ✓ PDF com texto extraível
-- ✓ JSON válido do Gemini
+- ✓ JSON válido do GROQ
 - ✓ Alternativas contêm resposta
 - ✓ Cards têm deck_id válido
 
@@ -253,10 +253,10 @@ Veja `TESTING.md` para guia completo com:
 cd Backend && npm install pg
 ```
 
-**Erro: "GEMINI_API_KEY not set"**
+**Erro: "GROQ_API_KEY not set"**
 ```bash
 # Backend/.env
-GEMINI_API_KEY=sua_chave_aqui
+GROQ_API_KEY=sua_chave_aqui
 ```
 
 **Erro: "PostgreSQL connection refused"**
@@ -271,7 +271,7 @@ brew services start postgresql
 
 - [ ] Suporte para Word/DOCX files
 - [ ] Batch import de múltiplos PDFs
-- [ ] Retry automático com backoff Gemini
+- [ ] Retry automático com backoff GROQ
 - [ ] Preview de cards antes de salvar
 - [ ] Edição em massa de cards
 - [ ] Histórico de revisões
@@ -283,7 +283,7 @@ brew services start postgresql
 
 Implementado para projeto extensionista da faculdade com foco em **repetição espaçada + IA generativa**.
 
-**Tecnologias:** React, TypeScript, Node.js, PostgreSQL, Gemini AI
+**Tecnologias:** React, TypeScript, Node.js, PostgreSQL, GROQ AI
 
 ---
 

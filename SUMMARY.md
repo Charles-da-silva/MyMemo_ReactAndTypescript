@@ -3,7 +3,7 @@
 ## 🎯 Objetivo Alcançado
 
 Implementação **completa** de 3 fluxos para criação de decks:
-1. ✅ **Automático com IA** (PDF + Gemini)
+1. ✅ **Automático com IA** (PDF + GROQ)
 2. ✅ **Manual** (criação passo a passo)
 3. ✅ **Edição** (modificar cards existentes)
 
@@ -16,7 +16,7 @@ Implementação **completa** de 3 fluxos para criação de decks:
 Backend/
 ├── .env                                  (Configurações - 9 linhas)
 ├── .env.example                          (Template - 9 linhas)
-├── src/services/aiService.js             (Gemini + PDF - 89 linhas)
+├── src/services/aiService.js             (GROQ + PDF - 89 linhas)
 ├── src/services/importService.js         (Validação - 63 linhas)
 ├── src/controllers/aiController.js       (Endpoint - 67 linhas)
 ├── src/routes/aiRoutes.js                (Rotas - 21 linhas)
@@ -75,9 +75,9 @@ User seleciona PDF
     ↓
 Backend extrai texto (pdf-parse)
     ↓
-Envia para Gemini 1.5 Flash
+Envia para GROQ 1.5 Flash
     ↓
-Gemini retorna JSON estruturado
+GROQ retorna JSON estruturado
     ↓
 Backend valida JSON
     ↓
@@ -145,10 +145,10 @@ Todos documentados em `TESTING.md`:
 
 ## 🔑 Configuração Necessária
 
-**1. GEMINI_API_KEY**
+**1. GROQ_API_KEY**
 ```bash
 Backend/.env
-GEMINI_API_KEY=AIzaSyDIBIj9kf5qaJBZjuSxLQGE6NvE2XXd5XM
+GROQ_API_KEY=AIzaSyDIBIj9....
 ```
 
 **2. PostgreSQL** rodando em localhost:5432
@@ -177,7 +177,7 @@ GEMINI_API_KEY=AIzaSyDIBIj9kf5qaJBZjuSxLQGE6NvE2XXd5XM
    - Separação de responsabilidades
    - Fácil para manutenção futura
 
-5. **Gemini Integration**
+5. **GROQ Integration**
    - Prompt customizado para português
    - Extrai texto em UTF-8
    - Sanitiza JSON response
@@ -203,7 +203,7 @@ GEMINI_API_KEY=AIzaSyDIBIj9kf5qaJBZjuSxLQGE6NvE2XXd5XM
 ## 🚀 Como Executar
 
 ```bash
-# 1. Configure GEMINI_API_KEY
+# 1. Configure GROQ_API_KEY
 nano Backend/.env
 
 # 2. Inicie backend
@@ -245,7 +245,7 @@ cd Frontend && npm run dev
 
 **Objetivo:** Sistema de flashcards com repetição espaçada + IA generativa
 
-**Tecnologias:** React, TypeScript, Node.js, PostgreSQL, Gemini AI
+**Tecnologias:** React, TypeScript, Node.js, PostgreSQL, GROQ AI
 
 **Status:** ✅ **COMPLETO E PRONTO PARA USO**
 
