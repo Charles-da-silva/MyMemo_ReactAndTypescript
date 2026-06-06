@@ -1,4 +1,4 @@
-import type { ChangeEvent, Dispatch, SetStateAction } from "react";
+import type { ChangeEvent } from "react";
 import type { Deck, Card } from "../types/types";
 import { createCard } from "../services/cardsService";
 

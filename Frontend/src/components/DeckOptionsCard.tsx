@@ -30,9 +30,7 @@ export default function DeckOptionsCard({ mode, setMode, selectedDeckId: initial
   console.log('DeckOptionsCard renderizado. Mode:', mode, 'isReviewReady:', isReviewReady, 'cards:', cards.length, 'selectedDeckId:', selectedDeckId);
   const { exportDecks } = useDeckImportExport({
     decks,
-    cards,
-    setDecks,
-    setCards
+    cards
   });
 
   const showPopUp = ({ title, text, icon, action, confirmButtonText }: any) => {
