@@ -1,7 +1,5 @@
 {
   "buildCommand": "cd Frontend && npm run build",
-  "outputDirectory": "Frontend/dist",
-  "env": {
-    "VITE_API_URL": "@vite_api_url"
-  }
+  "outputDirectory": "Frontend/dist"
 }
+

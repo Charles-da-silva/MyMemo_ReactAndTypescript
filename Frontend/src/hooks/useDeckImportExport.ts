@@ -5,11 +5,11 @@ import { createCard } from "../services/cardsService";
 type UseDeckImportExportProps = {
   decks: Deck[];
   cards: Card[];
-  setDecks: Dispatch<
+  _setDecks?: Dispatch<
     SetStateAction<Deck[]>
   >;
 
-  setCards: Dispatch<
+  _setCards?: Dispatch<
     SetStateAction<Card[]>
   >;
 
