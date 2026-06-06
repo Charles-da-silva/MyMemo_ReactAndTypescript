@@ -24,9 +24,7 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
   const [cards, setCards] = useState<Card[]>([]);
   const { } = useDeckImportExport({
     decks,
-    cards,
-    setDecks,
-    setCards
+    cards
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
