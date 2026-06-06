@@ -8,6 +8,6 @@ export const router = createBrowserRouter([
   },
 ],
   {
-    basename: "/MyMemo_ReactAndTypescript"
+    basename: "/"
   }
 ); 
