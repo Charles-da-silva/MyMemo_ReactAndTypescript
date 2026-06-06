@@ -1,5 +1,5 @@
 // URL base da API Node
-const API_URL = "http://localhost:3001/decks";
+const API_URL = "https://mymemo-reactandtypescript.onrender.com/decks";
 
 
 // =========================

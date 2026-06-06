@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3001/ai";
+const API_URL = "https://mymemo-reactandtypescript.onrender.com/ai";
 
 export async function generateCardsFromPdf(
   file: File,

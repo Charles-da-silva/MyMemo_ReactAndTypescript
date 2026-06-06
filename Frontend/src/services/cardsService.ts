@@ -2,7 +2,7 @@ import type { Card } from "../types/types";
 
 export async function getCardsByDeckId(deckId: string) {
 
-  const response = await fetch(`http://localhost:3001/cards/${deckId}`
+  const response = await fetch(`https://mymemo-reactandtypescript.onrender.com/cards/${deckId}`
   );
 
   if (!response.ok) {
@@ -16,7 +16,7 @@ export async function getCardsByDeckId(deckId: string) {
 export async function createCard(card: Card) {
 
   const response = await fetch(
-    "http://localhost:3001/cards",
+    "https://mymemo-reactandtypescript.onrender.com/cards",
     {
       method: "POST",
       headers: {
@@ -49,7 +49,7 @@ export async function updateCard(
 ) {
 
   const response = await fetch(
-    `http://localhost:3001/cards/${id}`,
+    `https://mymemo-reactandtypescript.onrender.com/cards/${id}`,
     {
       method: "PUT",
       headers: {
@@ -73,7 +73,7 @@ export async function updateCardReview(
 ) {
 
   const response = await fetch(
-    `http://localhost:3001/cards/${id}/review`,
+    `https://mymemo-reactandtypescript.onrender.com/cards/${id}/review`,
     {
       method: "PATCH",
       headers: {
@@ -96,7 +96,7 @@ export async function deleteCard(
 ) {
 
   const response = await fetch(
-    `http://localhost:3001/cards/${id}`,
+    `https://mymemo-reactandtypescript.onrender.com/cards/${id}`,
     {
       method: "DELETE"
     }

@@ -109,7 +109,7 @@ export function useDeckImportExport({
         for (const deck of data.decks) {
 
           await fetch(
-            "http://localhost:3001/decks",
+            "https://mymemo-reactandtypescript.onrender.com/decks",
             {
               method: "POST",
               headers: {
