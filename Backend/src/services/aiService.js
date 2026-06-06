@@ -15,40 +15,20 @@ async function extractPdfText(fileBuffer) {
 async function generateCardsWithGroq(text, questionCount, fileName = 'Deck Importado') {
   try {
     const apiKey = process.env.GROQ_API_KEY;
-    const prompt = `Analise o texto abaixo e gere exatamente ${questionCount} perguntas de múltipla escolha com 5 alternativas cada.
-Para cada pergunta, a resposta correta deve estar em posição aleatória entre as 5 alternativas.
-A resposta correta DEVE estar exatamente igual em uma das alternativas.
+    const prompt = `Gere exatamente ${questionCount} perguntas de múltipla escolha baseadas no texto abaixo.
 
-Texto para análise:
-"""
+Texto:
 ${text}
-"""
 
-Retorne APENAS um JSON válido (sem markdown, sem código, sem explicação extra):
+Responda APENAS com JSON válido (sem markdown, sem explicação):
 {
-  "version": 1,
-  "exportedAt": ${Date.now()},
-  "decks": [
+  "cards": [
     {
-      "id": "${randomUUID()}",
-      "name": "${fileName}",
-      "description": "Deck importado via PDF",
-      "created_at": "${new Date().toISOString()}"
+      "question": "pergunta aqui",
+      "correct_answer": "resposta correta",
+      "alternatives": ["resposta correta", "opção 2", "opção 3", "opção 4", "opção 5"]
     }
-  ],
-  "cards": [ARRAY DE CARDS COM ESTRUTURA ABAIXO]
-}
-
-Cada card deve ter esta estrutura exatamente:
-{
-  "id": "<uuid>",
-  "deck_id": "<uuid do deck acima>",
-  "question": "<pergunta>",
-  "correct_answer": "<texto exato da resposta correta>",
-  "alternatives": ["<alt1>", "<alt2>", "<alt3>", "<alt4>", "<alt5>"],
-  "next_review": "${new Date().toISOString()}",
-  "created_at": "${new Date().toISOString()}",
-  "image": null
+  ]
 }`;
 
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -60,8 +40,8 @@ Cada card deve ter esta estrutura exatamente:
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
         messages: [{ role: 'user', content: prompt }],
-        temperature: 0.5,
-        max_tokens: 4000
+        temperature: 0.3,
+        max_tokens: 8000
       })
     });
 
@@ -81,20 +61,15 @@ Cada card deve ter esta estrutura exatamente:
     try {
       jsonData = JSON.parse(responseText);
     } catch (parseError) {
-      // Try to extract JSON from markdown code blocks
       let jsonMatch = responseText.match(/```(?:json)?\s*([\s\S]*?)```/);
       let jsonStr = jsonMatch ? jsonMatch[1] : responseText;
 
-      // Try to find JSON object if not in markdown
       if (!jsonMatch) {
         const objMatch = responseText.match(/\{[\s\S]*\}/);
         jsonStr = objMatch ? objMatch[0] : jsonStr;
       }
 
-      // Clean up common JSON issues
-      jsonStr = jsonStr
-        .replace(/,\s*([\]}])/g, '$1') // Remove trailing commas
-        .trim();
+      jsonStr = jsonStr.replace(/,\s*([\]}])/g, '$1').trim();
 
       try {
         jsonData = JSON.parse(jsonStr);
@@ -104,7 +79,32 @@ Cada card deve ter esta estrutura exatamente:
       }
     }
 
-    return jsonData;
+    const { randomUUID } = require('crypto');
+    const deckId = randomUUID();
+    const now = new Date().toISOString();
+
+    return {
+      version: 1,
+      exportedAt: Date.now(),
+      decks: [
+        {
+          id: deckId,
+          name: fileName,
+          description: 'Deck importado via PDF',
+          created_at: now
+        }
+      ],
+      cards: jsonData.cards.map(card => ({
+        id: randomUUID(),
+        deck_id: deckId,
+        question: card.question,
+        correct_answer: card.correct_answer,
+        alternatives: card.alternatives,
+        next_review: now,
+        created_at: now,
+        image: null
+      }))
+    };
   } catch (error) {
     throw new Error(`Erro ao gerar cards com Groq: ${error.message}`);
   }
