@@ -15,10 +15,15 @@ async function extractPdfText(fileBuffer) {
 async function generateCardsWithGroq(text, questionCount, fileName = 'Deck Importado') {
   try {
     const apiKey = process.env.GROQ_API_KEY;
+
+    // Limitar texto para evitar exceder limite de tokens do Groq
+    const maxChars = 15000;
+    const truncatedText = text.length > maxChars ? text.substring(0, maxChars) + '...' : text;
+
     const prompt = `Gere exatamente ${questionCount} perguntas de múltipla escolha baseadas no texto abaixo.
 
 Texto:
-${text}
+${truncatedText}
 
 Responda APENAS com JSON válido (sem markdown, sem explicação):
 {
