@@ -79,7 +79,7 @@ async function createCard(card) {
     card.question,
     card.correct_answer,
     finalNextReview,
-    card.alternatives ? JSON.stringify(card.alternatives) : null,
+    card.alternatives || [],
     card.image || null,
     card.created_at || new Date().toISOString()
   ];
@@ -110,7 +110,7 @@ async function updateCard(id, card) {
   const values = [
     card.question,
     card.correct_answer,
-    JSON.stringify(card.alternatives),
+    card.alternatives || [],
     card.next_review,
     card.image,
     id
