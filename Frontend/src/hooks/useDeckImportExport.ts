@@ -5,14 +5,6 @@ import { createCard } from "../services/cardsService";
 type UseDeckImportExportProps = {
   decks: Deck[];
   cards: Card[];
-  _setDecks?: Dispatch<
-    SetStateAction<Deck[]>
-  >;
-
-  _setCards?: Dispatch<
-    SetStateAction<Card[]>
-  >;
-
   loadDecks?: () => Promise<void>;
 };
 
@@ -26,8 +18,6 @@ type ExportData = {
 export function useDeckImportExport({
   decks,
   cards,
-  _setDecks,
-  _setCards,
   loadDecks
 
 }: UseDeckImportExportProps) {
