@@ -31,7 +31,7 @@ export default function HomeCard({
   const [decks, setDecks] =
     useState<Deck[]>([]);
 
-  const [cards, setCards] =
+  const [cards] =
     useState<Card[]>([]);
 
   async function loadDecks() {
@@ -53,8 +53,6 @@ export default function HomeCard({
     useDeckImportExport({
       decks,
       cards,
-      setDecks,
-      setCards,
       loadDecks
     });
 
