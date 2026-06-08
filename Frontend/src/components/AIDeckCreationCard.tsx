@@ -138,7 +138,7 @@ Retorne APENAS um arquivo de extensão .json válido (sem markdown, sem explica�
           Passos para seguir:
         </p>
 
-        <ol style={{ marginLeft: '20px', lineHeight: '1.8' }}>
+        <ol style={{ marginLeft: '20px', lineHeight: '1.8', alignItems: 'left' }}>
           <li className="personText smallText" style={{ marginBottom: '10px' }}>
             <strong>Clique no botão</strong> "Copiar Prompt" acima
           </li>
@@ -152,10 +152,10 @@ Retorne APENAS um arquivo de extensão .json válido (sem markdown, sem explica�
             <strong>Anexe o arquivo</strong> PDF ou Word no chat
           </li>
           <li className="personText smallText" style={{ marginBottom: '10px' }}>
-            <strong>Copie o JSON</strong> que a IA gerar
+            <strong>salve o arquivo JSON</strong> que a IA gerar
           </li>
           <li className="personText smallText">
-            <strong>Volte aqui</strong> e importe o arquivo na tela inicial
+            <strong>Volte aqui</strong> e na tela inicial do app importe o arquivo de deck que a IA gerou para começar a estudar!
           </li>
         </ol>
       </div>
