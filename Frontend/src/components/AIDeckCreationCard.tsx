@@ -152,7 +152,7 @@ Retorne APENAS um JSON válido (sem markdown, sem explicação) com a seguinte e
             <strong>Anexe no chat o arquivo</strong> PDF ou Word que contém o conteúdo que deseja estudar (a maioria das IAs suporta anexos, mas se a sua não suportar, tente outra IA. Indicamos Gemini) 
           </li>
           <li className="mediumText" style={{ marginBottom: '10px', fontSize: 'clamp(12px, 3vw, 14px)' }}>
-            <strong>Aguarde a IA gerar o arquivo JSON</strong> e faça download do arquivo gerado (a maioria das IAs tem opção de baixar o arquivo, mas se a sua não tiver, copie e cole o conteúdo do JSON em um editor de texto e salve como .json)
+            <strong>Aguarde a IA gerar o arquivo JSON</strong> e faça download do arquivo
           </li>
           <li className="mediumText" style={{ marginBottom: '10px', fontSize: 'clamp(12px, 3vw, 14px)' }}>
             <strong>Volte aqui no app</strong> e na na tela inicial importe o arquivo 
