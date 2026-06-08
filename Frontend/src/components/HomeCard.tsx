@@ -68,11 +68,11 @@ export default function HomeCard({
   return (
     <>
       <div padding-top="10px" justify-content="center" align-items="center" className="homeCard">
-      <p className="personText largeText">Selecione um Deck para estudar ou gerenciar</p>
-      <br />
 
       {!decksLoaded ? (
         <>
+          <p className="personText largeText">Clique no botão abaixo para carregar os decks existentes.</p>
+          <br />
           <button
             onClick={loadDecks}
             disabled={isLoadingDecks}
@@ -85,20 +85,24 @@ export default function HomeCard({
       ) : isLoadingDecks ? (
         <p className="personText mediumText" style={{ color: '#888' }}>Carregando decks... aguarde.</p>
       ) : (
-        <select id="select-deck" value={selectedDeckId} onChange={(e) => {
-            const id = e.target.value;
-            setSelectedDeckId(id);
-            setSelectedDeck([id]);
-            setMode("deckOptions");
+        <>
+          <p className="personText largeText">Selecione um Deck para estudar ou gerenciar</p>
+          <br />
+          <select id="select-deck" value={selectedDeckId} onChange={(e) => {
+              const id = e.target.value;
+              setSelectedDeckId(id);
+              setSelectedDeck([id]);
+              setMode("deckOptions");
 
-          }}>
-          <option value="">Lista de Decks disponíveis</option>
-          {decks.map(d => (
-            <option key={d.id} value={d.id}>
-              {d.name}
-            </option>
-          ))}
-        </select>
+            }}>
+            <option value="">Lista de Decks disponíveis</option>
+            {decks.map(d => (
+              <option key={d.id} value={d.id}>
+                {d.name}
+              </option>
+            ))}
+          </select>
+        </>
       )}
       
       <br /><br /><br />      
