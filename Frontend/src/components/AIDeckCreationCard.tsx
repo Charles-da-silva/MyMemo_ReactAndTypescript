@@ -139,22 +139,22 @@ Retorne APENAS um arquivo de extensão .json válido (sem markdown, sem explica�
         </p>
 
         <ol style={{ marginLeft: '20px', lineHeight: '1.8', alignItems: 'left' }}>
-          <li className="personText smallText" style={{ marginBottom: '10px' }}>
+          <li className="personText smallText" style={{ marginBottom: '10px', textAlign: 'left' }}>
             <strong>Clique no botão</strong> "Copiar Prompt" acima
           </li>
-          <li className="personText smallText" style={{ marginBottom: '10px' }}>
+          <li className="personText smallText" style={{ marginBottom: '10px', textAlign: 'left' }}>
             <strong>Abra sua IA de preferência</strong> (ChatGPT, Claude, Gemini, etc)
           </li>
-          <li className="personText smallText" style={{ marginBottom: '10px' }}>
+          <li className="personText smallText" style={{ marginBottom: '10px', textAlign: 'left' }}>
             <strong>Cole o prompt</strong> no chat (botão direito → colar como texto)
           </li>
-          <li className="personText smallText" style={{ marginBottom: '10px' }}>
+          <li className="personText smallText" style={{ marginBottom: '10px', textAlign: 'left' }}>
             <strong>Anexe o arquivo</strong> PDF ou Word no chat
           </li>
-          <li className="personText smallText" style={{ marginBottom: '10px' }}>
+          <li className="personText smallText" style={{ marginBottom: '10px', textAlign: 'left' }}>
             <strong>salve o arquivo JSON</strong> que a IA gerar
           </li>
-          <li className="personText smallText">
+          <li className="personText smallText" style={{ textAlign: 'left' }}>
             <strong>Volte aqui</strong> e na tela inicial do app importe o arquivo de deck que a IA gerou para começar a estudar!
           </li>
         </ol>
