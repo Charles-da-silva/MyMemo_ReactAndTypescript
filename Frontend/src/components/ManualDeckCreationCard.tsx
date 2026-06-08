@@ -215,6 +215,7 @@ export default function ManualDeckCreationCard({ setMode }: ManualDeckCreationCa
       ) : (
         <>
           <p className="personText largeText" style={{ width: '80vw' }}>Adicionar Cards</p>
+          <br />
           <p className="personText mediumText">Deck: <strong>{deckName}</strong></p>
           <br />
 
@@ -264,6 +265,7 @@ export default function ManualDeckCreationCard({ setMode }: ManualDeckCreationCa
           <p className="personText mediumText" style={{ marginBottom: '10px' }}>
             {cards.length} card(s) adicionado(s)
           </p>
+          <br />
 
           <button
             onClick={() => {
@@ -271,11 +273,11 @@ export default function ManualDeckCreationCard({ setMode }: ManualDeckCreationCa
               setIsModalOpen(true);
             }}
             className="btn btn-blue"
-            style={{ marginRight: '10px' }}
             disabled={isSubmitting}
           >
             + Adicionar Card
           </button>
+          <br />
 
           <button
             onClick={handleSaveAllCards}

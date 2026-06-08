@@ -79,7 +79,7 @@ export default function HomeCard({
             className="btn btn-blue"
             style={{ opacity: isLoadingDecks ? 0.5 : 1 }}
           >
-            {isLoadingDecks ? 'Carregando...' : 'Carregar Decks Existentes'}
+            {isLoadingDecks ? 'Carregando...' : 'Carregar Decks'}
           </button>
         </>
       ) : isLoadingDecks ? (

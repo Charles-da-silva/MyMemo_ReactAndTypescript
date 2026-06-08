@@ -146,21 +146,24 @@ Retorne APENAS um JSON válido (sem markdown, sem explicação) com a seguinte e
             <strong>Abra um novo chat em sua IA de preferência</strong> (ChatGPT, Claude, Gemini, etc)
           </li>
           <li className="mediumText" style={{ marginBottom: '10px', fontSize: 'clamp(12px, 3vw, 14px)' }}>
-            <strong>Cole o prompt</strong> no chat (botão direito → colar como texto)
+            <strong>Cole o prompt</strong> no chat
           </li>
           <li className="mediumText" style={{ marginBottom: '10px', fontSize: 'clamp(12px, 3vw, 14px)' }}>
-            <strong>Anexe no chat o arquivo</strong> PDF ou Word que contém o conteúdo que deseja estudar (a maioria das IAs suporta anexos, mas se a sua não suportar, tente outra IA. Indicamos Gemini) 
+            <strong>Anexe(+) o arquivo</strong> de texto que contém o conteúdo que deseja estudar (a maioria das IAs suporta anexos, mas se a sua não suportar, tente outra IA. Indicamos Gemini) 
           </li>
           <li className="mediumText" style={{ marginBottom: '10px', fontSize: 'clamp(12px, 3vw, 14px)' }}>
-            <strong>Aguarde a IA gerar o arquivo JSON</strong> e faça download do arquivo
+            <strong>Aguarde a IA gerar o arquivo JSON</strong> e faça download do mesmo
           </li>
           <li className="mediumText" style={{ marginBottom: '10px', fontSize: 'clamp(12px, 3vw, 14px)' }}>
             <strong>Volte aqui no app</strong> e na na tela inicial importe o arquivo 
           </li>
         </ol>
+        <p style={{ marginTop: '20px', textAlign: 'center', fontSize: 'clamp(12px, 3vw, 14px)' }}>
+          <a href="https://example.com/demo-video" target="_blank" rel="noopener noreferrer">
+            Link de um vídeo demonstrativo
+          </a>
+        </p>
       </div>
-
-      
 
       <img
         src={homeIcon}

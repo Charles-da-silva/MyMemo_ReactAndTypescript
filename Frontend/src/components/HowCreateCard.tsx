@@ -18,7 +18,7 @@ export default function HowCreateCard({ setMode }: HomeCardProps) {
         <p className="personText largeText" style={{ width: '80vw' }}>De que forma deseja criar o Deck?</p>
         <br />
 
-        <p className="personText mediumText">Importe arquivos em PDF e
+        <p className="personText mediumText">Importe arquivos de texto (exemplo: PDF, Word, TXT) e
           deixe a IA criar todas as perguntas e respostas para você!
         </p>
         <br />

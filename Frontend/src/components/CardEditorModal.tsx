@@ -129,10 +129,10 @@ export default function CardEditorModal({
         color: '#fff',
         padding: '30px',
         borderRadius: '12px',
-        maxHeight: '90vh',
+        maxHeight: '90%',
         overflowY: 'auto',
         width: '90%',
-        maxWidth: '600px',
+        
       }}>
         <h2 style={{ marginBottom: '20px' }}>
           {initialCard ? 'Editar Card' : 'Novo Card'}
