@@ -52,12 +52,49 @@ ${text}
 
 Retorne APENAS um JSON válido (sem markdown, sem explicação) com a seguinte estrutura:
 {
+  "version": 1,
+  "exportedAt": 1779371223569,
+  "decks": [
+    {
+      "id": "46717e54-2097-4e65-b0e3-b6763cf881a3",
+      "name": "Backend Junior - Versat (Sem Duplicatas) xxx",
+      "description": "Deck importado",
+      "created_at": "2026-05-21T04:07:08.867Z"
+    }
+  ],
   "cards": [
     {
-      "question": "pergunta aqui",
-      "correct_answer": "resposta correta",
-      "alternatives": ["opção 1", "opção 2", "resposta correta", "opção 4", "opção 5"]
-    }
+      "id": "4dbd216d-8c91-4ec3-9e14-6723bf217bf8",
+      "deck_id": "46717e54-2097-4e65-b0e3-b6763cf881a3",
+      "question": "Ao desenvolver para uma AgTech internacional, qual a importância de tratar fusos horários no código?",
+      "correct_answer": "Garantir que registros financeiros e logísticos (ERP) estejam corretos entre diferentes países",
+      "alternatives": [
+        "Nenhuma, pois o computador ajusta isso sozinho",
+        "Apenas estética visual para o usuário final",
+        "Garantir que registros financeiros e logísticos (ERP) estejam corretos entre diferentes países",
+        "Evitar que o computador trave ao mudar o dia",
+        "Aumentar a velocidade de processamento do banco de dados"
+      ],
+      "next_review": "2026-04-22T16:32:19.436Z",
+      "created_at": "2026-05-21T04:07:09.052Z",
+      "image": null
+    },
+    {
+      "id": "1618bb19-1ca9-4bf5-86ad-89a33e5320a9",
+      "deck_id": "46717e54-2097-4e65-b0e3-b6763cf881a3",
+      "question": "Ao receber um feedback negativo em uma 'Code Review', qual a atitude esperada de um Junior na Versat?",
+      "correct_answer": "Analisar os pontos, tirar dúvidas se necessário e aplicar as melhorias sugeridas",
+      "alternatives": [
+        "Justificar que o erro foi da ferramenta de desenvolvimento",
+        "Analisar os pontos, tirar dúvidas se necessário e aplicar as melhorias sugeridas",
+        "Ignorar as sugestões e fazer o merge assim mesmo",
+        "Pedir para mudar de tarefa imediatamente",
+        "Apagar o código e não entregar a tarefa"
+      ],
+      "next_review": "2026-04-22T16:32:19.436Z",
+      "created_at": "2026-05-21T04:07:08.993Z",
+      "image": null
+    }    
   ]
 }`;
 
