@@ -34,18 +34,22 @@ export default function HomeCard({
   const [cards] =
     useState<Card[]>([]);
 
+  const [isLoadingDecks, setIsLoadingDecks] = useState(false);
+  const [decksLoaded, setDecksLoaded] = useState(false);
+
   async function loadDecks() {
-
+    setIsLoadingDecks(true);
     try {
-
       const apiDecks =
         await getDecks();
 
       setDecks(apiDecks);
-
+      setDecksLoaded(true);
     } catch (error) {
-
       console.error(error);
+      setDecksLoaded(true);
+    } finally {
+      setIsLoadingDecks(false);
     }
   }
 
@@ -57,7 +61,7 @@ export default function HomeCard({
     });
 
   useEffect(() => {
-    loadDecks();
+    // Não carrega automaticamente, aguarda clique do usuário
   }, []);
 
 
@@ -66,24 +70,36 @@ export default function HomeCard({
       <div padding-top="10px" justify-content="center" align-items="center" className="homeCard">
       <p className="personText largeText">Selecione um Deck para estudar ou gerenciar</p>
       <br />
-      
-      <select id="select-deck" value={selectedDeckId} onChange={(e) => {
-          const id = e.target.value;
-          setSelectedDeckId(id);
-          setSelectedDeck([id]);           
-          setMode("deckOptions"); // MainPage renderizará o DeckOptionsCard com a prop setSelectedDeckId, 
-          // que atualiza o estado selectedDeckId aqui. Assim, quando o usuário seleciona um deck, 
-          // o modo é alterado para "deckOptions" e o DeckOptionsCard é renderizado, recebendo o ID do 
-          // deck selecionado para que possa exibir as opções corretas.
-                   
-        }}>
-        <option value="">Lista de Decks disponíveis</option>
-        {decks.map(d => (
-          <option key={d.id} value={d.id}>
-            {d.name}
-          </option>
-        ))}
-      </select>
+
+      {!decksLoaded ? (
+        <>
+          <button
+            onClick={loadDecks}
+            disabled={isLoadingDecks}
+            className="btn btn-blue"
+            style={{ opacity: isLoadingDecks ? 0.5 : 1 }}
+          >
+            {isLoadingDecks ? 'Carregando...' : 'Carregar Decks Existentes'}
+          </button>
+        </>
+      ) : isLoadingDecks ? (
+        <p className="personText mediumText" style={{ color: '#888' }}>Carregando decks... aguarde.</p>
+      ) : (
+        <select id="select-deck" value={selectedDeckId} onChange={(e) => {
+            const id = e.target.value;
+            setSelectedDeckId(id);
+            setSelectedDeck([id]);
+            setMode("deckOptions");
+
+          }}>
+          <option value="">Lista de Decks disponíveis</option>
+          {decks.map(d => (
+            <option key={d.id} value={d.id}>
+              {d.name}
+            </option>
+          ))}
+        </select>
+      )}
       
       <br /><br /><br />      
       <p className="personText largeText">Crie ou importe um Deck</p>
