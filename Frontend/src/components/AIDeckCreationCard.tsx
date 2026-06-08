@@ -35,51 +35,14 @@ Regras obrigatórias:
 16. Não repita alternativas desnecessariamente.
 17. Toda resposta correta deve estar explicitamente fundamentada no conteúdo do PDF.
 
-Retorne APENAS um arquivo de extensão .json válido (sem markdown, sem explicação) com a seguinte estrutura:
+Retorne APENAS um JSON válido (sem markdown, sem explicação) com a seguinte estrutura:
 {
-  "version": 1,
-  "exportedAt": 1779371223569,
-  "decks": [
-    {
-      "id": "46717e54-2097-4e65-b0e3-b6763cf881a3",
-      "name": "Backend Junior - Versat (Sem Duplicatas) xxx",
-      "description": "Deck importado",
-      "created_at": "2026-05-21T04:07:08.867Z"
-    }
-  ],
   "cards": [
     {
-      "id": "4dbd216d-8c91-4ec3-9e14-6723bf217bf8",
-      "deck_id": "46717e54-2097-4e65-b0e3-b6763cf881a3",
-      "question": "Ao desenvolver para uma AgTech internacional, qual a importância de tratar fusos horários no código?",
-      "correct_answer": "Garantir que registros financeiros e logísticos (ERP) estejam corretos entre diferentes países",
-      "alternatives": [
-        "Nenhuma, pois o computador ajusta isso sozinho",
-        "Apenas estética visual para o usuário final",
-        "Garantir que registros financeiros e logísticos (ERP) estejam corretos entre diferentes países",
-        "Evitar que o computador trave ao mudar o dia",
-        "Aumentar a velocidade de processamento do banco de dados"
-      ],
-      "next_review": "2026-04-22T16:32:19.436Z",
-      "created_at": "2026-05-21T04:07:09.052Z",
-      "image": null
-    },
-    {
-      "id": "1618bb19-1ca9-4bf5-86ad-89a33e5320a9",
-      "deck_id": "46717e54-2097-4e65-b0e3-b6763cf881a3",
-      "question": "Ao receber um feedback negativo em uma 'Code Review', qual a atitude esperada de um Junior na Versat?",
-      "correct_answer": "Analisar os pontos, tirar dúvidas se necessário e aplicar as melhorias sugeridas",
-      "alternatives": [
-        "Justificar que o erro foi da ferramenta de desenvolvimento",
-        "Analisar os pontos, tirar dúvidas se necessário e aplicar as melhorias sugeridas",
-        "Ignorar as sugestões e fazer o merge assim mesmo",
-        "Pedir para mudar de tarefa imediatamente",
-        "Apagar o código e não entregar a tarefa"
-      ],
-      "next_review": "2026-04-22T16:32:19.436Z",
-      "created_at": "2026-05-21T04:07:08.993Z",
-      "image": null
-    }    
+      "question": "pergunta aqui",
+      "correct_answer": "resposta correta",
+      "alternatives": ["opção 1", "opção 2", "resposta correta", "opção 4", "opção 5"]
+    }
   ]
 }`;
 
@@ -104,10 +67,24 @@ Retorne APENAS um arquivo de extensão .json válido (sem markdown, sem explica�
       <Logo />
       <br /><br />
 
-      <p className="personText largeText" style={{ width: '80vw' }}>Criar Deck com IA</p>
+      <p className="personText largeText" style={{
+        width: '90vw',
+        maxWidth: '600px',
+        margin: '0 auto',
+        fontSize: 'clamp(24px, 6vw, 32px)'
+      }}>
+        Criar Deck com IA
+      </p>
       <br />
 
-      <p className="personText mediumText" style={{ width: '85vw', textAlign: 'center', lineHeight: '1.6' }}>
+      <p className="personText mediumText" style={{
+        width: '90vw',
+        maxWidth: '600px',
+        textAlign: 'center',
+        lineHeight: '1.6',
+        fontSize: 'clamp(14px, 4vw, 18px)',
+        margin: '0 auto'
+      }}>
         Vamos usar a IA para criar perguntas automaticamente!
         <br /><br />
         Clique no botão abaixo para copiar o prompt que você irá usar em sua IA de preferência.
@@ -119,7 +96,11 @@ Retorne APENAS um arquivo de extensão .json válido (sem markdown, sem explica�
       <button
         onClick={handleCopyPrompt}
         className="btn btn-blue"
-        style={{ marginBottom: '20px' }}
+        style={{
+          marginBottom: '20px',
+          fontSize: 'clamp(12px, 3vw, 14px)',
+          padding: 'clamp(8px, 2vw, 12px) clamp(16px, 4vw, 20px)'
+        }}
       >
         {copied ? '✓ Copiado!' : 'Copiar Prompt'}
       </button>
@@ -128,34 +109,43 @@ Retorne APENAS um arquivo de extensão .json válido (sem markdown, sem explica�
 
       <div style={{
         backgroundColor: '#2a2a2a',
-        padding: '20px',
+        padding: 'clamp(15px, 4vw, 20px)',
         borderRadius: '8px',
-        width: '85vw',
-        maxWidth: '500px',
+        width: '90vw',
+        maxWidth: '600px',
         textAlign: 'left',
+        margin: '0 auto'
       }}>
-        <p className="personText smallText" style={{ fontWeight: 'bold', marginBottom: '15px' }}>
+        <p className="personText smallText" style={{
+          fontWeight: 'bold',
+          marginBottom: '15px',
+          fontSize: 'clamp(14px, 3vw, 16px)'
+        }}>
           Passos para seguir:
         </p>
 
-        <ol style={{ marginLeft: '20px', lineHeight: '1.8', alignItems: 'left' }}>
-          <li className="personText smallText" style={{ marginBottom: '10px', textAlign: 'left' }}>
+        <ol style={{
+          marginLeft: 'clamp(15px, 4vw, 20px)',
+          lineHeight: '1.8',
+          fontSize: 'clamp(12px, 3vw, 14px)'
+        }}>
+          <li style={{ marginBottom: '10px' }}>
             <strong>Clique no botão</strong> "Copiar Prompt" acima
           </li>
-          <li className="personText smallText" style={{ marginBottom: '10px', textAlign: 'left' }}>
+          <li style={{ marginBottom: '10px' }}>
             <strong>Abra sua IA de preferência</strong> (ChatGPT, Claude, Gemini, etc)
           </li>
-          <li className="personText smallText" style={{ marginBottom: '10px', textAlign: 'left' }}>
+          <li style={{ marginBottom: '10px' }}>
             <strong>Cole o prompt</strong> no chat (botão direito → colar como texto)
           </li>
-          <li className="personText smallText" style={{ marginBottom: '10px', textAlign: 'left' }}>
+          <li style={{ marginBottom: '10px' }}>
             <strong>Anexe o arquivo</strong> PDF ou Word no chat
           </li>
-          <li className="personText smallText" style={{ marginBottom: '10px', textAlign: 'left' }}>
-            <strong>salve o arquivo JSON</strong> que a IA gerar
+          <li style={{ marginBottom: '10px' }}>
+            <strong>Copie o JSON</strong> que a IA gerar
           </li>
-          <li className="personText smallText" style={{ textAlign: 'left' }}>
-            <strong>Volte aqui</strong> e na tela inicial do app importe o arquivo de deck que a IA gerou para começar a estudar!
+          <li>
+            <strong>Volte aqui</strong> e importe o arquivo na tela inicial
           </li>
         </ol>
       </div>
@@ -169,7 +159,9 @@ Retorne APENAS um arquivo de extensão .json válido (sem markdown, sem explica�
         onClick={() => setMode("home")}
         style={{
           cursor: 'pointer',
-          paddingTop: 15
+          paddingTop: 15,
+          width: 'clamp(30px, 8vw, 40px)',
+          height: 'auto'
         }}
       />
     </div>
