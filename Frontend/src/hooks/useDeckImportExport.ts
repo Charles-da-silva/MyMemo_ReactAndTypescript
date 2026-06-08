@@ -1,7 +1,8 @@
 import type { ChangeEvent } from "react";
 import type { Deck, Card } from "../types/types";
 import { createCard } from "../services/cardsService";
-import Swal from 'sweetalert2';
+import { createDeck, getDecks } from "../services/decksService";
+import Swal from "sweetalert2";
 
 type UseDeckImportExportProps = {
   decks: Deck[];
@@ -20,18 +21,10 @@ export function useDeckImportExport({
   decks,
   cards,
   loadDecks
-
 }: UseDeckImportExportProps) {
-
-  function exportDecks(
-    deckIds: string[]
-  ) {
-
+  function exportDecks(deckIds: string[]) {
     if (deckIds.length === 0) {
-      alert(
-        "Selecione ao menos um deck."
-      );
-
+      alert("Selecione ao menos um deck.");
       return;
     }
 
@@ -57,8 +50,7 @@ export function useDeckImportExport({
         JSON.stringify(exportData, null, 2)
       ],
       {
-        type:
-          "application/json"
+        type: "application/json"
       }
     );
 
@@ -78,14 +70,9 @@ export function useDeckImportExport({
     URL.revokeObjectURL(url);
   }
 
-  // =========================
-  // IMPORT
-  // =========================
-
   function importDecks(
     e: ChangeEvent<HTMLInputElement>
   ) {
-
     const file = e.target.files?.[0];
 
     if (!file) return;
@@ -93,9 +80,9 @@ export function useDeckImportExport({
     const reader = new FileReader();
 
     reader.onload = async () => {
-      const loadingToast = Swal.fire({
-        title: 'Carregando...',
-        text: 'Importando decks e perguntas...',
+      Swal.fire({
+        title: "Carregando...",
+        text: "Importando decks e perguntas...",
         allowOutsideClick: false,
         allowEscapeKey: false,
         didOpen: () => {
@@ -104,37 +91,17 @@ export function useDeckImportExport({
       });
 
       try {
-
         const data: ExportData = JSON.parse(reader.result as string);
 
-        if (!data.decks || !data.cards) {
-          await loadingToast;
-          alert("Arquivo inválido.");
-          return;
+        if (!Array.isArray(data.decks) || !Array.isArray(data.cards)) {
+          throw new Error("Arquivo inválido.");
         }
 
-        // =========================
-        // IMPORTA DECKS
-        // =========================
+        await getDecks();
 
         for (const deck of data.decks) {
-
-          await fetch(
-            "https://mymemo-reactandtypescript.onrender.com/decks",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type":
-                  "application/json"
-              },
-              body: JSON.stringify(deck)
-            }
-          );
+          await createDeck(deck);
         }
-
-        // =========================
-        // IMPORTA CARDS
-        // =========================
 
         for (const card of data.cards) {
           await createCard(card);
@@ -144,27 +111,27 @@ export function useDeckImportExport({
           await loadDecks();
         }
 
-        await loadingToast;
-        Swal.fire({
-          title: 'Sucesso!',
-          text: 'Deck importado com sucesso!',
-          icon: 'success',
-          background: '#1E1E1E',
-          color: '#fff',
+        Swal.close();
+        await Swal.fire({
+          title: "Sucesso!",
+          text: "Deck importado com sucesso.",
+          icon: "success",
+          background: "#1E1E1E",
+          color: "#fff"
         });
-
       } catch (error) {
-
         console.error(error);
 
-        await loadingToast;
-        Swal.fire({
-          title: 'Erro',
-          text: 'Erro ao importar Deck',
-          icon: 'error',
-          background: '#1E1E1E',
-          color: '#fff',
+        Swal.close();
+        await Swal.fire({
+          title: "Erro",
+          text: error instanceof Error ? error.message : "Erro ao importar Deck",
+          icon: "error",
+          background: "#1E1E1E",
+          color: "#fff"
         });
+      } finally {
+        e.target.value = "";
       }
     };
 

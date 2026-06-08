@@ -1,3 +1,5 @@
+import type { Deck } from "../types/types";
+
 // URL base da API Node
 const API_URL = "https://mymemo-reactandtypescript.onrender.com/decks";
 
@@ -9,6 +11,10 @@ export async function getDecks() {
   try {
     const response = await fetch(API_URL);
 
+    if (!response.ok) {
+      throw new Error("Erro ao buscar decks");
+    }
+
     // converte resposta para JSON
     const data = await response.json();
 
@@ -17,8 +23,7 @@ export async function getDecks() {
   } catch (error) {
     console.error("Erro ao buscar decks:", error);
 
-    // retorna array vazio para evitar quebra no React
-    return [];
+    throw error;
   }
 }
 
@@ -29,7 +34,7 @@ export async function getDecks() {
 export async function createDeck(deck: {
   name: string;
   description: string;
-}) {
+} | Deck) {
   try {
     const response = await fetch(API_URL, {
       method: "POST",
@@ -41,11 +46,18 @@ export async function createDeck(deck: {
       body: JSON.stringify(deck),
     });
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(errorText);
+      throw new Error("Erro ao criar deck");
+    }
+
     const data = await response.json();
 
     return data;
   } catch (error) {
     console.error("Erro ao criar deck:", error);
+    throw error;
   }
 }
 
