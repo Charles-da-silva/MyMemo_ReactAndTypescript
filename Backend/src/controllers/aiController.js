@@ -50,31 +50,31 @@ async function generateFromPdf(req, res) {
     }
 
     console.log('Texto extraído:', pdfText.substring(0, 100), '...');
-    console.log('Iniciando geração de cards com Groq...');
+    console.log('Iniciando geração de cards com Gemini...');
 
-    // Etapa 2: Gerar cards com Groq
-    const groqResponse = await aiService.generateCardsWithGroq(
+    // Etapa 2: Gerar cards com Gemini
+    const geminiResponse = await aiService.generateCardsWithGemini(
       pdfText,
       parseInt(questionCount),
       fileName
     );
 
-    console.log('Resposta do Groq recebida. Validando...');
+    console.log('Resposta do Gemini recebida. Validando...');
     console.log('Primeiro card antes da validação:', {
-      next_review: groqResponse.cards[0]?.next_review,
-      created_at: groqResponse.cards[0]?.created_at
+      next_review: geminiResponse.cards[0]?.next_review,
+      created_at: geminiResponse.cards[0]?.created_at
     });
 
     // Etapa 3: Validar resposta
-    aiService.validateGroqResponse(groqResponse);
+    aiService.validateGeminiResponse(geminiResponse);
 
     console.log('Validação completa. Primeiro card depois da validação:', {
-      next_review: groqResponse.cards[0]?.next_review,
-      created_at: groqResponse.cards[0]?.created_at
+      next_review: geminiResponse.cards[0]?.next_review,
+      created_at: geminiResponse.cards[0]?.created_at
     });
 
     // Etapa 4: Importar decks e cards
-    const importResult = await importService.validateAndImportDecksCards(groqResponse);
+    const importResult = await importService.validateAndImportDecksCards(geminiResponse);
 
     if (!importResult.success) {
       console.error('Erro ao importar:', importResult.errors);

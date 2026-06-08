@@ -1,5 +1,6 @@
 const { PDFParse } = require('pdf-parse');
 const { randomUUID } = require('crypto');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config();
 
 async function extractPdfText(fileBuffer) {
@@ -12,54 +13,59 @@ async function extractPdfText(fileBuffer) {
   }
 }
 
-async function generateCardsWithGroq(text, questionCount, fileName = 'Deck Importado') {
+async function generateCardsWithGemini(text, questionCount, fileName = 'Deck Importado') {
   try {
-    const apiKey = process.env.GROQ_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error('GEMINI_API_KEY não configurada');
+    }
 
-    // Limitar texto para evitar exceder limite de tokens do Groq
-    const maxChars = 15000;
-    const truncatedText = text.length > maxChars ? text.substring(0, maxChars) + '...' : text;
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-    const prompt = `Gere exatamente ${questionCount} perguntas de múltipla escolha baseadas no texto abaixo.
+    const prompt = `Você receberá um arquivo PDF anexado.
 
-Texto:
-${truncatedText}
+Sua tarefa é analisar TODO o conteúdo do PDF antes de criar qualquer pergunta.
 
-Responda APENAS com JSON válido (sem markdown, sem explicação):
+Regras obrigatórias:
+
+1. Leia 100% do conteúdo do PDF.
+2. Não utilize conhecimento externo.
+3. Não invente informações.
+4. Não crie exemplos fictícios.
+5. Todas as perguntas e respostas devem ser baseadas exclusivamente no conteúdo do PDF.
+6. Distribua as perguntas entre todos os capítulos, seções ou tópicos relevantes do documento.
+7. Nenhuma seção relevante pode ficar sem cobertura.
+8. Priorize conceitos, definições, processos, exemplos, aplicações e relações entre temas.
+9. Evite perguntas e respostas triviais.
+10. Gere exatamente ${questionCount} perguntas de múltipla escolha.
+11. Cada pergunta deve possuir exatamente 5 alternativas que façam sentido e realmente testem o conhecimento do estudante.
+12. Apenas uma alternativa deve estar correta, mas as demais devem provocar dúvida se são ou não corretas.
+13. Varie a posição da alternativa correta entre as 5 opções.
+14. As alternativas incorretas devem ser plausíveis, porém incorretas de acordo com o documento.
+15. Não repita perguntas.
+16. Não repita alternativas desnecessariamente.
+17. Toda resposta correta deve estar explicitamente fundamentada no conteúdo do PDF.
+
+Conteúdo do PDF:
+${text}
+
+Retorne APENAS um JSON válido (sem markdown, sem explicação) com a seguinte estrutura:
 {
   "cards": [
     {
       "question": "pergunta aqui",
       "correct_answer": "resposta correta",
-      "alternatives": ["resposta correta", "opção 2", "opção 3", "opção 4", "opção 5"]
+      "alternatives": ["opção 1", "opção 2", "resposta correta", "opção 4", "opção 5"]
     }
   ]
 }`;
 
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.3,
-        max_tokens: 8000
-      })
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`API Error: ${error.error?.message || response.statusText}`);
-    }
-
-    const data = await response.json();
-    const responseText = data.choices?.[0]?.message?.content;
+    const result = await model.generateContent(prompt);
+    const responseText = result.response.text();
 
     if (!responseText) {
-      throw new Error('Resposta vazia do Groq');
+      throw new Error('Resposta vazia do Gemini');
     }
 
     let jsonData;
@@ -80,11 +86,10 @@ Responda APENAS com JSON válido (sem markdown, sem explicação):
         jsonData = JSON.parse(jsonStr);
       } catch (e) {
         console.error('JSON parsing failed. Response preview:', responseText.substring(0, 500));
-        throw new Error(`Resposta do Groq não contém JSON válido: ${e.message}`);
+        throw new Error(`Resposta do Gemini não contém JSON válido: ${e.message}`);
       }
     }
 
-    const { randomUUID } = require('crypto');
     const deckId = randomUUID();
     const now = new Date().toISOString();
 
@@ -111,11 +116,11 @@ Responda APENAS com JSON válido (sem markdown, sem explicação):
       }))
     };
   } catch (error) {
-    throw new Error(`Erro ao gerar cards com Groq: ${error.message}`);
+    throw new Error(`Erro ao gerar cards com Gemini: ${error.message}`);
   }
 }
 
-function validateGroqResponse(jsonData) {
+function validateGeminiResponse(jsonData) {
   if (!jsonData.version) throw new Error('Campo "version" ausente');
   if (!jsonData.decks || !Array.isArray(jsonData.decks)) {
     throw new Error('Campo "decks" deve ser um array');
@@ -169,6 +174,6 @@ function isValidUUID(uuid) {
 
 module.exports = {
   extractPdfText,
-  generateCardsWithGroq,
-  validateGroqResponse,
+  generateCardsWithGemini,
+  validateGeminiResponse,
 };
