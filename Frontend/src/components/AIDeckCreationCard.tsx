@@ -10,17 +10,17 @@ interface AIDeckCreationCardProps {
 export default function AIDeckCreationCard({ setMode }: AIDeckCreationCardProps) {
   const [copied, setCopied] = useState(false);
 
-  const prompt = `Você receberá um arquivo PDF anexado.
+  const prompt = `Você receberá um arquivo de texto anexado.
 
-Sua tarefa é analisar TODO o conteúdo do PDF antes de criar qualquer pergunta.
+Sua tarefa é analisar TODO o conteúdo do arquivo antes de criar qualquer pergunta.
 
 Regras obrigatórias:
 
-1. Leia 100% do conteúdo do PDF.
+1. Leia 100% do conteúdo do arquivo de texto.
 2. Não utilize conhecimento externo.
 3. Não invente informações.
 4. Não crie exemplos fictícios.
-5. Todas as perguntas e respostas devem ser baseadas exclusivamente no conteúdo do PDF.
+5. Todas as perguntas e respostas devem ser baseadas exclusivamente no conteúdo do texto.
 6. Distribua as perguntas entre todos os capítulos, seções ou tópicos relevantes do documento.
 7. Nenhuma seção relevante pode ficar sem cobertura.
 8. Priorize conceitos, definições, processos, exemplos, aplicações e relações entre temas.
@@ -32,9 +32,15 @@ Regras obrigatórias:
 14. As alternativas incorretas devem ser plausíveis, porém incorretas de acordo com o documento.
 15. Não repita perguntas.
 16. Não repita alternativas desnecessariamente.
-17. Toda resposta correta deve estar explicitamente fundamentada no conteúdo do PDF.
+17. Toda resposta correta deve estar explicitamente fundamentada no conteúdo do texto.
+18. Gere ids aleatórios para o deck e seus cards, usando a data e hora de criação para formar o id que deve ficar no formato apresentado no json abaixo.
+19. O "next_review" deve ser a mesma da hora de criação do deck, usando a hora do Brasil.
+20. Ao final, gere um arquivo JSON para download seguindo exatamente as regras aqui descritas.
+21. caso o arquivo de texto não seja enviado, solicite o envio e após o envio siga o processo descrito acima normalmente.
+22. Se o arquivo for muito curto para 50 perguntas, informe ao usuário e questione quantas perguntas desela. Após a resposta dele, gere a quantidade de perguntas solicitada seguindo as regras acima.
 
-Retorne APENAS um JSON válido (sem markdown, sem explicação) com a seguinte estrutura:
+O formato do JSON deve ser exatamente o seguinte (sem campos adicionais):
+
 {
   "version": 1,
   "exportedAt": 1779371223569,
