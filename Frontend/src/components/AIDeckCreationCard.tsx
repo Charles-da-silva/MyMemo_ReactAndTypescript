@@ -165,7 +165,7 @@ O formato do JSON deve ser exatamente o seguinte (sem campos adicionais):
           </li>
         </ol>
         <p style={{ marginTop: '20px', textAlign: 'center', fontSize: 'clamp(12px, 3vw, 14px)' }}>
-          <a href="https://example.com/demo-video" target="_blank" rel="noopener noreferrer">
+          <a href="https://youtu.be/i0FgvbR6iS8" target="_blank" rel="noopener noreferrer">
             Link de um vídeo demonstrativo
           </a>
         </p>
