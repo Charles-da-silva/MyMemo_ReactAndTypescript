@@ -27,7 +27,6 @@ interface CardForm {
 export default function ManualDeckCreationCard({ setMode }: ManualDeckCreationCardProps) {
   const [step, setStep] = useState<'deck' | 'cards'>('deck');
   const [deckName, setDeckName] = useState('');
-  const [deckDescription, setDeckDescription] = useState('');
   const [deckId, setDeckId] = useState('');
   const [cards, setCards] = useState<CardForm[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,7 +49,7 @@ export default function ManualDeckCreationCard({ setMode }: ManualDeckCreationCa
       setIsSubmitting(true);
       const newDeck = await createDeck({
         name: deckName,
-        description: deckDescription || '',
+        description: '',
       });
       setDeckId(newDeck.id);
       setStep('cards');
@@ -133,8 +132,9 @@ export default function ManualDeckCreationCard({ setMode }: ManualDeckCreationCa
 
       {step === 'deck' ? (
         <>
-          <p className="personText largeText" style={{ width: '80vw' }}>Criar Novo Deck</p>
           <br />
+          <p className="personText largeText" style={{ width: '80vw' }}>Criar Novo Deck</p>
+          <br /><br />
 
           <div style={{
             display: 'flex',
@@ -169,33 +169,6 @@ export default function ManualDeckCreationCard({ setMode }: ManualDeckCreationCa
                 }}
               />
             </label>
-
-            <label style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '5px',
-              width: '100%',
-              textAlign: 'left',
-            }}>
-              <span className="personText smallText" style={{ fontWeight: 'bold' }}>
-                Descrição (opcional):
-              </span>
-              <textarea
-                value={deckDescription}
-                onChange={(e) => setDeckDescription(e.target.value)}
-                placeholder="Digite a descrição do deck"
-                disabled={isSubmitting}
-                style={{
-                  padding: '8px',
-                  borderRadius: '6px',
-                  border: '1px solid #3085d6',
-                  backgroundColor: '#2a2a2a',
-                  color: '#fff',
-                  minHeight: '80px',
-                  fontFamily: 'inherit',
-                }}
-              />
-            </label>
           </div>
 
           <br />
@@ -203,7 +176,7 @@ export default function ManualDeckCreationCard({ setMode }: ManualDeckCreationCa
           <button
             onClick={handleCreateDeck}
             disabled={isSubmitting}
-            className="btn btn-green"
+            className="btn btn-blue"
             style={{
               opacity: isSubmitting ? 0.5 : 1,
               cursor: isSubmitting ? 'not-allowed' : 'pointer',

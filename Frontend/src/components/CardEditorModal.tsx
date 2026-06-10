@@ -29,6 +29,16 @@ export default function CardEditorModal({
   initialCard,
   deckId,
 }: CardEditorModalProps) {
+  const getCorrectAnswerIndex = (card?: Card) => {
+    if (!card) return null;
+
+    const index = card.alternatives.findIndex(
+      alt => alt === card.correct_answer
+    );
+
+    return index >= 0 ? index : null;
+  };
+
   const [form, setForm] = useState<CardForm>({
     id: initialCard?.id || "",
     deck_id: deckId,
@@ -39,6 +49,9 @@ export default function CardEditorModal({
     created_at: new Date().toISOString(),
     image: null,
   });
+  const [correctAnswerIndex, setCorrectAnswerIndex] = useState<number | null>(
+    getCorrectAnswerIndex(initialCard)
+  );
 
   useEffect(() => {
     if (initialCard) {
@@ -52,8 +65,21 @@ export default function CardEditorModal({
         created_at: initialCard.created_at || new Date().toISOString(),
         image: initialCard.image || null,
       });
+      setCorrectAnswerIndex(getCorrectAnswerIndex(initialCard));
+    } else {
+      setForm({
+        id: "",
+        deck_id: deckId,
+        question: "",
+        alternatives: ["", "", "", "", ""],
+        correct_answer: "",
+        next_review: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+        image: null,
+      });
+      setCorrectAnswerIndex(null);
     }
-  }, [initialCard]);
+  }, [initialCard, deckId, isOpen]);
 
   const handleQuestionChange = (value: string) => {
     setForm({ ...form, question: value });
@@ -62,10 +88,18 @@ export default function CardEditorModal({
   const handleAlternativeChange = (index: number, value: string) => {
     const newAlternatives = [...form.alternatives];
     newAlternatives[index] = value;
-    setForm({ ...form, alternatives: newAlternatives });
+    setForm({
+      ...form,
+      alternatives: newAlternatives,
+      correct_answer:
+        correctAnswerIndex === index
+          ? value
+          : form.correct_answer
+    });
   };
 
   const handleCorrectAnswerChange = (index: number) => {
+    setCorrectAnswerIndex(index);
     setForm({ ...form, correct_answer: form.alternatives[index] });
   };
 
@@ -94,7 +128,7 @@ export default function CardEditorModal({
       return;
     }
 
-    if (!form.correct_answer) {
+    if (correctAnswerIndex === null) {
       Swal.fire({
         title: 'Erro',
         text: 'Você deve selecionar uma resposta correta',
@@ -105,7 +139,10 @@ export default function CardEditorModal({
       return;
     }
 
-    onSave(form);
+    onSave({
+      ...form,
+      correct_answer: form.alternatives[correctAnswerIndex]
+    });
     onClose();
   };
 
@@ -165,7 +202,8 @@ export default function CardEditorModal({
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
               <input
                 type="radio"
-                checked={form.correct_answer === alt}
+                name="correct-answer"
+                checked={correctAnswerIndex === index}
                 onChange={() => handleCorrectAnswerChange(index)}
               />
               <input

@@ -16,10 +16,9 @@ export default function HowCreateCard({ setMode }: HomeCardProps) {
         <br /><br />
 
         <p className="personText largeText" style={{ width: '80vw' }}>De que forma deseja criar o Deck?</p>
-        <br />
+        <br /><br />
 
-        <p className="personText mediumText">Importe arquivos de texto (exemplo: PDF, Word, TXT) e
-          deixe a IA criar todas as perguntas e respostas para você!
+        <p className="personText mediumText">Uma forma inteligente e gratuita de usar a IA para criar um deck completo para você, com perguntas e respostas baseadas no tema que você escolher!
         </p>
         <br />
 
