@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import type { Card } from "../types/types";
+import { useDeckImportExport } from "../hooks/useDeckImportExport";
+import type { Card, Deck } from "../types/types";
 import Logo from "./Logo";
 import "../styles/index.css";
 import editIcon from "../assets/Edit.png";
@@ -8,7 +9,8 @@ import homeIcon from "../assets/home.png";
 import correctIcon from "../assets/Correct.png";
 import wrongIcon from "../assets/Wrong.jpg";
 import Swal from 'sweetalert2';
-import { getCardsByDeckId, updateCardReview, deleteCard as deleteCardService } from "../services/cardsService";
+import { getCardsByDeckId, updateCardReview, deleteCard as deleteCardService, updateCard } from "../services/cardsService";
+import CardEditorModal from "./CardEditorModal";
 
 interface StudyCardProps {
   mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck";
@@ -19,10 +21,21 @@ interface StudyCardProps {
 
 export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardProps) {
 
+  const [decks] = useState<Deck[]>([]);
+  const [cards, setCards] = useState<Card[]>([]);
+    const { } = useDeckImportExport({
+      decks,
+      cards
+    });
+  
   const [reviewCards, setReviewCards] = useState<Card[]>([]); // estado para as cartas em revisão
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null); // resposta selecionada pelo usuário
 
-  const [cards, setCards] = useState<Card[]>([]);
+  const [editingCard, setEditingCard] = useState<Card | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  
+
   const [currentQuestion, setcurrentQuestion] = useState(0);
 
   const showPopUp = ({ title, text, icon, action, confirmButtonText }: any) => {
@@ -135,6 +148,22 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
     setCards(updatedCards);
   }
 
+  async function handleSaveCard(cardData: Card) {
+      await updateCard(cardData.id, cardData);
+
+      setCards(prev =>
+        prev.map(card =>
+          card.id === cardData.id ? cardData : card
+        )
+      );
+
+      setReviewCards(prev =>
+        prev.map(card =>
+          card.id === cardData.id ? cardData : card
+        )
+      );
+    }
+
   const isFinished = currentQuestion >= reviewCards.length;
 
 
@@ -142,30 +171,20 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
   useEffect(() => {
     async function loadReviewCards() {
       try {
-        console.log('selectedDeckId', selectedDeckId);
-
         // Busca os cards da API
         const apiCards = await getCardsByDeckId(selectedDeckId);
-        console.log("CARDS DA API:", apiCards);
-
+        
         // Atualiza o state principal
         setCards(apiCards);
-
-        console.log("selectedDeckId:", selectedDeckId);
-        console.log("apiCards:", apiCards);
-        console.log("Date.now():", Date.now());
 
         // Filtra cards do deck e prontos para revisão
         const dueCards = apiCards.filter(
           (c: Card) => {
             const nextReview = new Date(c.next_review).getTime();
             const isDue = nextReview <= Date.now();
-            console.log(`Card "${c.question?.substring(0, 30)}": next_review=${c.next_review}, reviewTime=${nextReview}, now=${Date.now()}, isDue=${isDue}`);
             return c.deck_id === selectedDeckId && isDue;
           }
         );
-
-        console.log("Cards prontos para revisão:", dueCards.length);
 
         // Embaralha os cards
         setReviewCards(shuffleArray(dueCards));
@@ -239,7 +258,10 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
               <img
                 src={editIcon}
                 alt="Editar card"
-                onClick={() => setMode("editDeck")}
+                onClick={() => {
+                  setEditingCard(currentCard);
+                  setIsModalOpen(true);
+                }}
                 className="iconCard"
                 style={{ top: 11, right: 30 }} />
               <img
@@ -335,6 +357,17 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
           height={35} onClick={() => setMode("home")}
           style={{ cursor: 'pointer', paddingRight: 10 }} />
       </div>
+
+      <CardEditorModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingCard(null);
+        }}
+        onSave={handleSaveCard}
+        initialCard={editingCard ?? undefined}
+        deckId={selectedDeckId}
+      />
     </div>
   );
 }

@@ -137,21 +137,24 @@ export default function CardEditorModal({
         <h2 style={{ marginBottom: '20px' }}>
           {initialCard ? 'Editar Card' : 'Novo Card'}
         </h2>
+        <br /><br />
 
         <label style={{ display: 'block', marginBottom: '15px' }}>
           <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>Pergunta:</p>
-          <input
-            type="text"
+          <textarea
+            rows={8}
             value={form.question}
             onChange={(e) => handleQuestionChange(e.target.value)}
             placeholder="Digite a pergunta"
             style={{
-              width: '100%',
+              width: '98%',
               padding: '8px',
               borderRadius: '6px',
               border: '1px solid #3085d6',
               backgroundColor: '#2a2a2a',
               color: '#fff',
+              resize: 'vertical',
+              fontFamily: 'inherit', 
             }}
           />
         </label>
@@ -198,7 +201,7 @@ export default function CardEditorModal({
           </button>
           <button
             onClick={handleSave}
-            className="btn btn-green"
+            className="btn btn-blue"
             style={{ padding: '8px 16px' }}
           >
             Salvar

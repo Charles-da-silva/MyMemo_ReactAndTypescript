@@ -3,6 +3,7 @@ import type { Deck, Card } from "../types/types";
 import { createCard } from "../services/cardsService";
 import { createDeck, getDecks } from "../services/decksService";
 import Swal from "sweetalert2";
+import { v4 as uuidv4 } from "uuid";
 
 type UseDeckImportExportProps = {
   decks: Deck[];
@@ -99,12 +100,31 @@ export function useDeckImportExport({
 
         await getDecks();
 
+        const importedDeckIds = new Map<string, string>();
+
         for (const deck of data.decks) {
-          await createDeck(deck);
+          const newDeckId = uuidv4();
+
+          importedDeckIds.set(deck.id, newDeckId);
+
+          await createDeck({
+            ...deck,
+            id: newDeckId
+          });
         }
 
         for (const card of data.cards) {
-          await createCard(card);
+          const newDeckId = importedDeckIds.get(card.deck_id);
+
+          if (!newDeckId) {
+            throw new Error("Arquivo inválido: card sem deck correspondente.");
+          }
+
+          await createCard({
+            ...card,
+            id: uuidv4(),
+            deck_id: newDeckId
+          });
         }
 
         if (loadDecks) {

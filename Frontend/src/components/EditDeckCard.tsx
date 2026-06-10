@@ -199,6 +199,11 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
 
   return (
     <>
+      <img src={homeIcon}
+        alt="Voltar a home" height={40} onClick={() => setMode("home")}
+        style={{ cursor: 'pointer', padding: 15 }}
+      />
+        
       <div className="studyCard" style={{
         flex: 1, // Ocupa o espaço disponível
         overflowY: "auto", // Habilita a rolagem vertical
@@ -220,7 +225,7 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
         <div className="btn-card">
           <button
             onClick={renameDeck}
-            className="btn btn-green"
+            className="btn btn-yellow"
             style={{ width: "35%", maxWidth: "150px" }}
           >
             Renomear
@@ -234,6 +239,17 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
             Estudar
           </button>
 
+          <button
+            onClick={() => {
+              setEditingCardIndex(null);
+              setIsModalOpen(true);
+            }}
+            className="btn btn-green"
+            style={{ width: "35%", maxWidth: "150px" }}
+          >
+            + Adicionar Card
+          </button>
+
         </div>
 
 
@@ -242,16 +258,7 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
             <div style={{ marginTop: 30 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                 <p style={{ fontSize: "16px", margin: 0, textAlign: "left" }}>Este Deck possui {currentCards.length} cards</p>
-                <button
-                  onClick={() => {
-                    setEditingCardIndex(null);
-                    setIsModalOpen(true);
-                  }}
-                  className="btn btn-green"
-                  style={{ padding: '5px 10px', fontSize: '12px' }}
-                >
-                  + Adicionar Card
-                </button>
+                
               </div>
 
               {currentCards.map((card: any) => (
@@ -309,10 +316,7 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
         )}
 
 
-        <img src={homeIcon}
-          alt="Voltar a home" height={40} onClick={() => setMode("home")}
-          style={{ cursor: 'pointer', paddingTop: 15 }} />
-        <br /><br />
+        
       </div>
 
       <CardEditorModal
