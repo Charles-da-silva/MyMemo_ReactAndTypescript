@@ -33,6 +33,7 @@ https://Charles-da-silva.github.io/MyMemo_ReactAndTypescript
 - Render (para hospedar o backend)
 - Neon (para hospedar o banco de dados)
 - GitHub Actions
+- Configurado domínio próprio para a versão fullstack
 
 ### Funcionalidades
 
@@ -56,7 +57,7 @@ https://Charles-da-silva.github.io/MyMemo_ReactAndTypescript
 
 Dá uma conferida como está a versão atual da aplicação!
 
-https://mymemoflashcards.short.gy/FullStack-Version
+https://mymemo.nanuvem.net/
 
 <br>
 
