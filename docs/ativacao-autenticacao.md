@@ -8,7 +8,7 @@
 - [x] Configuração dos quatro secrets do frontend concluída.
 - Próximo: publicar o frontend; depois salvar as variáveis do Render e publicar o backend.
 - No Render, os campos `FIREBASE_SERVICE_ACCOUNT` estão preenchidos, mas **não foram salvos**. Não salve nem faça deploy até o frontend estar publicado.
-- As alterações do código ainda estão locais, sem commit/push, na branch `feature-backend-node`.
+- [x] Commit `88bd3ba` enviado para a branch `feature-backend-node`; ainda falta integrar as alterações em `main`.
 - [x] Adicionado o secret `VITE_FIREBASE_API_KEY` no GitHub Actions.
 - [x] Adicionado o secret `VITE_FIREBASE_AUTH_DOMAIN` no GitHub Actions.
 - [x] Adicionado o secret `VITE_FIREBASE_PROJECT_ID` no GitHub Actions.
@@ -52,8 +52,8 @@
 
 Os secrets já estão cadastrados. Falta publicar o código para que o GitHub Actions compile o frontend:
 
-1. As alterações estão na branch local `feature-backend-node` e ainda não foram commitadas nem enviadas.
-2. Publique essas alterações por um pull request para `main` (ou outro fluxo que termine com as mudanças em `main`). O workflow `.github/workflows/deploy.yml` publica o frontend quando há mudanças em `main`.
+1. A branch `feature-backend-node` foi enviada ao GitHub com o commit `88bd3ba`.
+2. Integre as alterações em `main` por um pull request (ou outro fluxo que termine com as mudanças em `main`). O workflow `.github/workflows/deploy.yml` publica o frontend quando há mudanças em `main`.
 3. Aguarde o workflow terminar com sucesso e confirme que o site publicado atualizou. Se o workflow terminar mas o site não atualizar, confira **Settings → Pages** e confirme que a publicação usa a branch `gh-pages`.
 
 ### 2. Configurar e publicar o backend no Render
@@ -75,4 +75,4 @@ As variáveis do banco local (`DATABASE_HOST`, `DATABASE_PORT` etc.) são altern
 
 ## Como pedir ajuda na próxima etapa
 
-O próximo passo é colocar as alterações locais em um pull request para `main`. Não compartilhe valores secretos. Para conferir um secret, diga apenas se ele foi cadastrado — não copie seu conteúdo para o chat.
+O próximo passo é integrar a branch `feature-backend-node` em `main`. Não compartilhe valores secretos. Para conferir um secret, diga apenas se ele foi cadastrado — não copie seu conteúdo para o chat.
