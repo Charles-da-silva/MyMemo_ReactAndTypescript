@@ -36,9 +36,11 @@ export default function HomeCard({
 
   const [isLoadingDecks, setIsLoadingDecks] = useState(false);
   const [decksLoaded, setDecksLoaded] = useState(false);
+  const [decksError, setDecksError] = useState<string | null>(null);
 
   async function loadDecks() {
     setIsLoadingDecks(true);
+    setDecksError(null);
     try {
       const apiDecks =
         await getDecks();
@@ -47,6 +49,11 @@ export default function HomeCard({
       setDecksLoaded(true);
     } catch (error) {
       console.error(error);
+      setDecksError(
+        error instanceof Error
+          ? error.message
+          : "Ocorreu um erro inesperado ao carregar os decks.",
+      );
       setDecksLoaded(true);
     } finally {
       setIsLoadingDecks(false);
@@ -84,6 +91,15 @@ export default function HomeCard({
         </>
       ) : isLoadingDecks ? (
         <p className="personText mediumText" style={{ color: '#888' }}>Carregando decks... aguarde.</p>
+      ) : decksError ? (
+        <>
+          <p className="personText mediumText" role="alert" style={{ color: '#b00020' }}>
+            Não foi possível carregar os decks: {decksError}
+          </p>
+          <button onClick={loadDecks} className="btn btn-blue">
+            Tentar novamente
+          </button>
+        </>
       ) : (
         <>
           <p className="personText largeText">Selecione um Deck para estudar ou gerenciar</p>

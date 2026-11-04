@@ -11,7 +11,11 @@ export async function getDecks() {
     const response = await authenticatedFetch(API_URL);
 
     if (!response.ok) {
-      throw new Error("Erro ao buscar decks");
+      const errorDetails = await response.text();
+      const details = errorDetails ? `: ${errorDetails}` : "";
+      throw new Error(
+        `Erro ao buscar decks (HTTP ${response.status})${details}`,
+      );
     }
 
     // converte resposta para JSON
