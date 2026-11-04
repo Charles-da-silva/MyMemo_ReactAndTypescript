@@ -2,8 +2,8 @@
 
 const cardsRepository = require('../repositories/cardsRepository');
 
-async function getAllCards() {
-  const cards = await cardsRepository.getAllCards();
+async function getAllCards(userId) {
+  const cards = await cardsRepository.getAllCards(userId);
 
   // Converte alternatives de string JSON para array
   return cards.map((card) => ({
@@ -15,8 +15,8 @@ async function getAllCards() {
   }));
 }
 
-async function getCardsByDeckId(deckId) {
-  const cards = await cardsRepository.getCardsByDeckId(deckId);
+async function getCardsByDeckId(deckId, userId) {
+  const cards = await cardsRepository.getCardsByDeckId(deckId, userId);
 
   return cards.map((card) => ({
     ...card,
@@ -27,22 +27,23 @@ async function getCardsByDeckId(deckId) {
   }));
 }
 
-async function createCard(card) {
-  return await cardsRepository.createCard(card);
+async function createCard(card, userId) {
+  return await cardsRepository.createCard(card, userId);
 }
 
-async function updateCard(id, card) {
-  return await cardsRepository.updateCard(id, card);
+async function updateCard(id, card, userId) {
+  return await cardsRepository.updateCard(id, card, userId);
 }
 
-async function deleteCard(id) {
-  return await cardsRepository.deleteCard(id);
+async function deleteCard(id, userId) {
+  return await cardsRepository.deleteCard(id, userId);
 }
 
-async function updateNextReview(id, nextReview) {
+async function updateNextReview(id, nextReview, userId) {
   return cardsRepository.updateNextReview(
     id,
-    nextReview
+    nextReview,
+    userId
   );
 }
 

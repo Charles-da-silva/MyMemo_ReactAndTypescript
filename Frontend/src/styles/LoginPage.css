@@ -1,0 +1,46 @@
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #16171d;
+}
+
+.login-card {
+  width: min(100%, 440px);
+  padding: 40px 32px;
+  border: 1px solid #2e303a;
+  border-radius: 20px;
+  background: #1e1e1e;
+  text-align: center;
+}
+
+.login-card h1 {
+  margin: 0 0 12px;
+  font-size: 36px;
+}
+
+.login-card p {
+  margin: 0 0 24px;
+}
+
+.google-login-button {
+  width: 100%;
+  min-height: 48px;
+  border: 0;
+  border-radius: 8px;
+  background: #eae2f7;
+  color: #16171d;
+  cursor: pointer;
+  font: inherit;
+}
+
+.google-login-button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.login-card .login-error {
+  margin: 20px 0 0;
+  color: #ff8a8a;
+}

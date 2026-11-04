@@ -1,19 +1,19 @@
 const decksRepository = require('../repositories/decksRepository');
 
-async function getAllDecks() {
-  return await decksRepository.getAllDecks();
+async function getAllDecks(userId) {
+  return await decksRepository.getAllDecks(userId);
 }
 
-async function createDeck(deck) {
-  return await decksRepository.createDeck(deck);
+async function createDeck(deck, userId) {
+  return await decksRepository.createDeck(deck, userId);
 }
 
-async function updateDeck(id, deck) {
-  return await decksRepository.updateDeck(id, deck);
+async function updateDeck(id, deck, userId) {
+  return await decksRepository.updateDeck(id, deck, userId);
 }
 
-async function deleteDeck(id) {
-  return await decksRepository.deleteDeck(id);
+async function deleteDeck(id, userId) {
+  return await decksRepository.deleteDeck(id, userId);
 }
 
 module.exports = {

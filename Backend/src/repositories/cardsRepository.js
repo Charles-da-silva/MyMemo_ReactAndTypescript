@@ -6,13 +6,15 @@ const pool = require("../database/connection");
 |--------------------------------------------------------------------------
 */
 
-async function getAllCards() {
+async function getAllCards(userId) {
 
   const result = await pool.query(`
-    SELECT *
+    SELECT cards.*
     FROM cards
-    ORDER BY question ASC
-  `);
+    JOIN decks ON decks.id = cards.deck_id
+    WHERE decks.owner_id = $1
+    ORDER BY cards.question ASC
+  `, [userId]);
 
   return result.rows;
 }
@@ -23,18 +25,19 @@ async function getAllCards() {
 |--------------------------------------------------------------------------
 */
 
-async function getCardsByDeckId(deckId) {
+async function getCardsByDeckId(deckId, userId) {
 
   console.log('Buscando cards do deck:', deckId);
 
   const result = await pool.query(
     `
-      SELECT *
+      SELECT cards.*
       FROM cards
-      WHERE deck_id = $1
-      ORDER BY question ASC
+      JOIN decks ON decks.id = cards.deck_id
+      WHERE cards.deck_id = $1 AND decks.owner_id = $2
+      ORDER BY cards.question ASC
     `,
-    [deckId]
+    [deckId, userId]
   );
 
   return result.rows;
@@ -46,7 +49,7 @@ async function getCardsByDeckId(deckId) {
 |--------------------------------------------------------------------------
 */
 
-async function createCard(card) {
+async function createCard(card, userId) {
 
   const crypto = require('crypto');
 
@@ -63,8 +66,10 @@ async function createCard(card) {
       image,
       created_at
     )
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-    RETURNING *
+    SELECT $1, decks.id, $3, $4, $5, $6, $7, $8
+    FROM decks
+    WHERE decks.id = $2 AND decks.owner_id = $9
+    RETURNING cards.*
   `;
 
   // Generate ID if empty or missing
@@ -81,7 +86,8 @@ async function createCard(card) {
     finalNextReview,
     card.alternatives || [],
     card.image || null,
-    card.created_at || new Date().toISOString()
+    card.created_at || new Date().toISOString(),
+    userId
   ];
 
   const result = await pool.query(query, values);
@@ -94,7 +100,7 @@ async function createCard(card) {
 |--------------------------------------------------------------------------
 */
 
-async function updateCard(id, card) {
+async function updateCard(id, card, userId) {
 
   const query = `
     UPDATE cards
@@ -105,6 +111,11 @@ async function updateCard(id, card) {
       next_review = $4,
       image = $5
     WHERE id = $6
+      AND EXISTS (
+        SELECT 1 FROM decks
+        WHERE decks.id = cards.deck_id AND decks.owner_id = $7
+      )
+    RETURNING *
   `;
 
   const values = [
@@ -113,12 +124,12 @@ async function updateCard(id, card) {
     card.alternatives || [],
     card.next_review,
     card.image,
-    id
+    id,
+    userId
   ];
 
-  await pool.query(query, values);
-
-  return card;
+  const result = await pool.query(query, values);
+  return result.rows[0];
 }
 
 /*
@@ -127,12 +138,18 @@ async function updateCard(id, card) {
 |--------------------------------------------------------------------------
 */
 
-async function deleteCard(id) {
+async function deleteCard(id, userId) {
 
-  await pool.query(
-    `DELETE FROM cards WHERE id = $1`,
-    [id]
+  const result = await pool.query(
+    `DELETE FROM cards
+     USING decks
+     WHERE cards.deck_id = decks.id
+       AND cards.id = $1
+       AND decks.owner_id = $2
+     RETURNING cards.id`,
+    [id, userId]
   );
+  return result.rowCount > 0;
 }
 
 /*
@@ -141,16 +158,20 @@ async function deleteCard(id) {
 |--------------------------------------------------------------------------
 */
 
-async function updateNextReview(id, nextReview) {
+async function updateNextReview(id, nextReview, userId) {
 
   const result = await pool.query(
     `
     UPDATE cards
     SET next_review = $1
     WHERE id = $2
+      AND EXISTS (
+        SELECT 1 FROM decks
+        WHERE decks.id = cards.deck_id AND decks.owner_id = $3
+      )
     RETURNING *
     `,
-    [nextReview, id]
+    [nextReview, id, userId]
   );
 
   return result.rows[0];

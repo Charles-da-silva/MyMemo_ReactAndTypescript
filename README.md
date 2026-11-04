@@ -48,9 +48,17 @@ https://Charles-da-silva.github.io/MyMemo_ReactAndTypescript
 - **Persistência de dados:** na versão fullstack, os dados são persistidos em PostgreSQL.
 - **Exportação e importação de decks:** suporte a arquivos JSON, possibilitando backup e compartilhamento de decks entre usuários.
 
-### Módulos futuros
+### Autenticação e configuração
 
-- Autenticação para separação de dados por usuários.
+O acesso à versão fullstack usa Google Sign-In pelo Firebase Authentication. O servidor valida o token do Firebase e filtra decks pelo UID do usuário; os cards herdam o acesso do deck.
+
+1. O projeto Firebase `mymemo-flashcards` já está criado, com Google habilitado em **Authentication > Sign-in method** e os domínios `charles-da-silva.github.io` e `mymemo.nanuvem.net` autorizados. Para novos hosts de produção, adicione o domínio em **Authentication > Settings > Authorized domains**.
+2. Copie `Frontend/.env.example` para `Frontend/.env.local` e preencha as credenciais de configuração do app web Firebase. Defina `VITE_API_URL` para a URL do backend.
+3. Configure `FIREBASE_SERVICE_ACCOUNT` no ambiente do backend como o JSON de uma chave de conta de serviço do mesmo projeto Firebase. Nunca publique essa chave.
+4. Configure `DATABASE_URL` no backend ou os campos `DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_USER`, `DATABASE_PASSWORD` e `DATABASE_NAME`, e faça o deploy. O servidor cria a tabela de usuários e adiciona `owner_id` aos decks automaticamente. No primeiro login, a primeira conta registrada recebe os decks antigos sem proprietário.
+5. Para o deploy do GitHub Pages, cadastre os segredos do repositório `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, `VITE_FIREBASE_PROJECT_ID` e `VITE_FIREBASE_APP_ID`. A URL da API pode ser definida na variável de repositório `VITE_API_URL`; por padrão, usa o backend do Render. Cadastre também o domínio publicado nos domínios autorizados do Firebase.
+
+Use `Frontend/.env.example` e `Backend/.env.example` como modelos, sem substituir valores de produção por exemplos.
 
 
 ### Quer testar a versão fullstack do app?

@@ -2,7 +2,7 @@ const decksService = require('../services/decksService');
 
 async function getAllDecks(req, res) {
   try {
-    const decks = await decksService.getAllDecks();
+    const decks = await decksService.getAllDecks(req.user.uid);
 
     res.json(decks);
   } catch (error) {
@@ -16,7 +16,7 @@ async function getAllDecks(req, res) {
 
 async function createDeck(req, res) {
   try {
-    const newDeck = await decksService.createDeck(req.body);
+    const newDeck = await decksService.createDeck(req.body, req.user.uid);
 
     res.status(201).json(newDeck);
   } catch (error) {
@@ -34,9 +34,13 @@ async function updateDeck(req, res) {
 
     const updatedDeck = await decksService.updateDeck(
       id,
-      req.body
+      req.body,
+      req.user.uid
     );
 
+    if (!updatedDeck) {
+      return res.status(404).json({ error: 'Deck não encontrado.' });
+    }
     res.json(updatedDeck);
   } catch (error) {
     console.log(error);
@@ -51,7 +55,10 @@ async function deleteDeck(req, res) {
   try {
     const { id } = req.params;
 
-    await decksService.deleteDeck(id);
+    const deleted = await decksService.deleteDeck(id, req.user.uid);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Deck não encontrado.' });
+    }
 
     res.json({
       message: 'Deck removido com sucesso',

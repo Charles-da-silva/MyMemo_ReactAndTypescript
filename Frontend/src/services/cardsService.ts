@@ -1,9 +1,8 @@
 import type { Card } from "../types/types";
+import { API_BASE_URL, authenticatedFetch } from "./api";
 
 export async function getCardsByDeckId(deckId: string) {
-
-  const response = await fetch(`https://mymemo-reactandtypescript.onrender.com/cards/${deckId}`
-  );
+  const response = await authenticatedFetch(`${API_BASE_URL}/cards/${deckId}`);
 
   if (!response.ok) {
     throw new Error("Erro ao buscar cards");
@@ -15,8 +14,8 @@ export async function getCardsByDeckId(deckId: string) {
 
 export async function createCard(card: Card) {
 
-  const response = await fetch(
-    "https://mymemo-reactandtypescript.onrender.com/cards",
+  const response = await authenticatedFetch(
+    `${API_BASE_URL}/cards`,
     {
       method: "POST",
       headers: {
@@ -48,8 +47,8 @@ export async function updateCard(
   card: Card
 ) {
 
-  const response = await fetch(
-    `https://mymemo-reactandtypescript.onrender.com/cards/${id}`,
+  const response = await authenticatedFetch(
+    `${API_BASE_URL}/cards/${id}`,
     {
       method: "PUT",
       headers: {
@@ -72,8 +71,8 @@ export async function updateCardReview(
   next_review: string
 ) {
 
-  const response = await fetch(
-    `https://mymemo-reactandtypescript.onrender.com/cards/${id}/review`,
+  const response = await authenticatedFetch(
+    `${API_BASE_URL}/cards/${id}/review`,
     {
       method: "PATCH",
       headers: {
@@ -85,6 +84,9 @@ export async function updateCardReview(
     }
   );
 
+  if (!response.ok) {
+    throw new Error("Erro ao atualizar revisão do card");
+  }
   return response.json();
 
 }
@@ -95,8 +97,8 @@ export async function deleteCard(
   id: string
 ) {
 
-  const response = await fetch(
-    `https://mymemo-reactandtypescript.onrender.com/cards/${id}`,
+  const response = await authenticatedFetch(
+    `${API_BASE_URL}/cards/${id}`,
     {
       method: "DELETE"
     }

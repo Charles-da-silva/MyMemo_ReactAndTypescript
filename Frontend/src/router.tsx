@@ -1,10 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
-import MainPage from "./pages/MainPage";
+import AuthGate from "./components/AuthGate";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainPage />,
+    element: <AuthGate />,
   },
 ],
   {

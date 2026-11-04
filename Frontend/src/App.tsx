@@ -3,6 +3,7 @@ import './App.css'
 import AppLoader from './components/AppLoader';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './router';
+import { AuthProvider } from './contexts/AuthProvider';
 
 function App() {
   const [loading, setIsLoading] = useState(true);
@@ -27,7 +28,9 @@ function App() {
   }
 
   return (
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   );
 }
 

@@ -4,7 +4,7 @@ const cardsService = require('../services/cardsService');
 
 async function getAllCards(req, res) {
   try {
-    const cards = await cardsService.getAllCards();
+    const cards = await cardsService.getAllCards(req.user.uid);
     res.json(cards);
   } catch (error) {
     console.log(error);
@@ -16,7 +16,7 @@ async function getCardsByDeckId(req, res) {
   try {
     const { deckId } = req.params;
 
-    const cards = await cardsService.getCardsByDeckId(deckId);
+    const cards = await cardsService.getCardsByDeckId(deckId, req.user.uid);
 
     console.log('deckId recebido:', deckId);
     console.log('Cards retornados:', cards.length, 'cards');
@@ -35,7 +35,10 @@ async function getCardsByDeckId(req, res) {
 
 async function createCard(req, res) {
   try {
-    const newCard = await cardsService.createCard(req.body);
+    const newCard = await cardsService.createCard(req.body, req.user.uid);
+    if (!newCard) {
+      return res.status(404).json({ error: 'Deck não encontrado.' });
+    }
     res.status(201).json(newCard);
   } catch (error) {
     const stack = error instanceof Error ? error.stack : String(error);
@@ -47,7 +50,10 @@ async function updateCard(req, res) {
   try {
     const { id } = req.params;
 
-    const updatedCard = await cardsService.updateCard(id, req.body);
+    const updatedCard = await cardsService.updateCard(id, req.body, req.user.uid);
+    if (!updatedCard) {
+      return res.status(404).json({ error: 'Card não encontrado.' });
+    }
 
     res.json(updatedCard);
   } catch (error) {
@@ -60,7 +66,10 @@ async function deleteCard(req, res) {
   try {
     const { id } = req.params;
 
-    await cardsService.deleteCard(id);
+    const deleted = await cardsService.deleteCard(id, req.user.uid);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Card não encontrado.' });
+    }
 
     res.status(204).send();
 
@@ -80,9 +89,13 @@ async function updateNextReview(req, res) {
     const updatedCard =
       await cardsService.updateNextReview(
         id,
-        next_review
+        next_review,
+        req.user.uid
       );
 
+    if (!updatedCard) {
+      return res.status(404).json({ error: 'Card não encontrado.' });
+    }
     res.json(updatedCard);
 
   } catch (error) {

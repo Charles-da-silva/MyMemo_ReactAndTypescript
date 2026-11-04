@@ -3,7 +3,8 @@ require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') }
 const express = require("express");
 const cors = require("cors");
 
-require("./database/connection");
+const initializeDatabase = require("./database/initializeDatabase");
+const requireAuth = require("./middleware/requireAuth");
 
 const app = express();
 
@@ -25,11 +26,18 @@ app.get("/", (req, res) => {
 const cardsRoutes = require("./routes/cardsRoutes");
 const decksRoutes = require("./routes/decksRoutes");
 
-app.use("/decks", decksRoutes);
-app.use("/cards", cardsRoutes);
+app.use("/decks", requireAuth, decksRoutes);
+app.use("/cards", requireAuth, cardsRoutes);
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
-app.listen(PORT, () => {
-  console.log(`✅ Servidor rodando na porta ${PORT}`);
-});
+initializeDatabase()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`✅ Servidor rodando na porta ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error('Falha ao preparar o banco de dados:', error);
+    process.exitCode = 1;
+  });

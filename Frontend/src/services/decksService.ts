@@ -1,15 +1,14 @@
 import type { Deck } from "../types/types";
+import { API_BASE_URL, authenticatedFetch } from "./api";
 
-// URL base da API Node
-const API_URL = "https://mymemo-reactandtypescript.onrender.com/decks";
-
+const API_URL = `${API_BASE_URL}/decks`;
 
 // =========================
 // BUSCAR TODOS OS DECKS
 // =========================
 export async function getDecks() {
   try {
-    const response = await fetch(API_URL);
+    const response = await authenticatedFetch(API_URL);
 
     if (!response.ok) {
       throw new Error("Erro ao buscar decks");
@@ -36,7 +35,7 @@ export async function createDeck(deck: {
   description: string;
 } | Deck) {
   try {
-    const response = await fetch(API_URL, {
+    const response = await authenticatedFetch(API_URL, {
       method: "POST",
 
       headers: {
@@ -72,7 +71,7 @@ export async function updateDeck(
   }
 ) {
   try {
-    const response = await fetch(
+    const response = await authenticatedFetch(
       `${API_URL}/${id}`,
       {
         method: "PUT",
@@ -85,13 +84,14 @@ export async function updateDeck(
       }
     );
 
+    if (!response.ok) {
+      throw new Error("Erro ao atualizar deck");
+    }
     return await response.json();
 
   } catch (error) {
-    console.error(
-      "Erro ao atualizar deck:",
-      error
-    );
+    console.error("Erro ao atualizar deck:", error);
+    throw error;
   }
 }
 
@@ -100,10 +100,14 @@ export async function updateDeck(
 // =========================
 export async function deleteDeck(deckId: string) {
   try {
-    await fetch(`${API_URL}/${deckId}`, {
+    const response = await authenticatedFetch(`${API_URL}/${deckId}`, {
       method: "DELETE",
     });
+    if (!response.ok) {
+      throw new Error("Erro ao deletar deck");
+    }
   } catch (error) {
     console.error("Erro ao deletar deck:", error);
+    throw error;
   }
 }
