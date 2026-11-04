@@ -9,6 +9,7 @@
 - Próximo: publicar o frontend; depois salvar as variáveis do Render e publicar o backend.
 - No Render, os campos `FIREBASE_SERVICE_ACCOUNT` estão preenchidos, mas **não foram salvos**. Não salve nem faça deploy até o frontend estar publicado.
 - [x] Commit `88bd3ba` enviado para a branch `feature-backend-node`; ainda falta integrar as alterações em `main`.
+- Integração pausada para revisar o escopo: a branch contém 58 commits que não estão em `main`, não apenas a autenticação.
 - [x] Adicionado o secret `VITE_FIREBASE_API_KEY` no GitHub Actions.
 - [x] Adicionado o secret `VITE_FIREBASE_AUTH_DOMAIN` no GitHub Actions.
 - [x] Adicionado o secret `VITE_FIREBASE_PROJECT_ID` no GitHub Actions.
@@ -52,8 +53,8 @@
 
 Os secrets já estão cadastrados. Falta publicar o código para que o GitHub Actions compile o frontend:
 
-1. A branch `feature-backend-node` foi enviada ao GitHub com o commit `88bd3ba`.
-2. Integre as alterações em `main` por um pull request (ou outro fluxo que termine com as mudanças em `main`). O workflow `.github/workflows/deploy.yml` publica o frontend quando há mudanças em `main`.
+1. Revisar o escopo da branch `feature-backend-node` antes de integrar: ela inclui 58 commits ainda ausentes de `main`.
+2. Após confirmar o escopo, integrar as alterações em `main` por pull request (ou outro fluxo que termine com as mudanças em `main`). O workflow `.github/workflows/deploy.yml` publica o frontend quando há mudanças em `main`.
 3. Aguarde o workflow terminar com sucesso e confirme que o site publicado atualizou. Se o workflow terminar mas o site não atualizar, confira **Settings → Pages** e confirme que a publicação usa a branch `gh-pages`.
 
 ### 2. Configurar e publicar o backend no Render
