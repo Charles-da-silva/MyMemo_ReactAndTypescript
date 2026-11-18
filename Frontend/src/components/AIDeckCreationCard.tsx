@@ -159,7 +159,7 @@ O formato do JSON deve ser exatamente o seguinte (sem campos adicionais):
   };
 
   return (
-    <div className="studyCard" >
+    <div className="studyCard">
       <div className="personText" style={{
         width: '90%',
         margin: '0 auto',
@@ -237,7 +237,7 @@ O formato do JSON deve ser exatamente o seguinte (sem campos adicionais):
           fontSize: 'clamp(12px, 3vw, 14px)',
           lineHeight: 1.8
         }}>
-          <a href="https://youtu.be/i0FgvbR6iS8" target="_blank" rel="noopener noreferrer">
+          <a className="content-link" href="https://youtu.be/i0FgvbR6iS8" target="_blank" rel="noopener noreferrer">
             Como criar decks usando IA
           </a>
         </div>
@@ -281,7 +281,7 @@ O formato do JSON deve ser exatamente o seguinte (sem campos adicionais):
           lineHeight: 1.5
         }}>
           Em caso de erros, envie um e-mail para{' '}
-          <a href="mailto:emaildocharles@gmail.com">emaildocharles@gmail.com</a>
+          <a className="content-link" href="mailto:emaildocharles@gmail.com">emaildocharles@gmail.com</a>
         </p>
       </div>
 

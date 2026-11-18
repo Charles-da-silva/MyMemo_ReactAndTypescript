@@ -171,7 +171,7 @@ export default function HomeCard({
 
       </div>
       <br /><br />
-      <a target="_blank" style={{ textDecoration: "none", fontSize: "12px" }} href="https://github.com/Charles-da-silva/MyMemo_ReactAndTypescript/blob/feature-backend-node/README.md">Sobre o MyMemo</a>
+      <a className="content-link" target="_blank" style={{ textDecoration: "none", fontSize: "12px" }} href="https://github.com/Charles-da-silva/MyMemo_ReactAndTypescript/blob/feature-backend-node/README.md">Sobre o MyMemo</a>
       <br />
     </>
   );

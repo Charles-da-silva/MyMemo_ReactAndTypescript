@@ -257,6 +257,23 @@ p {
   font-size: 15px;
 }
 
+.content-link,
+.content-link:visited {
+  color: #b7c9e8;
+  text-decoration-color: #7f94b5;
+  text-underline-offset: 2px;
+}
+
+.content-link:hover {
+  color: #d5e0f2;
+}
+
+.content-link:focus-visible {
+  outline: 2px solid #9db7df;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
 
 /* Configs página MainPage */
 /* ============================== */
