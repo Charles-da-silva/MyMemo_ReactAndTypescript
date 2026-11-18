@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../contexts/authContext";
 import "../styles/LoginPage.css";
+import Logo from "../components/Logo";
 
 export default function LoginPage() {
   const { configured, signInWithGoogle } = useAuth();
@@ -23,8 +24,9 @@ export default function LoginPage() {
   return (
     <main className="login-page">
       <section className="login-card">
-        <h1>MyMemo</h1>
-        <p>Entre para acessar seus decks e cards em qualquer dispositivo.</p>
+        <Logo size={240} />
+        <br />
+        <p>Acesse seus decks e cards de qualquer dispositivo</p>
         {!configured ? (
           <p role="alert" className="login-error">
             A autenticação ainda não foi configurada. Defina as variáveis

@@ -11,13 +11,15 @@
   padding: 40px 32px;
   border: 1px solid #2e303a;
   border-radius: 20px;
-  background: #1e1e1e;
+  background: #16171d;
   text-align: center;
 }
 
-.login-card h1 {
-  margin: 0 0 12px;
-  font-size: 36px;
+.login-card .logo {
+  display: block;
+  max-width: 100%;
+  margin: 0 auto 12px;
+  padding: 0;
 }
 
 .login-card p {

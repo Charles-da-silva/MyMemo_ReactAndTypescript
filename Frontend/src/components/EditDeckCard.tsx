@@ -11,6 +11,13 @@ import { getDecks, updateDeck } from "../services/decksService";
 import CardEditorModal from "./CardEditorModal";
 import { v4 as uuidv4 } from 'uuid';
 
+function normalizeSearchText(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("pt-BR");
+}
+
 interface EditCardProps {
   setMode: (mode: "home" | "deckOptions" | "createDeck" | "review" | "editDeck") => void;
   selectedDeck: string[]; // recebe o array pronto vindo do HomeCard
@@ -29,8 +36,22 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCardIndex, setEditingCardIndex] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const currentCards = cards.filter(c => c.deck_id === selectedDeckId);
+  const searchTerms = normalizeSearchText(searchQuery)
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+  const filteredCards = currentCards.filter(card => {
+    const searchableText = normalizeSearchText([
+      card.question,
+      ...card.alternatives,
+      card.correct_answer,
+    ].join(" "));
+
+    return searchTerms.every(term => searchableText.includes(term));
+  });
   const currentDeck = decks.find(d => d.id === selectedDeckId);
 
   // reference para o input de nome do deck, para facilitar a edição:
@@ -201,6 +222,7 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
     <>
       <img src={homeIcon}
         alt="Voltar a home" height={40} onClick={() => setMode("home")}
+        className="edit-deck-home-button"
         style={{ cursor: 'pointer', padding: 15 }}
       />
         
@@ -252,16 +274,34 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
 
         </div>
 
+        <input
+          type="search"
+          value={searchQuery}
+          onChange={event => setSearchQuery(event.target.value)}
+          placeholder="Buscar por pergunta ou resposta"
+          aria-label="Buscar cards por pergunta ou resposta"
+          style={{
+            width: "100%",
+            boxSizing: "border-box",
+            marginTop: 16,
+            padding: "10px 12px",
+            borderRadius: 8,
+          }}
+        />
 
         {currentCards.length > 0 ? (
           <>
             <div style={{ marginTop: 30 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                <p style={{ fontSize: "16px", margin: 0, textAlign: "left" }}>Este Deck possui {currentCards.length} cards</p>
+                <p style={{ fontSize: "16px", margin: 0, textAlign: "left" }}>
+                  {searchTerms.length > 0
+                    ? `${filteredCards.length} de ${currentCards.length} cards encontrados`
+                    : `Este Deck possui ${currentCards.length} cards`}
+                </p>
                 
               </div>
 
-              {currentCards.map((card: any) => (
+              {filteredCards.length > 0 ? filteredCards.map((card: any) => (
                 <div key={card.id}>
                   <div style={{ display: "flex", justifyContent: "left", alignItems: "center", gap: 10, marginBottom: 10 }}>
                     <div className="options" style={{ width: "98%", border: "1px solid #eee", borderRadius: "12px", textAlign: "left", padding: "10px" }}>
@@ -294,7 +334,11 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
                     </div>
                   </div>
                 </div>
-              ))}
+              )) : (
+                <p className="text-gray-500 italic" role="status">
+                  Nenhum card corresponde à busca.
+                </p>
+              )}
 
             </div>
           </>

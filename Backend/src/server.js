@@ -25,9 +25,11 @@ app.get("/", (req, res) => {
 
 const cardsRoutes = require("./routes/cardsRoutes");
 const decksRoutes = require("./routes/decksRoutes");
+const syncRoutes = require("./routes/syncRoutes");
 
 app.use("/decks", requireAuth, decksRoutes);
 app.use("/cards", requireAuth, cardsRoutes);
+app.use("/sync", requireAuth, syncRoutes);
 
 const PORT = process.env.PORT || 3001;
 

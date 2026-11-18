@@ -5,6 +5,7 @@ import { createCard } from "../services/cardsService";
 import CardEditorModal from "./CardEditorModal";
 import Logo from "./Logo";
 import homeIcon from "../assets/home.png";
+import editIcon from "../assets/Edit.png";
 import trashIcon from "../assets/Trash.png";
 import "../styles/index.css";
 import { v4 as uuidv4 } from 'uuid';
@@ -126,7 +127,7 @@ export default function ManualDeckCreationCard({ setMode }: ManualDeckCreationCa
   };
 
   return (
-    <div className="howCreateCard">
+    <div className={`howCreateCard${step === 'cards' ? ' manual-deck-cards' : ''}`}>
       <Logo />
       <br />
 
@@ -192,53 +193,42 @@ export default function ManualDeckCreationCard({ setMode }: ManualDeckCreationCa
           <p className="personText mediumText">Deck: <strong>{deckName}</strong></p>
           <br />
 
-          {cards.length > 0 && (
-            <div style={{
-              width: '80vw',
-              maxWidth: '600px',
-              marginBottom: '15px',
-              maxHeight: '300px',
-              overflowY: 'auto',
-            }}>
+          {cards.length > 0 ? (
+            <div className="manual-deck-card-list">
+              <p style={{ fontSize: '16px', margin: '0 0 10px', textAlign: 'left' }}>
+                Este Deck possui {cards.length} cards
+              </p>
               {cards.map((card, index) => (
-                <div key={index} style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: '10px',
-                  marginBottom: '10px',
-                  padding: '10px',
-                  border: '1px solid #eee',
-                  borderRadius: '6px',
-                  backgroundColor: '#2a2a2a',
-                }}>
-                  <div style={{ flex: 1 }}>
-                    <p style={{ margin: '0', fontSize: '14px', color: '#fff' }}>
-                      {card.question}
-                    </p>
+                <div key={card.id}>
+                  <div style={{ display: 'flex', justifyContent: 'left', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                    <div className="options" style={{ width: '98%', border: '1px solid #eee', borderRadius: '12px', textAlign: 'left', padding: '10px' }}>
+                      <span className="line-clamp-3 text-sm text-gray-700">
+                        {card.question}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 10, marginRight: 5 }}>
+                      <img
+                        src={editIcon}
+                        alt="Editar card"
+                        onClick={() => handleEditCard(index)}
+                        style={{ height: 20, cursor: 'pointer' }}
+                      />
+                      <img
+                        src={trashIcon}
+                        alt="Excluir card"
+                        onClick={() => handleDeleteCard(index)}
+                        style={{ height: 20, cursor: 'pointer' }}
+                      />
+                    </div>
                   </div>
-                  <button
-                    onClick={() => handleEditCard(index)}
-                    className="btn btn-blue"
-                    style={{ padding: '5px 10px', fontSize: '12px' }}
-                  >
-                    Editar
-                  </button>
-                  <img
-                    src={trashIcon}
-                    alt="Deletar"
-                    style={{ height: '20px', cursor: 'pointer' }}
-                    onClick={() => handleDeleteCard(index)}
-                  />
                 </div>
               ))}
             </div>
+          ) : (
+            <p className="text-gray-500 italic" style={{ marginTop: 20, marginBottom: 10 }}>
+              Nenhum card neste deck.
+            </p>
           )}
-
-          <p className="personText mediumText" style={{ marginBottom: '10px' }}>
-            {cards.length} card(s) adicionado(s)
-          </p>
-          <br />
 
           <button
             onClick={() => {

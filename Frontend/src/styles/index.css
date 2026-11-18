@@ -77,7 +77,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      font-size: large;
+      font-size: 13px;
       background-color: #1E1E1E;
       color: var(--text);
     }
@@ -321,6 +321,57 @@ p {
   cursor: pointer;
 }
 
+.mainPage.study-mode .account-actions,
+.mainPage.ai-deck-mode .account-actions {
+  position: relative;
+  top: auto;
+  right: auto;
+  align-self: stretch;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  margin: 12px 16px 16px;
+}
+
+.mainPage.study-mode .conteudo-da-pagina {
+  flex: 1 0 auto;
+  height: auto;
+  justify-content: flex-start;
+}
+
+.mainPage.manual-deck-mode .conteudo-da-pagina {
+  flex: 0 0 auto;
+  height: auto;
+  min-height: 100%;
+  justify-content: flex-start;
+}
+
+.mainPage.ai-deck-mode .conteudo-da-pagina {
+  flex: 0 0 auto;
+  height: auto;
+  justify-content: flex-start;
+  padding-bottom: 16px;
+}
+
+@media (max-width: 430px) {
+  .mainPage.ai-deck-mode .account-actions {
+    margin-bottom: 8px;
+  }
+}
+
+.howCreateCard.manual-deck-cards {
+  height: auto;
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  justify-content: flex-start;
+}
+
+.manual-deck-card-list {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 20px 0 15px;
+}
+
 .howCreateCard {
   width: 90%;
   height: 100vh;
@@ -378,9 +429,15 @@ p {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: large;
+  font-size: 14px;
   background-color: #f3f4f6e7;
   color: #4d4e52;
+}
+
+@media (max-width: 430px) {
+  .edit-deck-home-button {
+    margin-top: 12px;
+  }
 }
 
 .logo {

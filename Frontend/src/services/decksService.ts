@@ -1,33 +1,21 @@
 import type { Deck } from "../types/types";
 import { API_BASE_URL, authenticatedFetch } from "./api";
+import { auth } from "../firebase";
+import {
+  cacheDeck,
+  getCachedDecks,
+  removeCachedDeck,
+} from "./decksCache";
 
 const API_URL = `${API_BASE_URL}/decks`;
 
-// =========================
-// BUSCAR TODOS OS DECKS
-// =========================
 export async function getDecks() {
-  try {
-    const response = await authenticatedFetch(API_URL);
-
-    if (!response.ok) {
-      const errorDetails = await response.text();
-      const details = errorDetails ? `: ${errorDetails}` : "";
-      throw new Error(
-        `Erro ao buscar decks (HTTP ${response.status})${details}`,
-      );
-    }
-
-    // converte resposta para JSON
-    const data = await response.json();
-
-    return data;
-    
-  } catch (error) {
-    console.error("Erro ao buscar decks:", error);
-
-    throw error;
+  const user = auth?.currentUser;
+  if (!user) {
+    throw new Error("Faça login para acessar seus decks.");
   }
+
+  return getCachedDecks(user.uid);
 }
 
 
@@ -55,7 +43,12 @@ export async function createDeck(deck: {
       throw new Error("Erro ao criar deck");
     }
 
-    const data = await response.json();
+    const data: Deck = await response.json();
+    const user = auth?.currentUser;
+    if (!user) {
+      throw new Error("Faça login para acessar seus decks.");
+    }
+    await cacheDeck(user.uid, data);
 
     return data;
   } catch (error) {
@@ -91,7 +84,13 @@ export async function updateDeck(
     if (!response.ok) {
       throw new Error("Erro ao atualizar deck");
     }
-    return await response.json();
+    const data: Deck = await response.json();
+    const user = auth?.currentUser;
+    if (!user) {
+      throw new Error("Faça login para acessar seus decks.");
+    }
+    await cacheDeck(user.uid, data);
+    return data;
 
   } catch (error) {
     console.error("Erro ao atualizar deck:", error);
@@ -110,6 +109,11 @@ export async function deleteDeck(deckId: string) {
     if (!response.ok) {
       throw new Error("Erro ao deletar deck");
     }
+    const user = auth?.currentUser;
+    if (!user) {
+      throw new Error("Faça login para acessar seus decks.");
+    }
+    await removeCachedDeck(user.uid, deckId);
   } catch (error) {
     console.error("Erro ao deletar deck:", error);
     throw error;

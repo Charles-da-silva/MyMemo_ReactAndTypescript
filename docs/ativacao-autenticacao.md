@@ -10,22 +10,23 @@
 - [x] Confirmado no painel Render: serviço ligado à branch `feature-backend-node`, Root Directory `Backend`, Build Command `npm install` e Start Command `npm start`.
 - [x] Confirmado inicialmente no Render: commit `88bd3ba` publicou a autenticação no backend sem merge para `main`.
 - [x] Criada e cadastrada a variável secreta `FIREBASE_SERVICE_ACCOUNT` no Render. O arquivo JSON foi removido de Downloads após o cadastro e não foi salvo no repositório.
-- [x] Render concluiu o deploy após cadastrar a variável; o commit `c6ccd5b` aparece como último deploy bem-sucedido e `Live`. A API responde `200` na raiz e `401` em `/decks` sem token.
+- [x] Render concluiu o deploy após cadastrar a variável; o commit `762010f` aparece como `Live`. A raiz responde `200`; sem token, `/decks` retorna `401`.
 - [x] Confirmado: o usuário testou `mymemo.nanuvem.net`, servido pelo Vercel; GitHub Pages é uma publicação diferente.
-- [!] O Production Deployment do Vercel é `be3af49` da branch `feature-backend-node`, de 4 de julho, anterior à autenticação. O build está em Root Directory `Frontend`, mas o painel avisa que pushes para `main` atualizam produção.
-- [!] Deploys mais recentes da branch feature aparecem como Preview; não substituíram o Production Deployment `be3af49`.
-- [x] Cadastradas no Vercel as quatro variáveis `VITE_FIREBASE_*` no ambiente Preview; Production não foi selecionado.
-- [x] Criado Preview do commit `c6ccd5b` na branch `feature-backend-node`; deployment `ly5h1sm8t` ficou `Ready` e exibiu a tela “Continuar com Google”.
+- [x] Promovido ao Production do Vercel o build autenticado `762010f` após o usuário confirmar que os 8 decks aparecem no Preview; deploy `25wDW6yUaViwrp2mPj2t9RqeGsKK` ficou `Ready` e recebeu os domínios de produção.
+- [x] Cadastradas no Vercel as quatro variáveis públicas `VITE_FIREBASE_*` também no ambiente Production como Config.
+- [x] Criado Preview do commit `762010f` na branch `feature-backend-node`; deployment `8you234wd` ficou `Ready` e exibe a tela “Continuar com Google”.
 - [x] Adicionado o domínio exato do Preview atual à lista de domínios autorizados do Firebase Authentication.
 - [x] Conta escolhida pelo usuário para os 3 decks: `emaildocharles@gmail.com`.
 - [x] O usuário concluiu o login Google no Preview e clicou em “Carregar Decks”; a busca falhou com “Erro ao buscar decks”.
 - [x] Diagnóstico dos logs do Render: o middleware falhava ao iniciar Firebase Admin (`admin.credential.cert` não existe na versão `firebase-admin` 14.5.0), impedindo requisições autenticadas.
 - [x] Corrigida localmente a inicialização para a API modular (`firebase-admin/app` e `firebase-admin/auth`).
 - [x] Corrigido localmente o frontend para mostrar o status HTTP e a mensagem da API, com opção de tentar novamente.
-- O `main` atual não tem a pasta `Frontend/`; alinhar branch de produção e Root Directory antes de qualquer push/deploy para não quebrar o site.
+- [x] Publicada a correção no commit `762010f`; Render está `Live`. Um token falso retorna `401 Token de autenticação inválido`, confirmando que a inicialização modular alcança a validação do token.
+- [x] Autorizado no Firebase o domínio do Preview `my-memo-react-and-typescript-8you234wd-charles-devfullstack.vercel.app`.
+- O `main` atual não tem a pasta `Frontend/`; não enviar a branch feature para `main`. Após validar os decks no Preview, promover o deployment correto pelo Vercel sem merge amplo.
 - O bundle publicado no Vercel não aparenta conter login Firebase; a API que ele chama recusa requisições sem token.
 - O `main` publica o frontend da raiz por um workflow antigo; a branch feature tem o novo workflow em `Frontend/`, mas o gatilho é push em `main`.
-- [x] Confirmado no dashboard Vercel: para atualizar a produção, enviar para `main`. O deployment ativo ainda tem origem em `feature-backend-node`, então branch e raiz precisam ser alinhadas.
+- [x] Confirmado no dashboard Vercel: pushes para `main` atualizam produção, mas `main` não possui `Frontend/`. A promoção direta do Preview validado evitou merge amplo.
 - [x] Confirmado antes da configuração: não havia variáveis no Project nem no Shared do Vercel. Agora as quatro estão cadastradas em Preview.
 - Não fazer merge amplo automaticamente: a branch contém 59 commits que não estão em `main`, incluindo mudança de estrutura do projeto.
 - [x] Adicionado o secret `VITE_FIREBASE_API_KEY` no GitHub Actions.
@@ -52,22 +53,24 @@
 
 - [x] Definida a estratégia para evitar merge amplo: manter o Render na branch feature e, após validar o backend, promover ao Vercel Production o Preview correto da branch que contém `Frontend/`.
 - [x] Cadastrar `FIREBASE_SERVICE_ACCOUNT` no Render e aguardar o deploy de produção concluir.
-- [ ] Publicar a correção do backend na branch `feature-backend-node` e confirmar que o Render concluiu o deploy.
-- [ ] Repetir “Carregar Decks” no Preview e confirmar o retorno autenticado da API e a propriedade dos três decks.
+- [x] Publicar a correção do backend na branch `feature-backend-node` e confirmar que o Render concluiu o deploy.
+- [ ] Repetir “Carregar Decks” no Preview atualizado e confirmar que os três decks aparecem na conta `emaildocharles@gmail.com`.
 - [x] Cadastrar os quatro secrets do frontend no GitHub.
 - [x] Cadastrar as quatro variáveis `VITE_FIREBASE_*` no Preview do Vercel. Não foram cadastradas em Production.
-- [x] O usuário entrou no Preview e clicou em “Carregar Decks”; o backend falhou antes de validar o token.
-- [ ] Publicar o frontend autenticado por um caminho que não substitua o backend live nem faça merge amplo sem revisão.
+- [x] O usuário confirmou que o Preview corrigido exibiu os 8 decks.
+- [x] O usuário entrou novamente em `mymemo.nanuvem.net`; os 8 decks apareceram.
+- [x] Testada outra conta Google: ela não mostrou decks de terceiros; após importar um deck, ele apareceu nessa conta.
+- [ ] Após confirmar os decks no Preview, promover o deployment `762010f` ao Vercel Production.
 - [x] Confirmar a conta proprietária dos 3 decks antigos: `emaildocharles@gmail.com`.
 
-> **Causa identificada; correção local ainda não publicada.** O usuário entrou no Preview, mas o middleware do Render falha por incompatibilidade com Firebase Admin v14. A produção do frontend segue no deployment antigo. Corrigir e validar o backend primeiro; só então publicar o frontend autenticado.
+> **Ativação concluída e validada.** O build `762010f` está no Vercel Production, os 8 decks aparecem na conta proprietária e outra conta vê somente o deck que importou.
 
 ## Próximos passos, guiados um de cada vez
 
-### Próximo passo seguro: corrigir e validar o backend
+### Resultado final
 
-O backend Render está `Live` em `feature-backend-node`/`c6ccd5b`, com `FIREBASE_SERVICE_ACCOUNT` configurada, mas seus logs mostram erro de inicialização do Firebase Admin v14 nas rotas autenticadas. A correção local já usa a API modular; falta publicar e testar. O usuário confirmou o login no Preview, mas o carregamento de decks falhou. O domínio próprio continua no deployment antigo (`be3af49`). A conta escolhida para os três decks é `emaildocharles@gmail.com`. Consulte o [relatório](./verificacao-producao-autenticacao.md).
+O backend Render está `Live` com a correção do Firebase Admin v14; o Vercel Production serve o frontend autenticado. O usuário confirmou os 8 decks na conta principal e confirmou que outra conta não vê os decks da primeira. A importação de um deck nessa segunda conta funcionou. Para próximos deploys, o branch de produção do Vercel continua apontando para `main`, que não possui `Frontend/`; promova os Previews validados ou alinhe a estratégia antes de publicar mudanças futuras. Consulte o [relatório](./verificacao-producao-autenticacao.md).
 
 ## Como pedir ajuda na próxima etapa
 
-Primeiro, publicar a correção do Firebase Admin e confirmar o deploy do Render. Depois, abrir o [Preview autenticado](https://my-memo-reactandtypescript-ly5h1sm8t-charles-devfullstack.vercel.app/), clicar em “Carregar Decks” e verificar os três decks. Só depois promover o frontend ao Vercel Production; não é necessário integrar os 59 commits exclusivos da branch inteira.
+Ativação concluída. Para qualquer alteração futura, valide o Preview antes de promovê-lo ao Vercel Production; não faça merge dos 59 commits divergentes sem revisar a estratégia de branches e o Root Directory.

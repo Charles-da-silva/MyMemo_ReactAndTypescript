@@ -1,14 +1,22 @@
 import type { Card } from "../types/types";
 import { API_BASE_URL, authenticatedFetch } from "./api";
+import { auth } from "../firebase";
+import {
+  cacheCard,
+  getCachedCardsByDeckId,
+  removeCachedCard,
+} from "./decksCache";
+
+function getCurrentUserId(): string {
+  const userId = auth?.currentUser?.uid;
+  if (!userId) {
+    throw new Error("Faça login para acessar seus cards.");
+  }
+  return userId;
+}
 
 export async function getCardsByDeckId(deckId: string) {
-  const response = await authenticatedFetch(`${API_BASE_URL}/cards/${deckId}`);
-
-  if (!response.ok) {
-    throw new Error("Erro ao buscar cards");
-  }
-
-  return response.json();
+  return getCachedCardsByDeckId(getCurrentUserId(), deckId);
 }
 
 
@@ -38,7 +46,9 @@ export async function createCard(card: Card) {
     );
   }
 
-  return response.json();
+  const createdCard: Card = await response.json();
+  await cacheCard(getCurrentUserId(), createdCard);
+  return createdCard;
 }
 
 
@@ -62,7 +72,9 @@ export async function updateCard(
     throw new Error("Erro ao atualizar card");
   }
 
-  return response.json();
+  const updatedCard: Card = await response.json();
+  await cacheCard(getCurrentUserId(), updatedCard);
+  return updatedCard;
 }
 
 
@@ -87,7 +99,9 @@ export async function updateCardReview(
   if (!response.ok) {
     throw new Error("Erro ao atualizar revisão do card");
   }
-  return response.json();
+  const updatedCard: Card = await response.json();
+  await cacheCard(getCurrentUserId(), updatedCard);
+  return updatedCard;
 
 }
 
@@ -109,4 +123,6 @@ export async function deleteCard(
       "Erro ao excluir card"
     );
   }
+
+  await removeCachedCard(getCurrentUserId(), id);
 }

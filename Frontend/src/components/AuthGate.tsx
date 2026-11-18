@@ -7,7 +7,7 @@ export default function AuthGate() {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <AppLoader />;
+    return <AppLoader message="Verificando sua sessão..." compact />;
   }
 
   return user ? <MainPage /> : <LoginPage />;

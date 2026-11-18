@@ -1,14 +1,25 @@
 import "../styles/index.css";
 import imgLogo from "../assets/img_logo_black.png";
 
-export default function Logo() {
+interface LogoProps {
+  isLoading?: boolean;
+  size?: number;
+}
+
+export default function Logo({
+  isLoading = false,
+  size,
+}: LogoProps) {
   return (
-    <div >
-      <img 
-      className="logo" 
-      src={imgLogo} 
-      alt="MyMemo Logo"
-    />
+    <div className={isLoading ? "splash-container" : undefined}>
+      <div className={isLoading ? "card-rotation" : undefined}>
+        <img
+          className="logo"
+          style={size ? { width: size } : undefined}
+          src={imgLogo}
+          alt="MyMemo Logo"
+        />
+      </div>
     </div>
   );
 }

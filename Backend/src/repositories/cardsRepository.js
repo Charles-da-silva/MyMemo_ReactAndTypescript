@@ -1,4 +1,38 @@
 const pool = require("../database/connection");
+let alternativesColumnTypePromise;
+
+function getAlternativesColumnType() {
+  if (!alternativesColumnTypePromise) {
+    alternativesColumnTypePromise = pool
+      .query(`
+        SELECT udt_name
+        FROM information_schema.columns
+        WHERE table_schema = current_schema()
+          AND table_name = 'cards'
+          AND column_name = 'alternatives'
+      `)
+      .then((result) => {
+        const columnType = result.rows[0]?.udt_name;
+        if (!columnType) {
+          throw new Error("Não foi possível identificar o tipo da coluna alternatives.");
+        }
+        return columnType;
+      })
+      .catch((error) => {
+        alternativesColumnTypePromise = undefined;
+        throw error;
+      });
+  }
+  return alternativesColumnTypePromise;
+}
+
+async function serializeAlternatives(alternatives) {
+  const value = alternatives || [];
+  const columnType = await getAlternativesColumnType();
+  return columnType === "json" || columnType === "jsonb"
+    ? JSON.stringify(value)
+    : value;
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +111,7 @@ async function createCard(card, userId) {
 
   const finalNextReview = card.next_review || new Date().toISOString();
   console.log('next_review final:', finalNextReview);
+  const alternatives = await serializeAlternatives(card.alternatives);
 
   const values = [
     cardId,
@@ -84,7 +119,7 @@ async function createCard(card, userId) {
     card.question,
     card.correct_answer,
     finalNextReview,
-    card.alternatives || [],
+    alternatives,
     card.image || null,
     card.created_at || new Date().toISOString(),
     userId
@@ -102,6 +137,7 @@ async function createCard(card, userId) {
 
 async function updateCard(id, card, userId) {
 
+  const alternatives = await serializeAlternatives(card.alternatives);
   const query = `
     UPDATE cards
     SET
@@ -121,7 +157,7 @@ async function updateCard(id, card, userId) {
   const values = [
     card.question,
     card.correct_answer,
-    card.alternatives || [],
+    alternatives,
     card.next_review,
     card.image,
     id,

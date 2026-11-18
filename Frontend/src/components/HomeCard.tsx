@@ -1,5 +1,5 @@
 import type { Card, Deck } from "../types/types";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useDeckImportExport } from "../hooks/useDeckImportExport";
 
@@ -34,18 +34,15 @@ export default function HomeCard({
   const [cards] =
     useState<Card[]>([]);
 
-  const [isLoadingDecks, setIsLoadingDecks] = useState(false);
+  const [isLoadingDecks, setIsLoadingDecks] = useState(true);
   const [decksLoaded, setDecksLoaded] = useState(false);
   const [decksError, setDecksError] = useState<string | null>(null);
 
-  async function loadDecks() {
-    setIsLoadingDecks(true);
-    setDecksError(null);
+  const loadDecks = useCallback(async () => {
     try {
-      const apiDecks =
-        await getDecks();
-
+      const apiDecks = await getDecks();
       setDecks(apiDecks);
+      setDecksError(null);
       setDecksLoaded(true);
     } catch (error) {
       console.error(error);
@@ -58,7 +55,7 @@ export default function HomeCard({
     } finally {
       setIsLoadingDecks(false);
     }
-  }
+  }, []);
 
   const { importDecks } =
     useDeckImportExport({
@@ -68,39 +65,56 @@ export default function HomeCard({
     });
 
   useEffect(() => {
-    // Não carrega automaticamente, aguarda clique do usuário
+    let active = true;
+
+    getDecks()
+      .then(apiDecks => {
+        if (active) {
+          setDecks(apiDecks);
+          setDecksError(null);
+          setDecksLoaded(true);
+          setIsLoadingDecks(false);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        if (active) {
+          setDecksError(
+            error instanceof Error
+              ? error.message
+              : "Ocorreu um erro inesperado ao carregar os decks.",
+          );
+          setDecksLoaded(true);
+          setIsLoadingDecks(false);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
+
+  function retryLoadDecks() {
+    setIsLoadingDecks(true);
+    setDecksError(null);
+    void loadDecks();
+  }
 
 
   return (
     <>
       <div padding-top="10px" justify-content="center" align-items="center" className="homeCard">
 
-      {!decksLoaded ? (
-        <>
-          <p className="personText largeText">Clique no botão abaixo para carregar os decks existentes.</p>
-          <br />
-          <button
-            onClick={loadDecks}
-            disabled={isLoadingDecks}
-            className="btn btn-blue"
-            style={{ opacity: isLoadingDecks ? 0.5 : 1 }}
-          >
-            {isLoadingDecks ? 'Carregando...' : 'Carregar Decks'}
-          </button>
-        </>
-      ) : isLoadingDecks ? (
-        <p className="personText mediumText" style={{ color: '#888' }}>Carregando decks... aguarde.</p>
-      ) : decksError ? (
+      {isLoadingDecks ? null : decksError ? (
         <>
           <p className="personText mediumText" role="alert" style={{ color: '#b00020' }}>
             Não foi possível carregar os decks: {decksError}
           </p>
-          <button onClick={loadDecks} className="btn btn-blue">
+          <button onClick={retryLoadDecks} className="btn btn-blue">
             Tentar novamente
           </button>
         </>
-      ) : (
+      ) : decksLoaded ? (
         <>
           <p className="personText largeText">Selecione um Deck para estudar ou gerenciar</p>
           <br />
@@ -119,7 +133,7 @@ export default function HomeCard({
             ))}
           </select>
         </>
-      )}
+      ) : null}
       
       <br /><br /><br />      
       <p className="personText largeText">Crie ou importe um Deck</p>

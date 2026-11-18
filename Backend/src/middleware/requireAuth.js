@@ -10,16 +10,18 @@ function getFirebaseAuth() {
   }
 
   const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT;
-  if (!serviceAccountJson) {
-    const error = new Error('FIREBASE_SERVICE_ACCOUNT não foi configurado.');
+  const projectId = process.env.FIREBASE_PROJECT_ID;
+  if (!serviceAccountJson && !projectId) {
+    const error = new Error(
+      'FIREBASE_SERVICE_ACCOUNT ou FIREBASE_PROJECT_ID não foi configurado.',
+    );
     error.code = 'AUTH_NOT_CONFIGURED';
     throw error;
   }
 
-  const serviceAccount = JSON.parse(serviceAccountJson);
-  const app = initializeApp({
-    credential: cert(serviceAccount),
-  });
+  const app = serviceAccountJson
+    ? initializeApp({ credential: cert(JSON.parse(serviceAccountJson)) })
+    : initializeApp({ projectId });
   firebaseAuth = getAuth(app);
   return firebaseAuth;
 }

@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Swal from 'sweetalert2';
 import homeIcon from "../assets/home.png";
+import { useDeckImportExport } from "../hooks/useDeckImportExport";
 import "../styles/index.css";
 
 interface AIDeckCreationCardProps {
@@ -9,8 +10,20 @@ interface AIDeckCreationCardProps {
 
 export default function AIDeckCreationCard({ setMode }: AIDeckCreationCardProps) {
   const [copied, setCopied] = useState(false);
+  const importFileInput = useRef<HTMLInputElement>(null);
 
-  const prompt = `Você receberá um arquivo de texto anexado.
+  const { importDecks } = useDeckImportExport({
+    decks: [],
+    cards: [],
+    onImportSuccess: async () => {
+      setMode("home");
+      await new Promise<void>((resolve) => {
+        window.setTimeout(resolve, 0);
+      });
+    },
+  });
+
+  const instructions = `Você receberá um arquivo de texto anexado.
 
 Sua tarefa é analisar TODO o conteúdo do arquivo antes de criar qualquer pergunta.
 
@@ -88,14 +101,27 @@ O formato do JSON deve ser exatamente o seguinte (sem campos adicionais):
   ]
 }`;
 
-  const handleCopyPrompt = () => {
-    navigator.clipboard.writeText(prompt);
+  const handleCopyInstructions = async () => {
+    try {
+      await navigator.clipboard.writeText(instructions);
+    } catch {
+      Swal.fire({
+        title: 'Não foi possível copiar',
+        text: 'Verifique as permissões de área de transferência do navegador e tente novamente.',
+        icon: 'error',
+        background: '#1E1E1E',
+        color: '#fff',
+        confirmButtonColor: '#3085d6',
+      });
+      return;
+    }
+
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
 
     Swal.fire({
       title: 'Copiado!',
-      text: 'Prompt copiado para a área de transferência',
+      text: 'Instruções copiadas para a área de transferência.',
       icon: 'success',
       background: '#1E1E1E',
       color: '#fff',
@@ -104,30 +130,50 @@ O formato do JSON deve ser exatamente o seguinte (sem campos adicionais):
     });
   };
 
+  const handleCopyAndOpenGemini = async () => {
+    window.open('https://gemini.google.com/app', '_blank', 'noopener,noreferrer');
+
+    try {
+      await navigator.clipboard.writeText(instructions);
+    } catch {
+      Swal.fire({
+        title: 'Gemini aberto, mas as instruções não foram copiadas',
+        text: 'Verifique as permissões de área de transferência do navegador. Você ainda pode usar “Copiar para outra IA” e colar o texto no Gemini.',
+        icon: 'warning',
+        background: '#1E1E1E',
+        color: '#fff',
+        confirmButtonColor: '#3085d6',
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: 'Gemini aberto!',
+      text: 'As instruções foram copiadas. No Gemini, cole-as no chat (Ctrl+V) e anexe o arquivo de texto.',
+      icon: 'success',
+      background: '#1E1E1E',
+      color: '#fff',
+      confirmButtonColor: '#3085d6',
+      timer: 3000,
+    });
+  };
+
   return (
     <div className="studyCard" >
-      <br />
-
-      <p className="personText largeText" style={{
+      <div className="personText" style={{
         width: '90%',
         margin: '0 auto',
-        fontSize: 'clamp(20px, 6vw, 20px)'
+        maxWidth: '560px',
+        fontSize: 'clamp(14px, 3.5vw, 16px)',
+        lineHeight: 1.5
       }}>
-        Execute os passos abaixo para criar seu deck de perguntas usando IA
-      </p>
-      <br />
-
-      <button
-        onClick={handleCopyPrompt}
-        className="btn btn-blue"
-        style={{
-          marginBottom: '20px',
-          fontSize: 'clamp(12px, 3vw, 14px)'
-        }}
-      >
-        {copied ? '✓ Copiado!' : 'Copiar Prompt'}
-      </button>
-
+        <p style={{ margin: '0 0 10px' }}>
+          Use a IA para criar o baralho de estudo (deck) e as perguntas de forma automatizada, você só precisa de um arquivo de texto, como um word ou um PDF (como criar PDF via seu celular).
+        </p>
+        <p style={{ margin: 0 }}>
+          Se já possui o arquivo, leia as instruções abaixo ao menos uma vez e depois siga cada passo:
+        </p>
+      </div>
       <br />
 
       <div style={{
@@ -139,35 +185,103 @@ O formato do JSON deve ser exatamente o seguinte (sem campos adicionais):
         margin: '0 auto'
       }}>
         
-        <ol  style={{
+        <ol style={{
           textAlign: 'left',
           lineHeight: '1.6',
-          fontSize: 'clamp(10px, 3vw, 10px)',
           padding: '0 20px'
         }}>
           <li className="mediumText" style={{ marginBottom: '10px', fontSize: 'clamp(12px, 3vw, 14px)' }}>
-            <strong>Clique no botão</strong> "Copiar Prompt" acima
+            Clique em <strong>“Copiar e abrir Gemini”</strong>. As instruções já terão sido copiadas e será aberta uma nova janela com a IA do Google (Gemini).
           </li>
           <li className="mediumText" style={{ marginBottom: '10px', fontSize: 'clamp(12px, 3vw, 14px)' }}>
-            <strong>Abra um novo chat em sua IA de preferência</strong> (ChatGPT, Claude, Gemini, etc)
+            No chat com o Gemini, cole as instruções.
           </li>
           <li className="mediumText" style={{ marginBottom: '10px', fontSize: 'clamp(12px, 3vw, 14px)' }}>
-            <strong>Cole o prompt</strong> no chat
+            Anexe o arquivo de texto que contém o conteúdo que deseja estudar.
           </li>
           <li className="mediumText" style={{ marginBottom: '10px', fontSize: 'clamp(12px, 3vw, 14px)' }}>
-            <strong>Anexe(+) o arquivo</strong> de texto que contém o conteúdo que deseja estudar (a maioria das IAs suporta anexos, mas se a sua não suportar, tente outra IA. Indicamos Gemini) 
+            Baixe o arquivo que a IA gerar.
           </li>
           <li className="mediumText" style={{ marginBottom: '10px', fontSize: 'clamp(12px, 3vw, 14px)' }}>
-            <strong>Aguarde a IA gerar o arquivo JSON</strong> e faça download do mesmo
-          </li>
-          <li className="mediumText" style={{ marginBottom: '10px', fontSize: 'clamp(12px, 3vw, 14px)' }}>
-            <strong>Volte aqui no app</strong> e na na tela inicial importe o arquivo 
+            Volte aqui e clique em{' '}
+            <button
+              type="button"
+              onClick={() => importFileInput.current?.click()}
+              style={{
+                padding: '2px 10px',
+                border: '1px solid #3B82F6',
+                borderRadius: '999px',
+                background: '#3B82F6',
+                color: '#fff',
+                font: 'inherit',
+                fontWeight: 'bold',
+                lineHeight: 1.5,
+                cursor: 'pointer',
+                verticalAlign: 'middle'
+              }}
+            >
+              Importar
+            </button>
+            <input
+              ref={importFileInput}
+              type="file"
+              accept="application/json"
+              onChange={importDecks}
+              style={{ display: 'none' }}
+            />
           </li>
         </ol>
-        <p style={{ marginTop: '20px', textAlign: 'center', fontSize: 'clamp(12px, 3vw, 14px)' }}>
+        <div style={{
+          margin: '20px auto',
+          textAlign: 'center',
+          fontSize: 'clamp(12px, 3vw, 14px)',
+          lineHeight: 1.8
+        }}>
           <a href="https://youtu.be/i0FgvbR6iS8" target="_blank" rel="noopener noreferrer">
-            Link de um vídeo demonstrativo
+            Como criar decks usando IA
           </a>
+        </div>
+
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '10px',
+          width: '90%',
+          margin: '0 auto',
+          flexWrap: 'wrap'
+        }}>
+          <button
+            onClick={handleCopyAndOpenGemini}
+            className="btn btn-blue"
+            style={{
+              flex: '1 1 0',
+              minWidth: 0,
+              fontSize: 'clamp(12px, 3vw, 14px)'
+            }}
+          >
+            Copiar e abrir Gemini
+          </button>
+          <button
+            onClick={handleCopyInstructions}
+            className="btn btn-blue"
+            style={{
+              flex: '1 1 0',
+              minWidth: 0,
+              fontSize: 'clamp(12px, 3vw, 14px)',
+              backgroundColor: '#555'
+            }}
+          >
+            {copied ? '✓ Instruções copiadas' : 'Copiar para outra IA'}
+          </button>
+        </div>
+        <p style={{
+          margin: '12px auto 0',
+          textAlign: 'center',
+          fontSize: 'clamp(11px, 3vw, 13px)',
+          lineHeight: 1.5
+        }}>
+          Em caso de erros, envie um e-mail para{' '}
+          <a href="mailto:emaildocharles@gmail.com">emaildocharles@gmail.com</a>
         </p>
       </div>
 

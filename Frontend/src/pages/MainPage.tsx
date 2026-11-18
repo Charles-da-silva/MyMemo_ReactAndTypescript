@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Logo from "../components/Logo";
 import "../styles/index.css";
+import AppLoader from "../components/AppLoader";
 import HomeCard from "../components/HomeCard";
 import HowCreateCard from "../components/HowCreateCard";
 import DeckOptionsCard from "../components/DeckOptionsCard";
@@ -10,12 +11,63 @@ import AIDeckCreationCard from "../components/AIDeckCreationCard";
 import ManualDeckCreationCard from "../components/ManualDeckCreationCard";
 import { useAuth } from "../contexts/authContext";
 import Swal from "sweetalert2";
+import { syncDecksAndCards } from "../services/decksSyncService";
 
 export default function MainPage() {
 
 const { user, logOut } = useAuth();
 const [mode, setMode] = useState<"home" | "deckOptions" | "createDeck" | "review" | "editDeck" | "aiDeckCreation" | "manualDeckCreation">("home");
 const [selectedDeck, setSelectedDeck] = useState<string[]>([]);
+const [syncState, setSyncState] = useState<"loading" | "ready" | "error">("loading");
+const [syncError, setSyncError] = useState<string | null>(null);
+const [syncAttempt, setSyncAttempt] = useState(0);
+
+useEffect(() => {
+  let active = true;
+
+  if (user) {
+    syncDecksAndCards(user.uid)
+      .then(() => {
+        if (active) {
+          setSyncState("ready");
+          setSyncError(null);
+        }
+      })
+      .catch((error: unknown) => {
+        console.error("Erro ao carregar seus decks:", error);
+        if (active) {
+          setSyncError(
+            error instanceof Error
+              ? error.message
+              : "Não foi possível sincronizar seus decks.",
+          );
+          setSyncState("error");
+        }
+      });
+  }
+
+  return () => {
+    active = false;
+  };
+}, [user, syncAttempt]);
+
+if (syncState === "loading") {
+  return <AppLoader message="Carregando seus decks..." compact />;
+}
+
+if (syncState === "error") {
+  return (
+    <AppLoader
+      message="Não foi possível carregar seus decks."
+      error={syncError}
+      compact
+      onRetry={() => {
+        setSyncState("loading");
+        setSyncAttempt(attempt => attempt + 1);
+      }}
+    />
+  );
+}
 
 async function handleLogOut() {
   try {
@@ -34,10 +86,10 @@ async function handleLogOut() {
 
 return (
   <>
-  <div className="mainPage" style={{
+  <div className={`mainPage${mode === "review" ? " study-mode" : ""}${mode === "manualDeckCreation" ? " manual-deck-mode" : ""}${mode === "aiDeckCreation" ? " ai-deck-mode" : ""}`} style={{
     border: mode === "review" ? "0px" : "",
-    overflowY: mode === "review" ? "auto" : "hidden", // Scroll aparece quando o texto exceder a tela
-    justifyContent: mode === "review" ? "flex-start" : "center",
+    overflowY: mode === "review" || mode === "manualDeckCreation" || mode === "aiDeckCreation" ? "auto" : "hidden", // Scroll aparece quando o texto exceder a tela
+    justifyContent: mode === "review" || mode === "aiDeckCreation" ? "flex-start" : "center",
   }}>
     <div className="account-actions">
       <span>{user?.displayName || user?.email}</span>

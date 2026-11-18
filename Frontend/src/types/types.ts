@@ -6,6 +6,7 @@ export type Card = {
   correct_answer: string;
   next_review: string;
   created_at: string;
+  updated_at?: string;
   image: null | string;
 };
 
@@ -13,4 +14,6 @@ export type Deck = {
   id: string;
   name: string;
   description?: string;
+  created_at?: string;
+  updated_at?: string;
 };

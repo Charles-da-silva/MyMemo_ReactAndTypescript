@@ -9,6 +9,7 @@ type UseDeckImportExportProps = {
   decks: Deck[];
   cards: Card[];
   loadDecks?: () => Promise<void>;
+  onImportSuccess?: () => void | Promise<void>;
 };
 
 type ExportData = {
@@ -18,10 +19,49 @@ type ExportData = {
   cards: Card[];
 };
 
+function parseExportData(content: string): ExportData {
+  let data: unknown;
+
+  try {
+    data = JSON.parse(content);
+  } catch (error) {
+    const positionMatch =
+      error instanceof SyntaxError
+        ? error.message.match(/position\s+(\d+)/i)
+        : null;
+    let location = "";
+
+    if (positionMatch) {
+      const position = Math.min(Number(positionMatch[1]), content.length);
+      const precedingText = content.slice(0, position);
+      const line = precedingText.split("\n").length;
+      const column = position - precedingText.lastIndexOf("\n");
+      location = ` Próximo à linha ${line}, coluna ${column}.`;
+    }
+
+    throw new Error(
+      `O arquivo não é um JSON válido.${location} Verifique se há vírgulas, chaves ou colchetes faltando.`,
+    );
+  }
+
+  if (
+    !data ||
+    typeof data !== "object" ||
+    Array.isArray(data) ||
+    !Array.isArray((data as Record<string, unknown>).decks) ||
+    !Array.isArray((data as Record<string, unknown>).cards)
+  ) {
+    throw new Error("Arquivo inválido: ele deve conter listas de decks e cards.");
+  }
+
+  return data as ExportData;
+}
+
 export function useDeckImportExport({
   decks,
   cards,
-  loadDecks
+  loadDecks,
+  onImportSuccess
 }: UseDeckImportExportProps) {
   function exportDecks(deckIds: string[]) {
     if (deckIds.length === 0) {
@@ -81,22 +121,21 @@ export function useDeckImportExport({
     const reader = new FileReader();
 
     reader.onload = async () => {
-      Swal.fire({
-        title: "Carregando...",
-        text: "Importando decks e perguntas...",
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        didOpen: () => {
-          Swal.showLoading();
-        }
-      });
-
       try {
-        const data: ExportData = JSON.parse(reader.result as string);
-
-        if (!Array.isArray(data.decks) || !Array.isArray(data.cards)) {
-          throw new Error("Arquivo inválido.");
+        if (typeof reader.result !== "string") {
+          throw new Error("Não foi possível ler o arquivo selecionado.");
         }
+        const data = parseExportData(reader.result);
+
+        Swal.fire({
+          title: "Carregando...",
+          text: "Importando decks e perguntas...",
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
 
         await getDecks();
 
@@ -131,6 +170,8 @@ export function useDeckImportExport({
           await loadDecks();
         }
 
+        await onImportSuccess?.();
+
         Swal.close();
         await Swal.fire({
           title: "Sucesso!",
@@ -147,6 +188,8 @@ export function useDeckImportExport({
           title: "Erro",
           text: error instanceof Error ? error.message : "Erro ao importar Deck",
           icon: "error",
+          confirmButtonText: "OK",
+          showConfirmButton: true,
           background: "#1E1E1E",
           color: "#fff"
         });
