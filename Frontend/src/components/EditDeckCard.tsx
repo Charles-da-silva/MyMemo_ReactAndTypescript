@@ -364,6 +364,7 @@ export default function EditDeckCard({ setMode, selectedDeck: initialSelected }:
       </div>
 
       <CardEditorModal
+        key={`${isModalOpen ? "open" : "closed"}-${editingCardIndex ?? "new"}`}
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false);

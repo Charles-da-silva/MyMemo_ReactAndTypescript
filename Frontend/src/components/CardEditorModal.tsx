@@ -1,26 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Swal from 'sweetalert2';
 import "../styles/index.css";
 import type { Card } from "../types/types";
+import { uploadCardImage } from "../services/cardImagesService";
 
 interface CardEditorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (card: any) => void;
+  onSave: (card: Card) => Promise<void> | void;
   initialCard?: Card;
   deckId: string;
 }
 
-interface CardForm {
-  id: string;
-  deck_id: string;
-  question: string;
-  alternatives: string[];
-  correct_answer: string;
-  next_review: string;
-  created_at: string;
-  image: null | string;
-}
+const allowedImageTypes = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+]);
+const maxImageSizeBytes = 10 * 1024 * 1024;
 
 export default function CardEditorModal({
   isOpen,
@@ -39,47 +37,48 @@ export default function CardEditorModal({
     return index >= 0 ? index : null;
   };
 
-  const [form, setForm] = useState<CardForm>({
+  const [form, setForm] = useState<Card>({
     id: initialCard?.id || "",
     deck_id: deckId,
     question: initialCard?.question || "",
     alternatives: initialCard?.alternatives || ["", "", "", "", ""],
     correct_answer: initialCard?.correct_answer || "",
-    next_review: new Date().toISOString(),
-    created_at: new Date().toISOString(),
-    image: null,
+    next_review: initialCard?.next_review || new Date().toISOString(),
+    created_at: initialCard?.created_at || new Date().toISOString(),
+    image: initialCard?.image || null,
   });
   const [correctAnswerIndex, setCorrectAnswerIndex] = useState<number | null>(
     getCorrectAnswerIndex(initialCard)
   );
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const imagePreviewUrlRef = useRef<string | null>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (initialCard) {
-      setForm({
-        id: initialCard.id,
-        deck_id: initialCard.deck_id,
-        question: initialCard.question || "",
-        alternatives: initialCard.alternatives || ["", "", "", "", ""],
-        correct_answer: initialCard.correct_answer || "",
-        next_review: initialCard.next_review,
-        created_at: initialCard.created_at || new Date().toISOString(),
-        image: initialCard.image || null,
-      });
-      setCorrectAnswerIndex(getCorrectAnswerIndex(initialCard));
-    } else {
-      setForm({
-        id: "",
-        deck_id: deckId,
-        question: "",
-        alternatives: ["", "", "", "", ""],
-        correct_answer: "",
-        next_review: new Date().toISOString(),
-        created_at: new Date().toISOString(),
-        image: null,
-      });
-      setCorrectAnswerIndex(null);
+    return () => {
+      if (imagePreviewUrlRef.current) {
+        URL.revokeObjectURL(imagePreviewUrlRef.current);
+      }
+    };
+  }, []);
+
+  const setSelectedImage = (file: File | null) => {
+    if (imagePreviewUrlRef.current) {
+      URL.revokeObjectURL(imagePreviewUrlRef.current);
     }
-  }, [initialCard, deckId, isOpen]);
+
+    const previewUrl = file ? URL.createObjectURL(file) : null;
+    imagePreviewUrlRef.current = previewUrl;
+    setImagePreviewUrl(previewUrl);
+    setSelectedImageFile(file);
+  };
+
+  const handleClose = () => {
+    setSelectedImage(null);
+    onClose();
+  };
 
   const handleQuestionChange = (value: string) => {
     setForm({ ...form, question: value });
@@ -103,8 +102,36 @@ export default function CardEditorModal({
     setForm({ ...form, correct_answer: form.alternatives[index] });
   };
 
-  const handleSave = () => {
-    // Validações
+  const handleImageSelection = (file: File | undefined) => {
+    if (!file) return;
+
+    if (!allowedImageTypes.has(file.type)) {
+      Swal.fire({
+        title: 'Formato não suportado',
+        text: 'Escolha uma imagem JPEG, PNG, WebP ou GIF.',
+        icon: 'error',
+        background: '#1E1E1E',
+        color: '#fff',
+      });
+      return;
+    }
+
+    if (file.size > maxImageSizeBytes) {
+      Swal.fire({
+        title: 'Imagem muito grande',
+        text: 'O tamanho máximo da imagem é 10 MB.',
+        icon: 'error',
+        background: '#1E1E1E',
+        color: '#fff',
+      });
+      return;
+    }
+
+    setSelectedImage(file);
+  };
+
+  const handleSave = async () => {
+    if (isSaving) return;
     if (!form.question.trim()) {
       Swal.fire({
         title: 'Erro',
@@ -139,11 +166,32 @@ export default function CardEditorModal({
       return;
     }
 
-    onSave({
-      ...form,
-      correct_answer: form.alternatives[correctAnswerIndex]
-    });
-    onClose();
+    setIsSaving(true);
+    try {
+      let image = form.image;
+      if (selectedImageFile) {
+        image = await uploadCardImage(selectedImageFile);
+        setForm((currentForm) => ({ ...currentForm, image }));
+        setSelectedImage(null);
+      }
+
+      await onSave({
+        ...form,
+        image,
+        correct_answer: form.alternatives[correctAnswerIndex],
+      });
+      handleClose();
+    } catch (error) {
+      Swal.fire({
+        title: 'Erro ao salvar card',
+        text: error instanceof Error ? error.message : 'Não foi possível salvar o card.',
+        icon: 'error',
+        background: '#1E1E1E',
+        color: '#fff',
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -183,6 +231,7 @@ export default function CardEditorModal({
             value={form.question}
             onChange={(e) => handleQuestionChange(e.target.value)}
             placeholder="Digite a pergunta"
+            disabled={isSaving}
             style={{
               width: '98%',
               padding: '8px',
@@ -196,6 +245,63 @@ export default function CardEditorModal({
           />
         </label>
 
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold', textAlign: 'center' }} htmlFor="card-image">
+            Imagem (opcional):
+          </label>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', textAlign: 'center' }}>
+            <button
+              type="button"
+              className="btn btn-blue"
+              disabled={isSaving}
+              onClick={() => imageInputRef.current?.click()}
+            >
+              {selectedImageFile || form.image ? 'Alterar imagem' : 'Selecionar imagem'}
+            </button>
+            <input
+              ref={imageInputRef}
+              id="card-image"
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              disabled={isSaving}
+              onChange={(event) => {
+                handleImageSelection(event.currentTarget.files?.[0]);
+                event.currentTarget.value = '';
+              }}
+              style={{ display: 'none' }}
+            />
+            <p style={{ margin: 0, fontSize: '13px', color: '#ccc' }}>
+              JPEG, PNG, WebP ou GIF; máximo de 10 MB.
+            </p>
+            {(imagePreviewUrl || form.image) && (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+                <img
+                  src={imagePreviewUrl || form.image || undefined}
+                  alt="Prévia da imagem do card"
+                  style={{
+                    display: 'block',
+                    maxWidth: '100%',
+                    maxHeight: '240px',
+                    objectFit: 'contain',
+                    borderRadius: '8px',
+                  }}
+                />
+                <button
+                  type="button"
+                  className="btn btn-gray"
+                  disabled={isSaving}
+                  onClick={() => {
+                    setSelectedImage(null);
+                    setForm((currentForm) => ({ ...currentForm, image: null }));
+                  }}
+                >
+                  Remover imagem
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
         <p style={{ marginBottom: '15px', fontWeight: 'bold' }}>Alternativas:</p>
         {form.alternatives.map((alt, index) => (
           <label key={index} style={{ display: 'block', marginBottom: '10px' }}>
@@ -204,6 +310,7 @@ export default function CardEditorModal({
                 type="radio"
                 name="correct-answer"
                 checked={correctAnswerIndex === index}
+                disabled={isSaving}
                 onChange={() => handleCorrectAnswerChange(index)}
               />
               <input
@@ -211,6 +318,7 @@ export default function CardEditorModal({
                 value={alt}
                 onChange={(e) => handleAlternativeChange(index, e.target.value)}
                 placeholder={`Alternativa ${index + 1}`}
+                disabled={isSaving}
                 style={{
                   flex: 1,
                   padding: '8px',
@@ -231,8 +339,9 @@ export default function CardEditorModal({
           justifyContent: 'flex-end',
         }}>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="btn btn-gray"
+            disabled={isSaving}
             style={{ padding: '8px 16px' }}
           >
             Cancelar
@@ -240,9 +349,10 @@ export default function CardEditorModal({
           <button
             onClick={handleSave}
             className="btn btn-blue"
+            disabled={isSaving}
             style={{ padding: '8px 16px' }}
           >
-            Salvar
+            {isSaving && selectedImageFile ? 'Enviando imagem...' : isSaving ? 'Salvando...' : 'Salvar'}
           </button>
         </div>
       </div>

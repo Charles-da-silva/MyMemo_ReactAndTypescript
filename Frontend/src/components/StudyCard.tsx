@@ -359,6 +359,7 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
       </div>
 
       <CardEditorModal
+        key={`${isModalOpen ? "open" : "closed"}-${editingCard?.id ?? "new"}`}
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false);

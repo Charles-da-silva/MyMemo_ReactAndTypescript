@@ -22,7 +22,7 @@ interface CardForm {
   correct_answer: string;
   next_review: string;
   created_at: string;
-  image: null;
+  image: null | string;
 }
 
 export default function ManualDeckCreationCard({ setMode }: ManualDeckCreationCardProps) {
@@ -271,6 +271,7 @@ export default function ManualDeckCreationCard({ setMode }: ManualDeckCreationCa
       />
 
       <CardEditorModal
+        key={`${isModalOpen ? 'open' : 'closed'}-${editingCardIndex ?? 'new'}`}
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false);
