@@ -12,13 +12,13 @@ export default function HowCreateCard({ setMode }: HomeCardProps) {
     <>
       <div className="howCreateCard" >
 
-        <Logo />
+        <Logo size={240} />
         <br /><br />
 
         <p className="personText largeText" style={{ width: '80vw' }}>De que forma deseja criar o Deck?</p>
         <br /><br />
 
-        <p className="personText mediumText">Uma forma inteligente e gratuita de usar a IA para criar um deck completo para você, com perguntas e respostas baseadas no tema que você escolher!
+        <p className="personText mediumText">Deixe a IA criar o deck completo para você, com perguntas e respostas baseadas no arquivo que você enviar!
         </p>
         <br />
 
