@@ -130,32 +130,8 @@ O formato do JSON deve ser exatamente o seguinte (sem campos adicionais):
     });
   };
 
-  const handleCopyAndOpenGemini = async () => {
+  const handleOpenGemini = () => {
     window.open('https://gemini.google.com/app', '_blank', 'noopener,noreferrer');
-
-    try {
-      await navigator.clipboard.writeText(instructions);
-    } catch {
-      Swal.fire({
-        title: 'Gemini aberto, mas as instruções não foram copiadas',
-        text: 'Verifique as permissões de área de transferência do navegador. Você ainda pode usar “Copiar para outra IA” e colar o texto no Gemini.',
-        icon: 'warning',
-        background: '#1E1E1E',
-        color: '#fff',
-        confirmButtonColor: '#3085d6',
-      });
-      return;
-    }
-
-    Swal.fire({
-      title: 'Gemini aberto!',
-      text: 'As instruções foram copiadas. No Gemini, cole-as no chat (Ctrl+V) e anexe o arquivo de texto.',
-      icon: 'success',
-      background: '#1E1E1E',
-      color: '#fff',
-      confirmButtonColor: '#3085d6',
-      timer: 3000,
-    });
   };
 
   return (
@@ -191,7 +167,7 @@ O formato do JSON deve ser exatamente o seguinte (sem campos adicionais):
           padding: '0 20px'
         }}>
           <li className="mediumText" style={{ marginBottom: '10px', fontSize: 'clamp(12px, 3vw, 14px)' }}>
-            Clique em <strong>“Copiar e abrir Gemini”</strong>. As instruções já terão sido copiadas e será aberta uma nova janela com a IA do Google (Gemini).
+            Clique em <strong>“Copiar instruções para IA”</strong> e depois em <strong>“Abrir Gemini”</strong>.
           </li>
           <li className="mediumText" style={{ marginBottom: '10px', fontSize: 'clamp(12px, 3vw, 14px)' }}>
             No chat com o Gemini, cole as instruções.
@@ -251,7 +227,7 @@ O formato do JSON deve ser exatamente o seguinte (sem campos adicionais):
           flexWrap: 'wrap'
         }}>
           <button
-            onClick={handleCopyAndOpenGemini}
+            onClick={handleCopyInstructions}
             className="btn btn-blue"
             style={{
               flex: '1 1 0',
@@ -259,10 +235,10 @@ O formato do JSON deve ser exatamente o seguinte (sem campos adicionais):
               fontSize: 'clamp(12px, 3vw, 14px)'
             }}
           >
-            Copiar e abrir Gemini
+            {copied ? '✓ Instruções copiadas' : 'Copiar instruções para IA'}
           </button>
           <button
-            onClick={handleCopyInstructions}
+            onClick={handleOpenGemini}
             className="btn btn-blue"
             style={{
               flex: '1 1 0',
@@ -271,7 +247,7 @@ O formato do JSON deve ser exatamente o seguinte (sem campos adicionais):
               backgroundColor: '#555'
             }}
           >
-            {copied ? '✓ Instruções copiadas' : 'Copiar para outra IA'}
+            Abrir Gemini
           </button>
         </div>
         <p style={{
