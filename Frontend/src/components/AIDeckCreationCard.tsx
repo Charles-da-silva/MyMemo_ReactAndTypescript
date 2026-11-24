@@ -23,36 +23,29 @@ export default function AIDeckCreationCard({ setMode }: AIDeckCreationCardProps)
     },
   });
 
-  const instructions = `Você receberá um arquivo de texto anexado.
+  const instructions = `Você atuará como um especialista em avaliação educacional e elaboração de questões de alto nível.
+Você receberá um ou mais arquivos (texto, PDF ou imagem) em anexo. Sua tarefa é analisar integralmente o material e criar um deck de flashcards de múltipla escolha em formato JSON para download.
 
-Sua tarefa é analisar TODO o conteúdo do arquivo antes de criar qualquer pergunta.
+### FLUXO DE EXECUÇÃO OBRIGATÓRIO
+1. **Verificação:** Caso nenhum arquivo seja enviado, solicite o envio. Se algum arquivo estiver ilegível, corrompido ou sem texto extraível (OCR), avise imediatamente antes de gerar qualquer pergunta.
+2. **Mapeamento:** Leia 100% do conteúdo útil (desconsidere capa, ficha catalográfica, sumário, prefácio, agradecimentos, glossário e referências bibliográficas). Mapeie todos os capítulos/seções relevantes e distribua proporcionalmente as 50 perguntas entre eles, sem deixar nenhum tópico relevante de fora.
+3. **Volume:** Gere exatamente 50 perguntas. Se o material for muito curto para gerar 50 questões sem repetir conceitos ou criar perguntas triviais, informe o limite do texto e proponha uma quantidade menor adequada antes de gerar o arquivo.
+4. **Entrega:** Ao final, gere e disponibilize o arquivo .json para download seguindo rigorosamente o schema especificado.
 
-Regras obrigatórias:
+### REGRAS DE ELABORAÇÃO (NÍVEL MÉDIO A DIFÍCIL)
+- **Fidelidade ao material:** Toda pergunta e sua correct_answer devem estar 100% fundamentadas no conteúdo explícito do(s) arquivo(s). Não invente fatos nem crie exemplos fictícios que não estejam no texto.
+- **Profundidade cognitiva:** Priorize compreensão de conceitos, definições, processos, relações de causa e consequência, comparações entre temas e aplicações práticas descritas no texto. Evite perguntas triviais ou de mera decoreba literal.
+- **Alternativas (Distratores):**
+  - Cada questão deve ter entre 4 e 5 alternativas (ou 2 a 5 quando o conceito for estritamente binário), sem repetir opções.
+  - Apenas UMA alternativa deve ser correta.
+  - As alternativas incorretas devem ser altamente plausíveis, técnicas e coerentes com o tema (usando termos e conceitos do próprio material, mas apresentando inversões, generalizações indevidas ou confusões conceituais), evitando alternativas absurdas ou obviamente erradas.
+  - Varie equilibradamente a posição (índice) da resposta correta ao longo do deck.
+- **Unicidade:** Não repita perguntas nem aborde exatamente o mesmo ponto duas vezes.
 
-1. Leia 100% do conteúdo do arquivo de texto.
-2. Não utilize conhecimento externo.
-3. Não invente informações.
-4. Não crie exemplos fictícios.
-5. Todas as perguntas e respostas devem ser baseadas exclusivamente no conteúdo do texto.
-6. Distribua as perguntas entre todos os capítulos, seções ou tópicos relevantes do documento.
-7. Nenhuma seção relevante pode ficar sem cobertura.
-8. Priorize conceitos, definições, processos, exemplos, aplicações e relações entre temas.
-9. Evite perguntas e respostas triviais.
-10. Gere exatamente 50 perguntas de múltipla escolha.
-11. Cada pergunta deve possuir exatamente 5 alternativas que façam sentido e realmente testem o conhecimento do estudante.
-12. Apenas uma alternativa deve estar correta, mas as demais devem provocar dúvida se são ou não corretas.
-13. Varie a posição da alternativa correta entre as 5 opções.
-14. As alternativas incorretas devem ser plausíveis, porém incorretas de acordo com o documento.
-15. Não repita perguntas.
-16. Não repita alternativas desnecessariamente.
-17. Toda resposta correta deve estar explicitamente fundamentada no conteúdo do texto.
-18. Gere ids aleatórios para o deck e seus cards, usando a data e hora de criação para formar o id que deve ficar no formato apresentado no json abaixo.
-19. O "next_review" deve ser a mesma da hora de criação do deck, usando a hora do Brasil.
-20. Ao final, gere um arquivo JSON para download seguindo exatamente as regras aqui descritas.
-21. caso o arquivo de texto não seja enviado, solicite o envio e após o envio siga o processo descrito acima normalmente.
-22. Se o arquivo for muito curto para 50 perguntas, informe ao usuário e questione quantas perguntas desela. Após a resposta dele, gere a quantidade de perguntas solicitada seguindo as regras acima.
-
-O formato do JSON deve ser exatamente o seguinte (sem campos adicionais):
+### REGRAS TÉCNICAS DO JSON E DATAS
+- **IDs:** Gere identificadores únicos no formato UUID padrão (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx), incorporando o carimbo de data/hora de criação. O deck_id de todos os cards deve corresponder ao id do deck.
+- **Datas e Fuso Horário:** Utilize a data e hora atual no fuso horário de Brasília (America/Sao_Paulo, UTC-3) para created_at e exportedAt (timestamp em milissegundos). O campo next_review de todos os cards deve ser exatamente igual ao created_at do deck.
+- **Estrutura:** Siga exatamente o formato abaixo, sem adicionar, remover ou renomear campos:
 
 {
   "version": 1,
@@ -60,7 +53,7 @@ O formato do JSON deve ser exatamente o seguinte (sem campos adicionais):
   "decks": [
     {
       "id": "46717e54-2097-4e65-b0e3-b6763cf881a3",
-      "name": "Backend Junior - Versat (Sem Duplicatas) xxx",
+      "name": "Nome descritivo baseado no material",
       "description": "Deck importado",
       "created_at": "2026-05-21T04:07:08.867Z"
     }
@@ -69,35 +62,19 @@ O formato do JSON deve ser exatamente o seguinte (sem campos adicionais):
     {
       "id": "4dbd216d-8c91-4ec3-9e14-6723bf217bf8",
       "deck_id": "46717e54-2097-4e65-b0e3-b6763cf881a3",
-      "question": "Ao desenvolver para uma AgTech internacional, qual a importância de tratar fusos horários no código?",
-      "correct_answer": "Garantir que registros financeiros e logísticos (ERP) estejam corretos entre diferentes países",
+      "question": "Ao desenvolver para uma AgTech internacional, qual é a principal implicação técnica de não tratar fusos horários na camada de persistência?",
+      "correct_answer": "Inconsistência nos registros financeiros e logísticos (ERP) integrados entre diferentes países",
       "alternatives": [
-        "Nenhuma, pois o computador ajusta isso sozinho",
-        "Apenas estética visual para o usuário final",
-        "Garantir que registros financeiros e logísticos (ERP) estejam corretos entre diferentes países",
-        "Evitar que o computador trave ao mudar o dia",
-        "Aumentar a velocidade de processamento do banco de dados"
+        "Inconsistência nos registros financeiros e logísticos (ERP) integrados entre diferentes países",
+        "Falha automática na sincronização do relógio interno do servidor de aplicação",
+        "Bloqueio das consultas de leitura no banco de dados durante a virada de data UTC",
+        "Alteração na precisão decimal dos cálculos monetários realizados pelo sistema",
+        "Perda de compatibilidade com protocolos padrão de serialização de datas em APIs"
       ],
-      "next_review": "2026-04-22T16:32:19.436Z",
+      "next_review": "2026-05-21T04:07:08.867Z",
       "created_at": "2026-05-21T04:07:09.052Z",
       "image": null
-    },
-    {
-      "id": "1618bb19-1ca9-4bf5-86ad-89a33e5320a9",
-      "deck_id": "46717e54-2097-4e65-b0e3-b6763cf881a3",
-      "question": "Ao receber um feedback negativo em uma 'Code Review', qual a atitude esperada de um Junior na Versat?",
-      "correct_answer": "Analisar os pontos, tirar dúvidas se necessário e aplicar as melhorias sugeridas",
-      "alternatives": [
-        "Justificar que o erro foi da ferramenta de desenvolvimento",
-        "Analisar os pontos, tirar dúvidas se necessário e aplicar as melhorias sugeridas",
-        "Ignorar as sugestões e fazer o merge assim mesmo",
-        "Pedir para mudar de tarefa imediatamente",
-        "Apagar o código e não entregar a tarefa"
-      ],
-      "next_review": "2026-04-22T16:32:19.436Z",
-      "created_at": "2026-05-21T04:07:08.993Z",
-      "image": null
-    }    
+    }
   ]
 }`;
 

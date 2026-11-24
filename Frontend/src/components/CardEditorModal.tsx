@@ -102,6 +102,32 @@ export default function CardEditorModal({
     setForm({ ...form, correct_answer: form.alternatives[index] });
   };
 
+  const handleAddAlternative = () => {
+    if (form.alternatives.length >= 5) return;
+    setForm(currentForm => ({
+      ...currentForm,
+      alternatives: [...currentForm.alternatives, ""],
+    }));
+  };
+
+  const handleRemoveAlternative = (index: number) => {
+    if (form.alternatives.length <= 2) return;
+
+    setForm(currentForm => ({
+      ...currentForm,
+      alternatives: currentForm.alternatives.filter((_, i) => i !== index),
+      correct_answer:
+        correctAnswerIndex === index
+          ? ""
+          : currentForm.correct_answer,
+    }));
+
+    setCorrectAnswerIndex(currentIndex => {
+      if (currentIndex === null || currentIndex === index) return null;
+      return currentIndex > index ? currentIndex - 1 : currentIndex;
+    });
+  };
+
   const handleImageSelection = (file: File | undefined) => {
     if (!file) return;
 
@@ -143,11 +169,12 @@ export default function CardEditorModal({
       return;
     }
 
-    const filledAlternatives = form.alternatives.filter(alt => alt.trim());
-    if (filledAlternatives.length !== 5) {
+    const alternatives = form.alternatives.map(alt => alt.trim());
+
+    if (alternatives.length < 2) {
       Swal.fire({
         title: 'Erro',
-        text: 'Todas as 5 alternativas devem ser preenchidas',
+        text: 'Preencha pelo menos duas alternativas',
         icon: 'error',
         background: '#1E1E1E',
         color: '#fff',
@@ -155,7 +182,34 @@ export default function CardEditorModal({
       return;
     }
 
-    if (correctAnswerIndex === null) {
+    if (alternatives.length > 5) {
+      Swal.fire({
+        title: 'Erro',
+        text: 'O card pode ter no máximo cinco alternativas',
+        icon: 'error',
+        background: '#1E1E1E',
+        color: '#fff',
+      });
+      return;
+    }
+
+    if (alternatives.some(alternative => !alternative)) {
+      Swal.fire({
+        title: 'Erro',
+        text: 'Todas as alternativas precisam estar preenchidas',
+        icon: 'error',
+        background: '#1E1E1E',
+        color: '#fff',
+      });
+      return;
+    }
+
+    const selectedCorrectAnswer =
+      correctAnswerIndex !== null
+        ? form.alternatives[correctAnswerIndex]?.trim()
+        : "";
+
+    if (!selectedCorrectAnswer) {
       Swal.fire({
         title: 'Erro',
         text: 'Você deve selecionar uma resposta correta',
@@ -177,8 +231,9 @@ export default function CardEditorModal({
 
       await onSave({
         ...form,
+        alternatives,
         image,
-        correct_answer: form.alternatives[correctAnswerIndex],
+        correct_answer: selectedCorrectAnswer,
       });
       handleClose();
     } catch (error) {
@@ -304,7 +359,7 @@ export default function CardEditorModal({
 
         <p style={{ marginBottom: '15px', fontWeight: 'bold' }}>Alternativas:</p>
         {form.alternatives.map((alt, index) => (
-          <label key={index} style={{ display: 'block', marginBottom: '10px' }}>
+          <div key={index} style={{ display: 'block', marginBottom: '10px' }}>
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
               <input
                 type="radio"
@@ -328,9 +383,37 @@ export default function CardEditorModal({
                   color: '#fff',
                 }}
               />
+              <button
+                type="button"
+                className="btn btn-gray"
+                aria-label={`Excluir alternativa ${index + 1}`}
+                title="Excluir alternativa"
+                disabled={isSaving || form.alternatives.length <= 2}
+                onClick={() => handleRemoveAlternative(index)}
+                style={{
+                  width: '36px',
+                  minWidth: '36px',
+                  opacity: form.alternatives.length <= 2 ? 0.5 : 1,
+                }}
+              >
+                ×
+              </button>
             </div>
-          </label>
+          </div>
         ))}
+        <button
+          type="button"
+          className="btn btn-green"
+          disabled={isSaving || form.alternatives.length >= 5}
+          onClick={handleAddAlternative}
+          style={{
+            width: 'auto',
+            padding: '0 12px',
+            opacity: form.alternatives.length >= 5 ? 0.5 : 1,
+          }}
+        >
+          + Adicionar alternativa
+        </button>
 
         <div style={{
           display: 'flex',
