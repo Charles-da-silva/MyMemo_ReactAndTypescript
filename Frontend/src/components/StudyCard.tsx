@@ -300,16 +300,9 @@ export default function StudyCard({ setMode, selectedDeckId, mode }: StudyCardPr
               {currentCard.alternatives.map((alt: string, index: number) => (
                 <button
                   className="options"
-                  key={`${currentCard.id}-${index}`}
-                  disabled={selectedAnswer !== null}
+                  key={`${currentCard.id}-${alt}`}
                   onClick={() => setSelectedAnswer(index)}
-                  style={{
-                    fontWeight: "bold",
-                    textAlign: "left",
-                    padding: "12px",
-                    borderRadius: "8px",
-                    cursor: selectedAnswer === null ? "pointer" : "default",
-                  }}>
+                  style={{ fontWeight: "bold", textAlign: "left", padding: "12px", borderRadius: "8px", cursor: "pointer" }}>
                   {alt}
                 </button>
               ))}
