@@ -121,7 +121,7 @@ Você receberá um ou mais arquivos (texto, PDF ou imagem) em anexo. Sua tarefa 
         lineHeight: 1.5
       }}>
         <p style={{ margin: '0 0 10px' }}>
-          Use a IA para criar o baralho de estudo (deck) e as perguntas de forma automatizada, você só precisa de um arquivo de texto, como um word ou um PDF (como criar PDF via seu celular).
+          Use a IA para criar o baralho de estudo (deck) e as perguntas de forma automatizada, você só precisa de um arquivo de texto, como um word ou um PDF (<a className="content-link" href="https://www.youtube.com/shorts/sgf59B3_Lz0" target="_blank" rel="noopener noreferrer">como criar PDF via seu celular</a>).
         </p>
         <p style={{ margin: 0 }}>
           Se já possui o arquivo, leia as instruções abaixo ao menos uma vez e depois siga cada passo:
